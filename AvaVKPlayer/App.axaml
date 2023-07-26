@@ -1,0 +1,22 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avaVkPlayer="clr-namespace:AvaVKPlayer"
+             x:Class="AvaVKPlayer.App">
+    <Application.DataTemplates>
+        <avaVkPlayer:ViewLocator />
+    </Application.DataTemplates>
+    <Application.Resources>
+		<SolidColorBrush x:Key="TextBoxColor" Color="#DDDDDD" />
+		<SolidColorBrush x:Key="MenuBackGroundColor" Color="#2888F5" />
+		<SolidColorBrush x:Key="ControlsColor" Color="#2888F5" />
+		<SolidColorBrush x:Key="SliderTickColor" Color="#2888F5" />
+		<SolidColorBrush x:Key="SliderBackGroundColor" Color="#DDDDDD" />
+		<SolidColorBrush x:Key="MenuForeGroundColor" Color="White" />
+		<SolidColorBrush x:Key="AudioNotAvalible" Color="Silver"/>
+    </Application.Resources>
+
+    <Application.Styles>
+
+        <FluentTheme Mode="Light" />
+    </Application.Styles>
+</Application>

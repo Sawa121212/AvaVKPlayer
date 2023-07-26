@@ -1,0 +1,125 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:viewModels="clr-namespace:AvaVKPlayer.ViewModels"
+             mc:Ignorable="d" Background="white" d:DesignWidth="800" d:DesignHeight="700"
+             x:Class="AvaVKPlayer.Views.VKLoginControl">
+
+    <UserControl.DataContext>
+        <viewModels:VkLoginControlViewModel />
+    </UserControl.DataContext>
+
+    <Grid Background="White" RowDefinitions="Auto,1*" ColumnDefinitions="*,Auto">
+
+        <Border Background="#2787F5" Grid.ColumnSpan="2">
+            <Label HorizontalContentAlignment="Center" Margin="0,20" Foreground="White" FontSize="18"
+                   Content="AvaVKPlayer" FontWeight="Bold" />
+        </Border>
+
+        <StackPanel
+            VerticalAlignment="Center"
+            Grid.Row="1" Spacing="10"
+            IsVisible="{Binding Path=LoginPanelIsVisible}"
+            Margin="50,0">
+            <TextBlock Foreground="#2787F5" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="20"
+                       Text="Войти в аккаунт" />
+            <TextBlock HorizontalAlignment="Center" FontWeight="UltraBold" Text="{Binding InfoText}" Foreground="Red" />
+
+            <Button Margin="0,0" Width="100" Content="Войти" HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding AuthCommand}" />
+        </StackPanel>
+
+
+        <Grid IsVisible="{Binding SavedAccountsIsVisible}" Grid.Row="1" Background="#2272CE" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="20"
+                       Margin="10" Text="Активные аккаунты" />
+            <TextBlock Grid.Row="1" Margin="20" FontSize="16" FontWeight="ExtraBold"
+                       Text="Выберите аккаунт из списка для входа" Foreground="White" />
+            <ListBox SelectedIndex="{Binding ActiveAccountSelectIndex,Mode=TwoWay}"
+                     Items="{Binding SavedAccounts}" Grid.Row="2" VirtualizationMode="None" VerticalAlignment="Top"
+                     Margin="30,0" Background="Transparent">
+                <ListBox.Styles>
+
+                    <StyleInclude Source="/Styles/ListBoxStyle.axaml" />
+
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="0,10" />
+                        <Setter Property="CornerRadius" Value="5" />
+                        <Setter Property="Background" Value="White" />
+                    </Style>
+
+                    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="White" />
+                    </Style>
+                    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                        <Setter Property="TextBlock.Foreground" Value="black" />
+                    </Style>
+                    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="white" />
+                    </Style>
+                    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="TextBlock.Foreground"
+                                Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+                    </Style>
+
+                </ListBox.Styles>
+
+                <ListBox.DataTemplates>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Ellipse IsHitTestVisible="False" Grid.Column="0" Fill="White" Width="50" Height="50">
+                                <i:Interaction.Behaviors>
+
+                                    <ia:DataTriggerBehavior Binding="{Binding  Image.Bitmap.Size.Height}"
+                                                            ComparisonCondition="GreaterThan" Value="0">
+
+                                        <ia:ChangePropertyAction PropertyName="Fill">
+                                            <ia:ChangePropertyAction.Value>
+                                                <ImageBrush Source="{Binding Image.Bitmap}" />
+                                            </ia:ChangePropertyAction.Value>
+                                        </ia:ChangePropertyAction>
+
+                                    </ia:DataTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                            </Ellipse>
+
+                            <TextBlock IsHitTestVisible="False" Grid.Column="1" Text="{Binding Name}" FontWeight="Bold"
+                                       VerticalAlignment="Center" Margin="10" />
+                            <Button Grid.Column="2" IsHitTestVisible="True">
+
+                                <i:Interaction.Behaviors>
+                                    <ia:EventTriggerBehavior EventName="Click">
+                                        <ia:InvokeCommandAction
+                                            CommandParameter="{Binding }"
+                                            Command="{Binding DataContext.RemoveAccountCommand,
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={ x:Type UserControl }}}" />
+                                    </ia:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+
+                                <Button.Content>
+                                    <TextBlock Text="Удалить" />
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.DataTemplates>
+            </ListBox>
+        </Grid>
+    </Grid>
+</UserControl>
