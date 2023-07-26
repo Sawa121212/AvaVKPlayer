@@ -1,59 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ApplicationIcon />
-        <StartupObject />
-		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-		<LangVersion>preview</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <Optimize>false</Optimize>
-        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-        <DefineConstants>DEBUG</DefineConstants>
-    </PropertyGroup>
-    <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ApplicationIcon />
+    <StartupObject />
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DefineConstants>DEBUG</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
-      <PackageReference Include="Avalonia" Version="0.10.21" />
-      <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
-      <PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
-      <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
-      <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
-      <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
-      <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
-      <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
-      <PackageReference Include="Material.Avalonia" Version="2.5.1" />
-      <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
-      <PackageReference Include="ManagedBass" Version="3.1.1" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-      <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
-      <PackageReference Include="VkNet" Version="1.75.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Assets\t.otf" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Update="Views\ExceptionView.axaml.cs">
-            <DependentUpon>ExceptionView.axaml</DependentUpon>
-        </Compile>
-        <Compile Update="Views\NotifyControl.axaml.cs">
-          <DependentUpon>NotifyControl.axaml</DependentUpon>
-        </Compile>
-        <Compile Update="Views\RepostView.axaml.cs">
-          <DependentUpon>RepostView.axaml</DependentUpon>
-        </Compile>
-        <Compile Update="Views\MusicListControl.axaml.cs">
-            <DependentUpon>MusicListControl.axaml</DependentUpon>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="BASS Lib\Win\" />
-    </ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.21" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
+    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
+    <PackageReference Include="Material.Avalonia" Version="2.5.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
+    <PackageReference Include="ManagedBass" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
+    <PackageReference Include="VkNet" Version="1.75.0" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <Resource Include="Assets\t.otf" />
+  </ItemGroup>-->
+  <ItemGroup>
+    <Compile Update="Views\ExceptionView.axaml.cs">
+      <DependentUpon>ExceptionView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\NotifyControl.axaml.cs">
+      <DependentUpon>NotifyControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\RepostView.axaml.cs">
+      <DependentUpon>RepostView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MusicListControl.axaml.cs">
+      <DependentUpon>MusicListControl.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BASS Lib\Win\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.Core\Common.Core.csproj" />
+    <ProjectReference Include="..\Common\Common.Resources\Common.Resources.csproj" />
+  </ItemGroup>
 </Project>
