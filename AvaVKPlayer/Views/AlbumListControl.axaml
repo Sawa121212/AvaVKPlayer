@@ -9,11 +9,13 @@
              xmlns:views="clr-namespace:AvaVKPlayer.Views"
              xmlns:etc="clr-namespace:AvaVKPlayer.ETC">
     <Grid>
-        <ListBox Background="White" SelectedIndex="{Binding SelectedIndex}" Items="{Binding  DataCollection}">
+        <ListBox SelectedIndex="{Binding SelectedIndex}"
+                 Items="{Binding  DataCollection}">
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
                     <Setter Property="Margin" Value="5" />
                 </Style>
+
                 <Style Selector="ListBox">
                     <Setter Property="Template">
                         <ControlTemplate>
@@ -34,11 +36,11 @@
                                                     Margin="{TemplateBinding Padding}"
                                                     VirtualizationMode="{TemplateBinding VirtualizationMode}">
 
-                                         <i:Interaction.Behaviors>
-                                        <ia:EventTriggerBehavior EventName="PointerPressed">
-                                            <ia:CallMethodAction TargetObject="{Binding}" MethodName="SelectedItem"/>
-                                        </ia:EventTriggerBehavior>
-                            </i:Interaction.Behaviors>
+                                        <i:Interaction.Behaviors>
+                                            <ia:EventTriggerBehavior EventName="PointerPressed">
+                                                <ia:CallMethodAction TargetObject="{Binding}" MethodName="SelectedItem" />
+                                            </ia:EventTriggerBehavior>
+                                        </i:Interaction.Behaviors>
                                     </ItemsPresenter>
                                 </ScrollViewer>
                             </Border>
@@ -68,11 +70,7 @@
         </ListBox>
         <Grid
             IsVisible="{Binding DataContext.MusicFromAlbumIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-            Background="White">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+            RowDefinitions="Auto,*">
             <Button Command="{Binding BackToAlbumListCommand}" Background="Transparent" Margin="10,0,0,0">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" Spacing="5">
@@ -92,6 +90,6 @@
                                     Background="White" Grid.Row="1" Grid.Column="1" />
         </Grid>
 
-        <etc:LoadingControl Background="White" VerticalContentAlignment="Center" IsVisible="{Binding IsLoading}" />
+        <etc:LoadingControl VerticalContentAlignment="Center" IsVisible="{Binding IsLoading}" />
     </Grid>
 </UserControl>
