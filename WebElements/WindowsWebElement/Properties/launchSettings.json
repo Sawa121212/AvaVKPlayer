@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WindowsWebBrowser": {
+      "commandName": "Project",
+      "commandLineArgs": "https://stackoverflow.com/questions/3609280/sending-and-receiving-data-over-a-network-using-tcpclient 2564"
+    }
+  }
+}
