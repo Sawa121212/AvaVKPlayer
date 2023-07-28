@@ -1,7 +1,8 @@
 # AvaVKPlayer
 Crossplatform music player for Vkontakte
-![](https://github.com//Sawa121212/100-Prisoners-Riddle/blob/master/Prisoner.png?raw=true) 
-@Text@
+![](https://github.com//Sawa121212/AvaVKPlayer/blob/master/AvaVKPlayer/Assets/AvaVKPlayer.png?raw=true) 
+
+"C:\Nikolaev\Projects\GitHub\AvaVKPlayer\AvaVKPlayer\Assets\AvaVKPlayer.png"
 
 Sample project in a [Avalonia](https://github.com/AvaloniaUI/Avalonia) v.0.10.21 application. This app helps get start using [AvaloniaUI](https://github.com/AvaloniaUI/Avalonia) with [Prism.Avalonia](https://github.com/AvaloniaCommunity/Prism.Avalonia) v8.1.97.1021!
 
