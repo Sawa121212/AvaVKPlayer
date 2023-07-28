@@ -9,14 +9,14 @@ namespace AvaVKPlayer.ViewModels.Exceptions
     {
         public delegate void ViewExit();
 
-        private string _ButtonMessage;
+        private string _buttonMessage;
 
-        private string _ErrorMessage;
-        private int _GridColumn;
-        private int _GridColumnSpan;
-        private int _GridRow;
-        private int _GridRowSpan;
-        private bool _IsVisible;
+        private string _errorMessage;
+        private int _gridColumn;
+        private int _gridColumnSpan;
+        private int _gridRow;
+        private int _gridRowSpan;
+        private bool _isVisible;
 
         public ExceptionViewModel()
         {
@@ -29,44 +29,44 @@ namespace AvaVKPlayer.ViewModels.Exceptions
 
         public string ButtonMessage
         {
-            get => _ButtonMessage;
-            set => this.RaiseAndSetIfChanged(ref _ButtonMessage, value);
+            get => _buttonMessage;
+            set => this.RaiseAndSetIfChanged(ref _buttonMessage, value);
         }
 
         public string ErrorMessage
         {
-            get => _ErrorMessage;
-            set => this.RaiseAndSetIfChanged(ref _ErrorMessage, value);
+            get => _errorMessage;
+            set => this.RaiseAndSetIfChanged(ref _errorMessage, value);
         }
 
         public bool IsVisible
         {
-            get => _IsVisible;
-            set => this.RaiseAndSetIfChanged(ref _IsVisible, value);
+            get => _isVisible;
+            set => this.RaiseAndSetIfChanged(ref _isVisible, value);
         }
 
         public int GridRowSpan
         {
-            get => _GridRowSpan;
-            set => this.RaiseAndSetIfChanged(ref _GridRowSpan, value);
+            get => _gridRowSpan;
+            set => this.RaiseAndSetIfChanged(ref _gridRowSpan, value);
         }
 
         public int GridColumnSpan
         {
-            get => _GridColumnSpan;
-            set => this.RaiseAndSetIfChanged(ref _GridColumnSpan, value);
+            get => _gridColumnSpan;
+            set => this.RaiseAndSetIfChanged(ref _gridColumnSpan, value);
         }
 
         public int GridRow
         {
-            get => _GridRow;
-            set => this.RaiseAndSetIfChanged(ref _GridRow, value);
+            get => _gridRow;
+            set => this.RaiseAndSetIfChanged(ref _gridRow, value);
         }
 
         public int GridColumn
         {
-            get => _GridColumn;
-            set => this.RaiseAndSetIfChanged(ref _GridColumn, value);
+            get => _gridColumn;
+            set => this.RaiseAndSetIfChanged(ref _gridColumn, value);
         }
 
         public Action Action { get; set; }

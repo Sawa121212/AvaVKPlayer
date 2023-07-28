@@ -5,6 +5,7 @@ using AvaVKPlayer.ETC;
 using AvaVKPlayer.ViewModels.Base;
 using ReactiveUI;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels.Audios
 {
@@ -35,7 +36,7 @@ namespace AvaVKPlayer.ViewModels.Audios
 
         protected override void LoadData()
         {
-            var res = GlobalVars.VkApi?.Audio.Search(new AudioSearchParams
+            VkCollection<Audio>? res = GlobalVars.VkApi?.Audio.Search(new AudioSearchParams
             {
                 Query = SearchText,
                 Offset = Offset,

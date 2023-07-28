@@ -9,6 +9,7 @@ using ReactiveUI.Fody.Helpers;
 using VkNet.Enums.Filters;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels
 {
@@ -79,7 +80,7 @@ namespace AvaVKPlayer.ViewModels
 
         private void LoadConversation()
         {
-            var data = ETC.GlobalVars.VkApi.Messages.GetConversations(new GetConversationsParams()
+            GetConversationsResult? data = ETC.GlobalVars.VkApi.Messages.GetConversations(new GetConversationsParams()
             {
                 Extended = true,
                 Count = 200,
@@ -88,10 +89,10 @@ namespace AvaVKPlayer.ViewModels
             });
 
 
-            foreach (var item in data.Items)
+            foreach (ConversationAndLastMessage? item in data.Items)
             {
                 RepostModel repostModel = null;
-                var conversation = item.Conversation;
+                Conversation? conversation = item.Conversation;
 
                 if (conversation.Peer.Type == ConversationPeerType.Chat)
                     repostModel = new RepostModel(conversation);
@@ -99,7 +100,7 @@ namespace AvaVKPlayer.ViewModels
                 else if (conversation.Peer.Type == ConversationPeerType.User)
                 {
 
-                    foreach (var profile in data.Profiles)
+                    foreach (User? profile in data.Profiles)
                     {
                         if (profile.Id == conversation.Peer.Id)
                         {
@@ -111,7 +112,7 @@ namespace AvaVKPlayer.ViewModels
                 }
                 else if (conversation.Peer.Type == ConversationPeerType.Group)
                 {
-                    foreach (var group in data.Groups)
+                    foreach (Group? group in data.Groups)
                     {
                         if (group.Id == -conversation.Peer.Id)
                         {
@@ -127,14 +128,14 @@ namespace AvaVKPlayer.ViewModels
 
         private void LoadAllFriends()
         {
-            var friends = ETC.GlobalVars.VkApi.Friends.Get(new FriendsGetParams()
+            VkCollection<User>? friends = ETC.GlobalVars.VkApi.Friends.Get(new FriendsGetParams()
             {
                 Fields = ProfileFields.Photo50,
                 Order = FriendsOrder.Hints,
             });
             if (friends != null)
             {
-                foreach (var item in friends)
+                foreach (User? item in friends)
                     DataCollection?.Add(new RepostModel(item));
 
                 DataCollection.StartLoadImages();
@@ -143,7 +144,7 @@ namespace AvaVKPlayer.ViewModels
         }
         public override void SelectedItem(object sender, PointerPressedEventArgs args)
         {
-            var item = args?.GetContent<RepostModel>();
+            RepostModel? item = args?.GetContent<RepostModel>();
 
             if (item != null && AudioModel != null)
             {
@@ -153,9 +154,9 @@ namespace AvaVKPlayer.ViewModels
                     {
                         GlobalVars.VkApi.Messages.Send(new MessagesSendParams()
                         {
-                            PeerId = item.ID,
+                            PeerId = item.Id,
                             RandomId = Utils.Random.Next(),
-                            Attachments = GlobalVars.VkApi.Audio.GetById(new String[] { AudioModel.GetAudioIDFormatWithAccessKey() }),
+                            Attachments = GlobalVars.VkApi.Audio.GetById(new String[] { AudioModel.GetAudioIdFormatWithAccessKey() }),
                         });
                         Notify.NotifyManager.Instance.PopMessage(
                             new Notify.NotifyData("Успешно отправлено", "Аудиозапись отправлена: " + item.Title

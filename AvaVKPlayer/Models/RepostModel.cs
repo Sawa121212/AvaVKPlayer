@@ -5,7 +5,7 @@ namespace AvaVKPlayer.Models
 {
     public class RepostModel : IVkModelBase
     {
-        public long ID { get; set; }
+        public long Id { get; set; }
         public string Title { get; set; }
         public IImageBase Image { get; set; }
 
@@ -16,7 +16,7 @@ namespace AvaVKPlayer.Models
 
         public RepostModel(User user) : this()
         {
-            ID = user.Id;
+            Id = user.Id;
             Title = $"{user.FirstName} {user.LastName}";
 
             if (user.Photo50 != null)
@@ -25,7 +25,7 @@ namespace AvaVKPlayer.Models
 
         public RepostModel(Conversation conversation) : this()
         {
-            ID = conversation.Peer.Id;
+            Id = conversation.Peer.Id;
 
             if (conversation.ChatSettings is null)
                 return;

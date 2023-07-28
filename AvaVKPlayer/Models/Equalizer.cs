@@ -7,16 +7,16 @@ namespace AvaVKPlayer.Models
     {
         public string Title
         {
-            get => hz + " гц";
+            get => Hz + " гц";
         }
 
-        public int hz { get; set; }
+        public int Hz { get; set; }
 
         [Reactive] public int Value { get; set; }
 
         public Equalizer(int hz = 0)
         {
-            this.hz = hz;
+            this.Hz = hz;
         }
     }
 }

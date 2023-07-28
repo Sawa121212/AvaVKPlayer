@@ -6,13 +6,15 @@ using AvaVKPlayer.Models;
 using AvaVKPlayer.Notify;
 using AvaVKPlayer.ViewModels.Interfaces;
 using ReactiveUI;
+using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels.Audios.Albums
 {
     public class AddToAlbumViewModel : 
         AlbumsViewModel,ICloseView
     {
-        private AudioModel _AudioModel;
+        private AudioModel _audioModel;
         public AddToAlbumViewModel(AudioModel audioModel)
         {
             if (audioModel is null)
@@ -23,38 +25,38 @@ namespace AvaVKPlayer.ViewModels.Audios.Albums
             }
             else
             {
-                this._AudioModel = audioModel;
+                this._audioModel = audioModel;
                 CloseCommand = ReactiveCommand.Create(() => CloseViewEvent?.Invoke());
             }
         }
         public override void SelectedItem(object sender, PointerPressedEventArgs args)
         {
-            var item = args?.GetContent<AudioAlbumModel>();
+            AudioAlbumModel? item = args?.GetContent<AudioAlbumModel>();
             if (item != null)
             {
                 try
                 {
-                    var ids = new[] { _AudioModel.GetAudioIDFormatWithAccessKey() };
+                    string[]? ids = new[] { _audioModel.GetAudioIdFormatWithAccessKey() };
               
-                    GlobalVars.VkApi.Audio.AddToPlaylist(item.OwnerID, item.ID, ids);
+                    GlobalVars.VkApi.Audio.AddToPlaylist(item.OwnerId, item.Id, ids);
                 
                     Notify.NotifyManager.Instance.PopMessage(
-                        new NotifyData("Успешно добавлено",$"Аудиозапись {_AudioModel.Title} добавлена в альбом {item.Title}"));
+                        new NotifyData("Успешно добавлено",$"Аудиозапись {_audioModel.Title} добавлена в альбом {item.Title}"));
                 }
                 catch (Exception ex)
                 {
                     Notify.NotifyManager.Instance.PopMessage(
-                        new NotifyData("Ошибка добавления",$"Аудиозапись {_AudioModel.Title} не добавлена в альбом {item.Title}"));
+                        new NotifyData("Ошибка добавления",$"Аудиозапись {_audioModel.Title} не добавлена в альбом {item.Title}"));
                 }
             }
             CloseViewEvent?.Invoke();
         }
         protected override void LoadData()
         {
-            if (GlobalVars.CurrentAccount?.UserID != null)
+            if (GlobalVars.CurrentAccount?.UserId != null)
             {
-                var res = 
-                    GlobalVars.VkApi.Audio.GetPlaylists((long)GlobalVars.CurrentAccount.UserID, 200,
+                VkCollection<AudioPlaylist>? res = 
+                    GlobalVars.VkApi.Audio.GetPlaylists((long)GlobalVars.CurrentAccount.UserId, 200,
                         (uint)Offset);
                 if (res != null)
                 {

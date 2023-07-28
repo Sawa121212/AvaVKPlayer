@@ -1,6 +1,8 @@
 ﻿using Avalonia.Input;
 using AvaVKPlayer.ETC;
 using AvaVKPlayer.Models;
+using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels.Audios.Albums
 {
@@ -8,7 +10,7 @@ namespace AvaVKPlayer.ViewModels.Audios.Albums
     {
         public override void SelectedItem(object sender, PointerPressedEventArgs args)
         {
-            var item = args?.GetContent<AudioAlbumModel>();
+            AudioAlbumModel? item = args?.GetContent<AudioAlbumModel>();
             if (item != null)
             {
                 MusicFromAlbumViewModel = new MusicFromAlbumViewModel(item);
@@ -19,9 +21,9 @@ namespace AvaVKPlayer.ViewModels.Audios.Albums
 
         protected override void LoadData()
         {
-            if (GlobalVars.CurrentAccount?.UserID != null)
+            if (GlobalVars.CurrentAccount?.UserId != null)
             {
-                var res = GlobalVars.VkApi.Audio.GetPlaylists((long)GlobalVars.CurrentAccount.UserID, 200,
+                VkCollection<AudioPlaylist>? res = GlobalVars.VkApi.Audio.GetPlaylists((long)GlobalVars.CurrentAccount.UserId, 200,
                     (uint)Offset);
                 if (res != null)
                 {

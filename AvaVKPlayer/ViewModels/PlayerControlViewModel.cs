@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -25,203 +26,28 @@ namespace AvaVKPlayer.ViewModels
         public delegate void OpenRepostWindowDelegate(AudioModel audioModel);
 
         public delegate void SetCollection(ObservableCollection<AudioModel> audioCollection, int selectedIndex);
-       
+
         public delegate void AudioChanged(AudioModel? model);
 
-        private static ObservableCollection<AudioModel>? PlayList;
+        private static ObservableCollection<AudioModel>? _playList;
         private static ObservableCollection<AudioModel>? _allData;
 
-        private static PlayerControlViewModel? _Instance;
+        private static PlayerControlViewModel? _instance;
 
-        private AudioModel _CurrentAudio;
-        private bool _Mute;
+        private AudioModel _currentAudio;
+        private bool _mute;
         private bool _pauseButtonIsVisible;
         private bool _playButtonIsVisible = true;
-        private int _PlayPosition = 0;
-        private bool _Repeat;
-        private bool _Shuffling;
-        private bool _UseEqualizer;
+        private int _playPosition = 0;
+        private bool _repeat;
+        private bool _shuffling;
+        private bool _useEqualizer;
         private Task? _playTask;
 
-        private readonly Timer _Timer = new();
-        private double _Volume = 1;
-
-        public CancellationToken CancellationToken { get; private set; } = new CancellationToken();
-        public bool IsBusy { get; set; }
-
-        private bool _AutoNext { get; set; }
-        public static PlayerControlViewModel Instance =>
-            _Instance is null ? _Instance = new PlayerControlViewModel() : _Instance;
-
-        public static event SetCollection? SetPlaylistEvent;
-
-        public static event OpenRepostWindowDelegate? OpenRepostWindowEvent;
-       
-
-        public event AudioChanged AudioChangedEvent;
+        private readonly Timer _timer = new();
+        private double _volume = 1;
 
 
-        public bool Repeat
-        {
-            get => _Repeat;
-            set => this.RaiseAndSetIfChanged(ref _Repeat, value);
-        }
-
-       
-
-        public bool Shuffling
-        {
-            get => _Shuffling;
-            set
-            {
-                SetPlaylistEvent -= PlayerControlViewModel_SetPlaylistEvent;
-                this.RaiseAndSetIfChanged(ref _Shuffling, value);
-
-                if (_Shuffling)
-                {
-                    _allData = PlayList;
-                    PlayList = _allData.Shuffle();
-                }
-                else
-                {
-                    PlayList = _allData;
-                }
-
-                SetPlaylist(PlayList, 0);
-                SetPlaylistEvent += PlayerControlViewModel_SetPlaylistEvent;
-            }
-        }
-
-        public bool Mute
-        {
-            get => _Mute;
-            set => this.RaiseAndSetIfChanged(ref _Mute, value);
-        }
-
-        public int PlayPosition
-        {
-            get => _PlayPosition;
-            set => this.RaiseAndSetIfChanged(ref _PlayPosition, value);
-        }
-
-        public double Volume
-        {
-            get => _Volume;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _Volume, value);
-                if (Volume == 0) Mute = true;
-                else Mute = false;
-                Player.SetVolume(_Volume);
-            }
-        }
-
-        public AudioModel CurrentAudio
-        {
-            get => _CurrentAudio;
-            set
-            {
-                try
-                {
-                   
-                    PlayPosition = 0;
-
-                    _Timer?.Stop();
-                    Player.Stop();
-                    if (_playTask != null)
-                    {
-                        CancellationToken.ThrowIfCancellationRequested();
-                    }
-
-                    if (value is null)
-                    {
-                        this.RaiseAndSetIfChanged(ref _CurrentAudio, new AudioModel()
-                        {
-                            Duration = 0,
-                        });
-                        return;
-                    }
-                    else
-                    {
-                        this.RaiseAndSetIfChanged(ref _CurrentAudio, value);
-                    }
-                   
-
-                    if (_CurrentAudio.IsNotAvailable)
-                    {
-                        Notify.NotifyManager.Instance.PopMessage(new NotifyData("Ошибка", $"Аудиозапись {_CurrentAudio.Artist} - {_CurrentAudio.Title} не доступна"));
-                        if (_AutoNext)
-                        {
-                            _AutoNext = false;
-                            PlayNext();
-                            
-                        }
-                        return;
-                        
-                    }
-                    PauseButtonVisible();
-
-                  
-
-                    _Timer?.Start();
-
-                    _playTask = new Task(() =>
-                    {
-                        if (IsBusy) return;
-                        
-                        IsBusy = true;
-                        if (Player.Play(_CurrentAudio))
-                        {
-                            Player.SetVolume(Volume);
-                            EqualizerViewModel.UpdateEqualizer();
-                        }
-                        IsBusy = false;
-
-
-                    },cancellationToken:CancellationToken);
-                   
-                    _playTask.Start();
-                   
-
-
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-            }
-        }
-
-        public bool PlayButtonIsVisible
-        {
-            get => _playButtonIsVisible;
-            set => this.RaiseAndSetIfChanged(ref _playButtonIsVisible, value);
-        }
-
-        public bool PauseButtonIsVisible
-        {
-            get => _pauseButtonIsVisible;
-            set => this.RaiseAndSetIfChanged(ref _pauseButtonIsVisible, value);
-        }
-        [Reactive]
-        public  bool EqualizerIsOpen { get; set; }
-
-        public IReactiveCommand PlayCommand { get; set; }
-        public IReactiveCommand PauseCommand { get; set; }
-
-        public IReactiveCommand NextCommand { get; set; }
-
-        public IReactiveCommand PreviousCommand { get; set; }
-
-        public IReactiveCommand RepeatToggleCommand { get; set; }
-        public IReactiveCommand MuteToggleCommand { get; set; }
-
-        public IReactiveCommand ShuffleToogleCommand { get; set; }
-        public IReactiveCommand RepostCommand { get; set; }
-        public  IReactiveCommand OpenCloseEqualizer { get; set; }
-
-
-        public  EqualizerViewModel EqualizerViewModel { get; set; }
         private PlayerControlViewModel()
         {
             CurrentAudio = null;
@@ -232,12 +58,11 @@ namespace AvaVKPlayer.ViewModels
                     EqualizerIsOpen = false;
                 else EqualizerIsOpen = true;
             });
-            
+
             PlayCommand = ReactiveCommand.Create(() =>
             {
                 if (Player.Play())
                 {
-                    
                     EqualizerViewModel.UpdateFx();
                     PauseButtonVisible();
                 }
@@ -281,26 +106,28 @@ namespace AvaVKPlayer.ViewModels
             });
 
             RepostCommand = ReactiveCommand.Create(() => Events.AudioRepostEventCall(CurrentAudio));
-            _Timer.Interval = 1000;
-            _Timer.Elapsed += _Timer_Elapsed;
+            _timer.Interval = 1000;
+            _timer.Elapsed += _Timer_Elapsed;
             SetPlaylistEvent += PlayerControlViewModel_SetPlaylistEvent;
         }
-        
+
         public void EqualizerElement_OnLostFocus(object? sender, RoutedEventArgs e)
         {
             EqualizerIsOpen = false;
         }
+
         public void EqualizerElement_OnLosPointer(object? sender, PointerEventArgs e)
         {
             EqualizerIsOpen = false;
         }
+
         public void VolumeChanged(object sender, PointerCaptureLostEventArgs e)
         {
             Slider s = e.Source as Slider;
             if (s != null)
                 Player.SetPositon(s.Value);
         }
-      
+
         public static void SetPlaylist(ObservableCollection<AudioModel> audioCollection, int selectedIndex)
         {
             SetPlaylistEvent?.Invoke(audioCollection, selectedIndex);
@@ -320,23 +147,23 @@ namespace AvaVKPlayer.ViewModels
 
 
         private void PlayerControlViewModel_SetPlaylistEvent(ObservableCollection<AudioModel>? audioCollection,
-            int _selectedindex)
+            int selectedindex)
         {
-            PlayList = audioCollection;
-            _allData = PlayList;
-            CurrentAudio = audioCollection.ElementAt(_selectedindex);
+            _playList = audioCollection;
+            _allData = _playList;
+            CurrentAudio = audioCollection.ElementAt(selectedindex);
         }
 
         private void _Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Dispatcher.UIThread.InvokeAsync(() => PlayPosition = Player.GetPositionSeconds());
 
-            bool isEnd = (PlayPosition == CurrentAudio.Duration) 
+            bool isEnd = (PlayPosition == CurrentAudio.Duration)
                          || (Player.GetStatus() == PlaybackState.Stopped);
             if (isEnd && !Repeat)
             {
                 PlayNext();
-                _AutoNext = true;
+                AutoNext = true;
             }
             else if (isEnd && Repeat)
             {
@@ -347,30 +174,202 @@ namespace AvaVKPlayer.ViewModels
 
         private void PlayNext()
         {
-            if (PlayList != null)
+            if (_playList != null)
             {
-                var list = PlayList.ToList();
-                var index = list.IndexOf(CurrentAudio);
+                List<AudioModel>? list = _playList.ToList();
+                int index = list.IndexOf(CurrentAudio);
                 if (index < list.Count - 1)
                 {
                     CurrentAudio = list[index + 1];
-                    AudioChangedEvent?.Invoke(_CurrentAudio);
+                    AudioChangedEvent?.Invoke(_currentAudio);
                 }
             }
         }
 
         private void PlayPrevious()
         {
-            if (PlayList != null)
+            if (_playList != null)
             {
-                var list = PlayList.ToList();
-                var index = list.IndexOf(CurrentAudio);
+                List<AudioModel>? list = _playList.ToList();
+                int index = list.IndexOf(CurrentAudio);
                 if (index > 0)
                 {
                     CurrentAudio = list[index - 1];
-                    AudioChangedEvent?.Invoke(_CurrentAudio);
+                    AudioChangedEvent?.Invoke(_currentAudio);
                 }
             }
         }
+
+
+        public bool Repeat
+        {
+            get => _repeat;
+            set => this.RaiseAndSetIfChanged(ref _repeat, value);
+        }
+
+
+        public bool Shuffling
+        {
+            get => _shuffling;
+            set
+            {
+                SetPlaylistEvent -= PlayerControlViewModel_SetPlaylistEvent;
+                this.RaiseAndSetIfChanged(ref _shuffling, value);
+
+                if (_shuffling)
+                {
+                    _allData = _playList;
+                    _playList = _allData.Shuffle();
+                }
+                else
+                {
+                    _playList = _allData;
+                }
+
+                SetPlaylist(_playList, 0);
+                SetPlaylistEvent += PlayerControlViewModel_SetPlaylistEvent;
+            }
+        }
+
+        public bool Mute
+        {
+            get => _mute;
+            set => this.RaiseAndSetIfChanged(ref _mute, value);
+        }
+
+        public int PlayPosition
+        {
+            get => _playPosition;
+            set => this.RaiseAndSetIfChanged(ref _playPosition, value);
+        }
+
+        public double Volume
+        {
+            get => _volume;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _volume, value);
+                if (Volume == 0) Mute = true;
+                else Mute = false;
+                Player.SetVolume(_volume);
+            }
+        }
+
+        public AudioModel CurrentAudio
+        {
+            get => _currentAudio;
+            set
+            {
+                try
+                {
+                    PlayPosition = 0;
+
+                    _timer?.Stop();
+                    Player.Stop();
+                    if (_playTask != null)
+                    {
+                        CancellationToken.ThrowIfCancellationRequested();
+                    }
+
+                    if (value is null)
+                    {
+                        this.RaiseAndSetIfChanged(ref _currentAudio, new AudioModel()
+                        {
+                            Duration = 0,
+                        });
+                        return;
+                    }
+                    else
+                    {
+                        this.RaiseAndSetIfChanged(ref _currentAudio, value);
+                    }
+
+
+                    if (_currentAudio.IsNotAvailable)
+                    {
+                        Notify.NotifyManager.Instance.PopMessage(new NotifyData("Ошибка",
+                            $"Аудиозапись {_currentAudio.Artist} - {_currentAudio.Title} не доступна"));
+                        if (AutoNext)
+                        {
+                            AutoNext = false;
+                            PlayNext();
+                        }
+
+                        return;
+                    }
+
+                    PauseButtonVisible();
+
+
+                    _timer?.Start();
+
+                    _playTask = new Task(() =>
+                    {
+                        if (IsBusy) return;
+
+                        IsBusy = true;
+                        if (Player.Play(_currentAudio))
+                        {
+                            Player.SetVolume(Volume);
+                            EqualizerViewModel.UpdateEqualizer();
+                        }
+
+                        IsBusy = false;
+                    }, cancellationToken: CancellationToken);
+
+                    _playTask.Start();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+            }
+        }
+
+        public bool PlayButtonIsVisible
+        {
+            get => _playButtonIsVisible;
+            set => this.RaiseAndSetIfChanged(ref _playButtonIsVisible, value);
+        }
+
+        public bool PauseButtonIsVisible
+        {
+            get => _pauseButtonIsVisible;
+            set => this.RaiseAndSetIfChanged(ref _pauseButtonIsVisible, value);
+        }
+
+        public CancellationToken CancellationToken { get; private set; } = new CancellationToken();
+        public bool IsBusy { get; set; }
+
+        private bool AutoNext { get; set; }
+
+        public static PlayerControlViewModel Instance =>
+            _instance is null ? _instance = new PlayerControlViewModel() : _instance;
+
+        public static event SetCollection? SetPlaylistEvent;
+
+        public static event OpenRepostWindowDelegate? OpenRepostWindowEvent;
+
+
+        public event AudioChanged AudioChangedEvent;
+
+        [Reactive] public bool EqualizerIsOpen { get; set; }
+
+        public IReactiveCommand PlayCommand { get; set; }
+        public IReactiveCommand PauseCommand { get; set; }
+
+        public IReactiveCommand NextCommand { get; set; }
+
+        public IReactiveCommand PreviousCommand { get; set; }
+
+        public IReactiveCommand RepeatToggleCommand { get; set; }
+        public IReactiveCommand MuteToggleCommand { get; set; }
+
+        public IReactiveCommand ShuffleToogleCommand { get; set; }
+        public IReactiveCommand RepostCommand { get; set; }
+        public IReactiveCommand OpenCloseEqualizer { get; set; }
+
+
+        public EqualizerViewModel EqualizerViewModel { get; set; }
     }
 }

@@ -7,13 +7,13 @@
              xmlns:viewModels="clr-namespace:AvaVKPlayer.ViewModels"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
-             x:Class="AvaVKPlayer.Views.VKLoginControl">
+             x:Class="AvaVKPlayer.Views.LoginControl">
 
     <UserControl.DataContext>
-        <viewModels:VkLoginControlViewModel />
+        <viewModels:LoginControlViewModel />
     </UserControl.DataContext>
 
-    <Grid RowDefinitions="Auto, 1*" ColumnDefinitions="*,Auto">
+    <Grid RowDefinitions="Auto, 1*" ColumnDefinitions="*, Auto">
 
         <!--<Border Background="#2787F5" Grid.ColumnSpan="2">
             <Label HorizontalContentAlignment="Center" Margin="0,20" Foreground="White" FontSize="18"
@@ -21,7 +21,7 @@
         </Border>-->
 
         <!-- Header -->
-        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                 Margin="0,15,0,0">
             <StackPanel Orientation="Horizontal" Spacing="3" HorizontalAlignment="Center">
                 <Path Height="64" Width="82" Stretch="Fill"
@@ -37,9 +37,14 @@
                 </Path>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
-                    <Label Content="Ava" FontWeight="Bold" FontSize="28" VerticalAlignment="Center" />
-                    <Label Content="VK" FontWeight="Bold" FontSize="28" VerticalAlignment="Center" />
-                    <Label Content="Player" FontWeight="Bold" FontSize="28" VerticalAlignment="Center" />
+                    <TextBlock Text="Ava"
+                               Foreground="#8b44ac"
+                               FontWeight="Bold" FontSize="28" VerticalAlignment="Center" />
+                    <TextBlock Text="VK"
+                               Foreground="#2a6fbd"
+                               FontWeight="Bold" FontSize="28" VerticalAlignment="Center" />
+                    <TextBlock Text="Player"
+                               FontWeight="Bold" FontSize="28" VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -81,7 +86,7 @@
                        Text="Активные аккаунты"
                        HorizontalAlignment="Center" FontWeight="SemiBold"
                        FontSize="20"
-                       Margin="10"  />
+                       Margin="10" />
 
             <TextBlock Grid.Row="1" Margin="20" FontSize="16" FontWeight="ExtraBold"
                        Text="Выберите аккаунт из списка для входа" />

@@ -17,9 +17,9 @@ namespace AvaVKPlayer.Models
 
             Title = audioPlaylist.Title;
 
-            ID = (long)audioPlaylist.Id;
+            Id = (long)audioPlaylist.Id;
 
-            OwnerID = (long)audioPlaylist.OwnerId;
+            OwnerId = (long)audioPlaylist.OwnerId;
 
             IsFollowing = audioPlaylist.IsFollowing;
 

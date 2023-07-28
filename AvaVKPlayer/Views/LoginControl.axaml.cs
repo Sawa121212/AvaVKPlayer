@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace AvaVKPlayer.Views
 {
-    public class VKLoginControl : UserControl
+    public class LoginControl : UserControl
     {
-        public VKLoginControl()
+        public LoginControl()
         {
             InitializeComponent();
         }

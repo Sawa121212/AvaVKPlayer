@@ -15,104 +15,88 @@ namespace AvaVKPlayer.ViewModels.Base
 {
     public abstract class DataViewModelBase : ViewModelBase
     {
-        [Reactive]
-        public ExceptionViewModel ExceptionModel { get; set; }
+        [Reactive] public ExceptionViewModel ExceptionModel { get; set; }
 
-        [Reactive]
-        public bool IsError { get; set; }
+        [Reactive] public bool IsError { get; set; }
 
-        [Reactive]
-        public bool IsLoading { get; set; }
-
-
+        [Reactive] public bool IsLoading { get; set; }
     }
 
     public abstract class DataViewModelBase<T> : DataViewModelBase
     {
-        protected ObservableCollection<T>? _AllDataCollection;
+        protected ObservableCollection<T>? AllDataCollection;
 
-        private IDisposable? _SearchDisposable;
+        private IDisposable? _searchDisposable;
 
-        protected string _SearchText = string.Empty;
+        private IDisposable _scrolledDisposible;
 
-        private IDisposable ScrolledDisposible;
+        [Reactive] private ScrollChangedEventArgs ScrolledEventArgs { get; set; }
 
-        [Reactive]
-        private ScrollChangedEventArgs ScrolledEventArgs { get; set; }
-      
 
-        [Reactive]
-        public bool SearchIsVisible { get; set; }
+        [Reactive] public bool SearchIsVisible { get; set; }
 
         public int ResponseCount { get; set; }
 
-        [Reactive]
-        public ObservableCollection<T>? DataCollection { get; set; }
+        [Reactive] public ObservableCollection<T>? DataCollection { get; set; }
 
         public int Offset { get; set; }
 
-        [Reactive]
-        public string SearchText { get; set; }
+        [Reactive] public string SearchText { get; set; }
 
-        [Reactive]
-        public int SelectedIndex { get; set; }
+        [Reactive] public int SelectedIndex { get; set; }
 
         public virtual void StartLoad() =>
-          InvokeHandler.Start(new InvokeHandlerObject(LoadData, this));
+            InvokeHandler.Start(new InvokeHandlerObject(LoadData, this));
 
         public DataViewModelBase()
         {
-            _AllDataCollection = new ObservableCollection<T>();
+            AllDataCollection = new ObservableCollection<T>();
             DataCollection = new ObservableCollection<T>();
         }
+
         public void StartScrollChangedObservable(Action? action, Orientation orientation)
         {
-
-            ScrolledDisposible =
+            _scrolledDisposible =
                 this.WhenAnyValue(vm => vm.ScrolledEventArgs)
-                .Subscribe((e) =>
-                {
-                    try
+                    .Subscribe((e) =>
                     {
-                        
-                        double max = 0;
-                        double current = 0;
-
-                        if (e?.Source is ScrollViewer scrollViewer)
+                        try
                         {
-                            if(scrollViewer.Name=="LyricsScroll")
-                                return;
-                            Dispatcher.UIThread.InvokeAsync(() =>
+                            double max = 0;
+                            double current = 0;
+
+                            if (e?.Source is ScrollViewer scrollViewer)
                             {
-                                if (orientation == Orientation.Vertical)
+                                if (scrollViewer.Name == "LyricsScroll")
+                                    return;
+                                Dispatcher.UIThread.InvokeAsync(() =>
                                 {
+                                    if (orientation == Orientation.Vertical)
+                                    {
+                                        max = scrollViewer.GetValue(ScrollViewer.VerticalScrollBarMaximumProperty);
+                                        current = scrollViewer.GetValue(ScrollViewer.VerticalScrollBarValueProperty);
+                                    }
+                                    else
+                                    {
+                                        max = scrollViewer.GetValue(ScrollViewer.HorizontalScrollBarMaximumProperty);
+                                        current = scrollViewer.GetValue(ScrollViewer.HorizontalScrollBarValueProperty);
+                                    }
 
-                                    max = scrollViewer.GetValue(ScrollViewer.VerticalScrollBarMaximumProperty);
-                                    current = scrollViewer.GetValue(ScrollViewer.VerticalScrollBarValueProperty);
-                                }
-                                else
-                                {
-                                    max = scrollViewer.GetValue(ScrollViewer.HorizontalScrollBarMaximumProperty);
-                                    current = scrollViewer.GetValue(ScrollViewer.HorizontalScrollBarValueProperty);
-                                }
-                                if (max > 0 && (max == current)) action?.Invoke();
-                            });
-
-
+                                    if (max > 0 && (max == current)) action?.Invoke();
+                                });
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                });
-
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+                    });
         }
 
         public void StopScrollChandegObserVable()
         {
-            ScrolledDisposible?.Dispose();
-            ScrolledDisposible = null;
+            _scrolledDisposible?.Dispose();
+            _scrolledDisposible = null;
         }
 
         protected virtual void LoadData()
@@ -121,26 +105,24 @@ namespace AvaVKPlayer.ViewModels.Base
 
         public virtual void Search(string? text)
         {
-
         }
 
         public virtual void SelectedItem()
         {
-
         }
 
         public virtual void StartSearchObservable()
         {
-            if (_SearchDisposable is null)
-                _SearchDisposable = this.WhenAnyValue(x => x.SearchText)
-                                        .WhereNotNull()
-                                        .Subscribe(text => Search(text?.ToLower()));
+            if (_searchDisposable is null)
+                _searchDisposable = this.WhenAnyValue(x => x.SearchText)
+                    .WhereNotNull()
+                    .Subscribe(text => Search(text?.ToLower()));
         }
 
         public virtual void StartSearchObservable(TimeSpan timeSpan)
         {
-            if (_SearchDisposable is null)
-                _SearchDisposable = this.WhenAnyValue(x => x.SearchText)
+            if (_searchDisposable is null)
+                _searchDisposable = this.WhenAnyValue(x => x.SearchText)
                     .WhereNotNull()
                     .Throttle(timeSpan)
                     .Subscribe(text => Search(text.ToLower()));
@@ -148,19 +130,16 @@ namespace AvaVKPlayer.ViewModels.Base
 
         public virtual void StopSearchObservable()
         {
-            _SearchDisposable?.Dispose();
-            _SearchDisposable = null;
+            _searchDisposable?.Dispose();
+            _searchDisposable = null;
         }
 
 
         public virtual void SelectedItem(object sender, PointerPressedEventArgs args)
         {
-
         }
+
         public void Scrolled(object sender, ScrollChangedEventArgs args) =>
             ScrolledEventArgs = args;
-
-
     }
-
 }

@@ -1,6 +1,8 @@
 ﻿using Avalonia.Layout;
 using AvaVKPlayer.ETC;
 using AvaVKPlayer.ViewModels.Base;
+using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels.Audios
 {
@@ -17,7 +19,7 @@ namespace AvaVKPlayer.ViewModels.Audios
 
         protected override void LoadData()
         {
-            var res = GlobalVars.VkApi?.Audio.GetRecommendations(count: 500, offset: (uint)Offset);
+            VkCollection<Audio>? res = GlobalVars.VkApi?.Audio.GetRecommendations(count: 500, offset: (uint)Offset);
             if (res != null)
             {
                 DataCollection.AddRange(res);

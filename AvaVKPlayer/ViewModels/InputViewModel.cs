@@ -23,7 +23,7 @@ namespace AvaVKPlayer.ViewModels
                 Success = true;
                 if (inputDialog is Window)
                 {
-                    var dialog = inputDialog as Window;
+                    Window? dialog = inputDialog as Window;
                     dialog.Close(true);
                 }
 
@@ -35,7 +35,7 @@ namespace AvaVKPlayer.ViewModels
                 Success = false;
                 if (inputDialog is Window)
                 {
-                    var dialog = inputDialog as Window;
+                    Window? dialog = inputDialog as Window;
                     dialog.Close(false);
                 }
 

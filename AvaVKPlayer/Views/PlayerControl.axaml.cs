@@ -14,8 +14,5 @@ namespace AvaVKPlayer.Views
         {
             AvaloniaXamlLoader.Load(this);
         }
-
-
-       
     }
 }

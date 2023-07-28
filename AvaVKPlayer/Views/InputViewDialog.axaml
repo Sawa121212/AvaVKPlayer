@@ -1,18 +1,23 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="AvaVKPlayer.Views.InputViewDialog">
-   <Grid>
-       <StackPanel Spacing="10" VerticalAlignment="Center" Margin="10">
-           <TextBlock Text="{Binding Message}" FontSize="20"/>
-           <TextBox Text="{Binding InputText}"/>
-           <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
-               <Button Content="Продолжить" Command="{Binding OkCommand}" 
-                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-               <Button Content="Отмена" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-           </StackPanel>
-       </StackPanel>
-   </Grid>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaVKPlayer.Views.InputViewDialog">
+
+    <Grid>
+        <StackPanel Spacing="10" VerticalAlignment="Center" Margin="10">
+            <TextBlock Text="{Binding Message}" FontSize="20" />
+            <TextBox Text="{Binding InputText}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="3">
+                <Button Content="Продолжить"
+                        Command="{Binding OkCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                <Button Content="Отмена"
+                        Command="{Binding CancelCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
 </UserControl>

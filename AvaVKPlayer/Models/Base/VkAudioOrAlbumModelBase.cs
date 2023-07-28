@@ -10,8 +10,8 @@ namespace AvaVKPlayer.Models.Base
     public class VkAudioOrAlbumModelBase : ReactiveObject, IVkAudiOrAlbumModelBase
 
     {
-        public long ID { get; set; }
-        public long OwnerID { get; set; }
+        public long Id { get; set; }
+        public long OwnerId { get; set; }
         public string Artist { get; set; }
         public string Title { get; set; }
         public IImageBase Image { get; set; }

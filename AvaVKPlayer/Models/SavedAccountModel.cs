@@ -7,7 +7,7 @@ namespace AvaVKPlayer.Models
     public class SavedAccountModel
     {
         public string? Name { get; set; }
-        public long? UserID { get; set; }
+        public long? UserId { get; set; }
         public string? Token { get; set; }
 
         public ImageModel Image { get; set; }
@@ -20,7 +20,7 @@ namespace AvaVKPlayer.Models
             try
             {
                 var profileInfoAwaiter = await GlobalVars.VkApi.Users
-                    .GetAsync(new[] {(long) UserID}, ProfileFields.Photo50);
+                    .GetAsync(new[] {(long) UserId}, ProfileFields.Photo50);
 
                 var res = profileInfoAwaiter[0];
                 if (res != null)

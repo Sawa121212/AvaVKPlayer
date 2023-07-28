@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Controls;
@@ -25,7 +26,7 @@ namespace AvaVKPlayer.ViewModels.Base
             AudioListButtons = new AudioListButtonsViewModel();
             LoadMusicsAction = () =>
             {
-                if (string.IsNullOrEmpty(_SearchText))
+                if (string.IsNullOrEmpty(SearchText))
                     if (ResponseCount > 0 && IsLoading is false)
                         InvokeHandler.Start(new InvokeHandlerObject(LoadData, this));
             };
@@ -40,11 +41,11 @@ namespace AvaVKPlayer.ViewModels.Base
                 return;
             }
 
-            var model = args?.GetContent<AudioModel>();
+            AudioModel? model = args?.GetContent<AudioModel>();
 
             if (model != null)
             {
-                var index = DataCollection?.IndexOf(model) ?? -1;
+                int index = DataCollection?.IndexOf(model) ?? -1;
 
                 if (index > -1)
                 {
@@ -66,15 +67,15 @@ namespace AvaVKPlayer.ViewModels.Base
                 if (string.IsNullOrEmpty(text))
                 {
                     SelectedIndex = -1;
-                    DataCollection = _AllDataCollection;
+                    DataCollection = AllDataCollection;
                     StartScrollChangedObservable(LoadMusicsAction, Orientation.Vertical);
 
                 }
-                else if (_AllDataCollection != null && _AllDataCollection.Count() > 0)
+                else if (AllDataCollection != null && AllDataCollection.Count() > 0)
                 {
                     StopScrollChandegObserVable();
 
-                    var searchRes = _AllDataCollection.Where(x =>
+                    IEnumerable<AudioModel>? searchRes = AllDataCollection.Where(x =>
                             x.Title.ToLower().Contains(text.ToLower()) ||
                             x.Artist.ToLower().Contains(text.ToLower()))
                         .Distinct();
@@ -85,7 +86,7 @@ namespace AvaVKPlayer.ViewModels.Base
             }
             catch (Exception ex)
             {
-                DataCollection = _AllDataCollection;
+                DataCollection = AllDataCollection;
                 SearchText = "";
             }
         }
@@ -110,7 +111,7 @@ namespace AvaVKPlayer.ViewModels.Base
       
         public int GetIndexFromAudio(AudioModel model)
         {
-            return DataCollection.FindIndex(x => x.ID == model.ID);
+            return DataCollection.FindIndex(x => x.Id == model.Id);
         } 
     }
 

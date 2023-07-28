@@ -4,6 +4,7 @@ using AvaVKPlayer.ETC;
 using AvaVKPlayer.Models;
 using AvaVKPlayer.ViewModels.Base;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels.Audios
 {
@@ -18,7 +19,7 @@ namespace AvaVKPlayer.ViewModels.Audios
 
             Events.AudioRemoveFromAlbumEvent += MusicFromAlbumViewModel_AudioRemoveEvent;
 
-            if (Album.OwnerID == GlobalVars.VkApi.UserId && !Album.IsFollowing)
+            if (Album.OwnerId == GlobalVars.VkApi.UserId && !Album.IsFollowing)
                 AudioListButtons.AudioAddIsVisible = false;
             else
                 AudioListButtons.AudioRemoveIsVisible = false;
@@ -28,16 +29,16 @@ namespace AvaVKPlayer.ViewModels.Audios
         private AudioAlbumModel Album { get; }
 
         private void MusicFromAlbumViewModel_AudioRemoveEvent(AudioModel audioModel) =>
-            _AllDataCollection?.Remove(audioModel);
+            AllDataCollection?.Remove(audioModel);
 
 
         protected override void LoadData()
         {
-            var res = GlobalVars.VkApi?.Audio.Get(new AudioGetParams
+            VkCollection<Audio>? res = GlobalVars.VkApi?.Audio.Get(new AudioGetParams
             {
                 Count = 500,
                 Offset = (uint) Offset,
-                PlaylistId = Album.ID
+                PlaylistId = Album.Id
             });
             if (res != null)
             {
@@ -48,7 +49,7 @@ namespace AvaVKPlayer.ViewModels.Audios
                 Offset += res.Count;
             }
 
-            _AllDataCollection = DataCollection;
+            AllDataCollection = DataCollection;
         }
     }
 }

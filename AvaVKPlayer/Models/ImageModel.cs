@@ -13,7 +13,7 @@ namespace AvaVKPlayer.Models
 {
     public class ImageModel : ReactiveObject, IImageBase
     {
-        public static Semaphore _Semaphore = new(50, 50);
+        public static Semaphore Semaphore = new(50, 50);
 
         public int DecodeWidth { get; set; }
 
@@ -60,7 +60,7 @@ namespace AvaVKPlayer.Models
             if (string.IsNullOrEmpty(ImageUrl) is false && ImageIsloaded is false)
                 try
                 {
-                    _Semaphore.WaitOne();
+                    Semaphore.WaitOne();
                     using (Stream? imageStream = await LoadImageStreamAsync())
                     {
                         if (imageStream is null)
@@ -75,7 +75,7 @@ namespace AvaVKPlayer.Models
                 }
                 finally
                 {
-                    _Semaphore.Release();
+                    Semaphore.Release();
                 }
         }
 

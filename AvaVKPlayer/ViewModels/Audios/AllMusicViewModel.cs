@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -8,13 +9,14 @@ using AvaVKPlayer.ETC;
 using AvaVKPlayer.Models;
 using AvaVKPlayer.ViewModels.Base;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels.Audios
 {
     public sealed class AllMusicViewModel : AudioViewModelBase
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        bool Searching = false;
+        CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        bool _searching = false;
 
         public AllMusicViewModel()
 
@@ -28,27 +30,27 @@ namespace AvaVKPlayer.ViewModels.Audios
 
         private void Events_AudioRemoveEvent(AudioModel audioModel)
         {
-            _AllDataCollection?.Remove(audioModel);
-            DataCollection = _AllDataCollection;
+            AllDataCollection?.Remove(audioModel);
+            DataCollection = AllDataCollection;
         }
 
         private void Events_AudioAddEvent(AudioModel audioModel)
         {
-            _AllDataCollection?.Insert(0, audioModel);
-            DataCollection = _AllDataCollection;
+            AllDataCollection?.Insert(0, audioModel);
+            DataCollection = AllDataCollection;
         }
 
         public override void Search(string? text)
         {
-            if (Searching == true)
+            if (_searching == true)
             {
                 //cancellationTokenSource?.TryReset();
-                Searching = false;
+                _searching = false;
                 Search(text);
             }
             else
             {
-                Searching = true;
+                _searching = true;
                 Task.Run(() =>
                 {
                     try
@@ -57,7 +59,7 @@ namespace AvaVKPlayer.ViewModels.Audios
                         {
                             if (PlayerControlViewModel.Instance?.CurrentAudio != null)
                                 SelectToModel(PlayerControlViewModel.Instance.CurrentAudio, true);
-                            DataCollection = _AllDataCollection;
+                            DataCollection = AllDataCollection;
                             Offset = DataCollection.Count();
                             Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                                 StartScrollChangedObservable(LoadMusicsAction, Orientation.Vertical));
@@ -74,14 +76,14 @@ namespace AvaVKPlayer.ViewModels.Audios
                             {
                                 try
                                 {
-                                    var res = GlobalVars.VkApi?.Audio.Get(new AudioGetParams
+                                    VkCollection<Audio>? res = GlobalVars.VkApi?.Audio.Get(new AudioGetParams
                                     {
                                         Offset = Offset,
                                         Count = 500,
                                     });
                                     if (res != null && res.Count > 0)
                                     {
-                                        var searchRes = res.Where(x =>
+                                        IEnumerable<Audio>? searchRes = res.Where(x =>
                                             x.Title.ToLower().Contains(text.ToLower()) ||
                                             x.Artist.ToLower().Contains(text.ToLower())).Distinct();
 
@@ -102,22 +104,22 @@ namespace AvaVKPlayer.ViewModels.Audios
                     }
                     catch (Exception ex)
                     {
-                        DataCollection = _AllDataCollection;
+                        DataCollection = AllDataCollection;
                         SearchText = "";
                     }
                     finally
                     {
                         IsLoading = false;
-                        Searching = false;
+                        _searching = false;
                     }
-                }, cancellationTokenSource.Token);
+                }, _cancellationTokenSource.Token);
             }
         }
 
 
         protected override void LoadData()
         {
-            var res = GlobalVars.VkApi?.Audio.Get(new AudioGetParams
+            VkCollection<Audio>? res = GlobalVars.VkApi?.Audio.Get(new AudioGetParams
             {
                 Count = 500,
                 Offset = (uint) Offset
@@ -132,7 +134,7 @@ namespace AvaVKPlayer.ViewModels.Audios
                 ResponseCount = res.Count;
             }
 
-            _AllDataCollection = DataCollection;
+            AllDataCollection = DataCollection;
         }
     }
 }

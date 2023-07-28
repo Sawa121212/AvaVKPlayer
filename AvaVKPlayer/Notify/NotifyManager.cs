@@ -5,25 +5,25 @@ namespace AvaVKPlayer.Notify
 {
     public class NotifyManager
     {
-        private Thread Thread;
+        private Thread _thread;
 
-        private Queue<NotifyData> notifyDataQueUe = new Queue<NotifyData>();
+        private Queue<NotifyData> _notifyDataQueUe = new Queue<NotifyData>();
 
-        private static NotifyManager _NotifyManager;
+        private static NotifyManager _notifyManager;
         private INotifyControl NotifyControl { get; set; }
 
         public static NotifyManager Instance
         {
-            get => _NotifyManager = (_NotifyManager ?? new NotifyManager());
+            get => _notifyManager = (_notifyManager ?? new NotifyManager());
         }
         public void SetNotifyControl(INotifyControl notifyControl) =>
                 NotifyControl = notifyControl;
-        private void process()
+        private void Process()
         {
-            while (notifyDataQueUe.Count > 0)
+            while (_notifyDataQueUe.Count > 0)
             {
 
-                var q = notifyDataQueUe.Dequeue();
+                var q = _notifyDataQueUe.Dequeue();
 
                 Thread.Sleep((int)q.ShowDelayTime.TotalMilliseconds);
 
@@ -40,15 +40,15 @@ namespace AvaVKPlayer.Notify
 
         public void PopMessage(NotifyData data)
         {
-            notifyDataQueUe.Enqueue(data);
+            _notifyDataQueUe.Enqueue(data);
 
-            if (Thread == null
-                || Thread.ThreadState == ThreadState.Stopped
-                || Thread.ThreadState == ThreadState.Suspended)
+            if (_thread == null
+                || _thread.ThreadState == ThreadState.Stopped
+                || _thread.ThreadState == ThreadState.Suspended)
             {
-                Thread = new Thread(process);
-                Thread.IsBackground = true;
-                Thread.Start();
+                _thread = new Thread(Process);
+                _thread.IsBackground = true;
+                _thread.Start();
             }
 
 

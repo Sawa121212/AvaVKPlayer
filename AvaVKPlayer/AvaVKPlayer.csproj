@@ -3,10 +3,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ApplicationIcon />
+    <ApplicationIcon>AvaVKPlayer.ico</ApplicationIcon>
     <StartupObject />
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <LangVersion>preview</LangVersion>
+    <Authors>Sawa121212 and MukhinDmitriy</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Sawa121212/AvaVKPlayer</PackageProjectUrl>
+    <PackageIcon>AvaVKPlayer.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
@@ -53,6 +58,9 @@
     <Compile Update="Views\MusicListControl.axaml.cs">
       <DependentUpon>MusicListControl.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\LoginControl.axaml.cs">
+      <DependentUpon>LoginControl.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BASS Lib\Win\" />
@@ -60,5 +68,15 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\Common\Common.Resources\Common.Resources.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="Assets\AvaVKPlayer.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 using AvaVKPlayer.ETC;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using VkNet.Model;
 
 namespace AvaVKPlayer.ViewModels
 {
@@ -13,11 +14,11 @@ namespace AvaVKPlayer.ViewModels
         [Reactive] 
         public bool IsVisible { get; set; } = false;
   
-        private long? id = 0;
+        private long? _id = 0;
 
         public LyricsViewModel(long? lyricsId)
         {
-            this.id = lyricsId;
+            this._id = lyricsId;
       
       
         }
@@ -26,7 +27,7 @@ namespace AvaVKPlayer.ViewModels
         {
             Task.Run(() =>
             {
-                var res = GlobalVars.VkApi.Audio.GetLyrics((long)id);
+                Lyrics? res = GlobalVars.VkApi.Audio.GetLyrics((long)_id);
                 Text = res.Text;
             });
         }

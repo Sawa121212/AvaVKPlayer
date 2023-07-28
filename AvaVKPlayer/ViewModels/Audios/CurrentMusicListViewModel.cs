@@ -34,7 +34,7 @@ namespace AvaVKPlayer.ViewModels.Audios
            
             DataCollection = new ObservableCollection<AudioModel>();
             DataCollection.AddRange(audiocollection);
-            _AllDataCollection = DataCollection;
+            AllDataCollection = DataCollection;
             SelectedIndex = selectedindex;
             
         }

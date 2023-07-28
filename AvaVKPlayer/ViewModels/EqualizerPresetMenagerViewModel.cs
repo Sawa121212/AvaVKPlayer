@@ -11,7 +11,7 @@ namespace AvaVKPlayer.ViewModels
 {
     public class EqualizerPresetMenagerViewModel : ReactiveObject, ICloseView
     {
-        private int[] hz = new int[] {80, 170, 310, 600, 1000, 3000, 6000, 12000};
+        private int[] _hz = new int[] {80, 170, 310, 600, 1000, 3000, 6000, 12000};
 
         public const string FileName = "EqualizerPressets.json";
         public const string DefaultPresetName = "Обычный";
@@ -43,9 +43,9 @@ namespace AvaVKPlayer.ViewModels
             TitleInputViewModel.CloseViewEvent += TextInputViewModelOnCloseViewEvent;
 
             AddPreset = ReactiveCommand.Create(() => { TitleInputIsVisible = true; });
-            RemovePreset = ReactiveCommand.Create((EqualizerPresset P) =>
+            RemovePreset = ReactiveCommand.Create((EqualizerPresset p) =>
             {
-                SavedEqualizerData?.RemovePreset(P);
+                SavedEqualizerData?.RemovePreset(p);
                 ApplyPreset(0);
             });
             CloseCommand = ReactiveCommand.Create(() =>
@@ -68,11 +68,11 @@ namespace AvaVKPlayer.ViewModels
             {
                 TitleInputViewModel.Success = false;
 
-                var preset = new EqualizerPresset();
+                EqualizerPresset? preset = new EqualizerPresset();
 
                 preset.Title = TitleInputViewModel.InputText;
 
-                preset.Equalizers = hz.Select(x => new Equalizer(x)).ToList();
+                preset.Equalizers = _hz.Select(x => new Equalizer(x)).ToList();
 
                 SavedEqualizerData.AddPreset(preset);
 
@@ -103,7 +103,7 @@ namespace AvaVKPlayer.ViewModels
                     {
                         IsDefault = true,
                         Title = DefaultPresetName,
-                        Equalizers = hz.Select(x => new Equalizer(x)).ToList(),
+                        Equalizers = _hz.Select(x => new Equalizer(x)).ToList(),
                     };
                     SavedEqualizerData.EqualizerPressets.Insert(0, presset);
                 }

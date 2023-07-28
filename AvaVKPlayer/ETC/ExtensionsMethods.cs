@@ -24,23 +24,23 @@ namespace AvaVKPlayer.ETC
         }
 
 
-        public static void AddRange(this ObservableCollection<AudioModel>? DataCollection,
+        public static void AddRange(this ObservableCollection<AudioModel>? dataCollection,
             IEnumerable<Audio>? audios)
         {
             if (audios != null)
             {
                 foreach (var item in audios)
-                    DataCollection?.Add(new AudioModel(item));
+                    dataCollection?.Add(new AudioModel(item));
             }
         }
 
-        public static void AddRange(this ObservableCollection<AudioAlbumModel>? DataCollection,
+        public static void AddRange(this ObservableCollection<AudioAlbumModel>? dataCollection,
             IEnumerable<AudioPlaylist> audioPlayList)
         {
             if (audioPlayList != null)
             {
                 foreach (var item in audioPlayList)
-                    DataCollection?.Add(new AudioAlbumModel(item));
+                    dataCollection?.Add(new AudioAlbumModel(item));
             }
         }
 
@@ -62,30 +62,33 @@ namespace AvaVKPlayer.ETC
             return isSearched ? index : -1;
         }
 
-        public static void StartLoadImages<T>(this ObservableCollection<T>? DataCollection) where T : IVkModelBase
+        public static void StartLoadImages<T>(this ObservableCollection<T>? dataCollection) where T : IVkModelBase
         {
             try
             {
-                var itemCount = DataCollection?.Count;
+                var itemCount = dataCollection?.Count;
                 for (var i = 0; i < itemCount; i++)
                 {
-                    if (DataCollection[i] != null)
-                        DataCollection[i].Image.LoadBitmapAsync();
+                    if (dataCollection[i] != null)
+                        dataCollection[i].Image.LoadBitmapAsync();
                 }
             }
-            catch (Exception EX)
+            catch (Exception ex)
             {
             }
         }
 
-        public static void StartLoadImagesAsync<T>(this ObservableCollection<T>? DataCollection) where T : IVkModelBase
+        public static void StartLoadImagesAsync<T>(this ObservableCollection<T>? dataCollection) where T : IVkModelBase
         {
-            Task.Run(() => StartLoadImages(DataCollection));
+            Task.Run(() => StartLoadImages(dataCollection));
         }
 
 
         public static ObservableCollection<T> Shuffle<T>(this IEnumerable<T> collection)
         {
+            if (collection is null)
+                return new ObservableCollection<T>();
+
             ObservableCollection<T> obscollection = new(collection);
             Random rand = new();
             var itercount = collection.Count();
@@ -100,22 +103,22 @@ namespace AvaVKPlayer.ETC
             return obscollection;
         }
 
-        public static string GetAudioIDFormatWithAccessKey(this Audio audioModel)
+        public static string GetAudioIdFormatWithAccessKey(this Audio audioModel)
         {
             return $"{audioModel.OwnerId}_{audioModel.Id}_{audioModel.AccessKey}";
         }
 
-        public static string GetAudioIDFormatNoAccessKey(this AudioModel audioModel)
+        public static string GetAudioIdFormatNoAccessKey(this AudioModel audioModel)
         {
-            return $"{audioModel.OwnerID}_{audioModel.ID}";
+            return $"{audioModel.OwnerId}_{audioModel.Id}";
         }
 
-        public static string GetAudioIDFormatWithAccessKey(this AudioModel audioModel)
+        public static string GetAudioIdFormatWithAccessKey(this AudioModel audioModel)
         {
-            return $"{audioModel.OwnerID}_{audioModel.ID}_{audioModel.AccessKey}";
+            return $"{audioModel.OwnerId}_{audioModel.Id}_{audioModel.AccessKey}";
         }
 
-        public static string GetAudioIDFormatNoAccessKey(this Audio audioModel)
+        public static string GetAudioIdFormatNoAccessKey(this Audio audioModel)
         {
             return $"{audioModel.OwnerId}_{audioModel.Id}";
         }

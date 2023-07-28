@@ -11,7 +11,7 @@ namespace AvaVKPlayer.ViewModels
         public static class Player
         {
             private static int _stream;
-            private static bool isNew = false;
+            private static bool _isNew = false;
           
 
             static Player()
@@ -51,16 +51,16 @@ namespace AvaVKPlayer.ViewModels
             public static void SetStream(AudioModel audioModel)
             {
                 
-                var url = GlobalVars.VkApi?.Audio.GetById(new[] { audioModel.GetAudioIDFormatWithAccessKey() })
+                string? url = GlobalVars.VkApi?.Audio.GetById(new[] { audioModel.GetAudioIdFormatWithAccessKey() })
                     .ElementAt(0).Url.AbsoluteUri;
                
                 _stream = Bass.CreateStream(url, 0,BassFlags.Default,null, IntPtr.Zero);    
 
-                var err = Bass.LastError;
+                Errors err = Bass.LastError;
 
-                if (err is Errors.OK) isNew = false;
+                if (err is Errors.OK) _isNew = false;
                 
-                if (isNew && err == Errors.FileOpen)
+                if (_isNew && err == Errors.FileOpen)
                     SetStream(audioModel);
             }
            
@@ -71,7 +71,7 @@ namespace AvaVKPlayer.ViewModels
                 {
 
                     Stop();
-                    isNew = true;
+                    _isNew = true;
                     SetStream(model);
                     return Play();
                 }

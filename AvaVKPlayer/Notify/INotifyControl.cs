@@ -21,6 +21,6 @@ namespace AvaVKPlayer.Notify
 
 
         public void Hide();
-        public void ShowNotify(string Title, string Message);
+        public void ShowNotify(string title, string message);
     }
 }

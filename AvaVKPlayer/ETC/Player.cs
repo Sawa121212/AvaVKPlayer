@@ -41,7 +41,7 @@ namespace AvaVKPlayer.ETC
 
         public static void SetStream(AudioModel audioModel)
         {
-            var url = GlobalVars.VkApi?.Audio.GetById(new[] { audioModel.GetAudioIDFormatWithAccessKey() })
+            var url = GlobalVars.VkApi?.Audio.GetById(new[] { audioModel.GetAudioIdFormatWithAccessKey() })
                 .ElementAt(0).Url.AbsoluteUri;
             _stream = Bass.CreateStream(url, 0, BassFlags.Default, null, IntPtr.Zero);
         }

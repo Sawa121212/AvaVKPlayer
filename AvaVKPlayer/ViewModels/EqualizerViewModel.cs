@@ -10,9 +10,9 @@ namespace AvaVKPlayer.ViewModels
     public class EqualizerViewModel:ReactiveObject
     {
 
-        private int[] channels;
+        private int[] _channels;
     
-        private List<IDisposable?> Disposibles;
+        private List<IDisposable?> _disposibles;
     
         [Reactive]
         public  bool EqualizerManagerIsVisible { get; set; }
@@ -49,7 +49,7 @@ namespace AvaVKPlayer.ViewModels
                 EqualizerManagerIsVisible = true;
             });
         
-            Disposibles = new List<IDisposable?>();
+            _disposibles = new List<IDisposable?>();
         
         
             this.WhenAnyValue(x => x.IsUseEqualizer).Subscribe((val) =>
@@ -67,7 +67,7 @@ namespace AvaVKPlayer.ViewModels
     
         
         
-            channels = new int[8];
+            _channels = new int[8];
         
         
             PresetMenagerViewModel
@@ -76,28 +76,28 @@ namespace AvaVKPlayer.ViewModels
                 {
                     if (x > -1)
                     {
-                        var preset = PresetMenagerViewModel.SavedEqualizerData.EqualizerPressets[x];
+                        EqualizerPresset? preset = PresetMenagerViewModel.SavedEqualizerData.EqualizerPressets[x];
 
                         IsEnabled = !preset.IsDefault;
                     
                         EqualizerTitle = preset.Title;
 
-                        for (int i = 0; i < Disposibles?.Count; )
+                        for (int i = 0; i < _disposibles?.Count; )
                         {
-                            Disposibles[i].Dispose();
-                            Disposibles.RemoveAt(i);
+                            _disposibles[i].Dispose();
+                            _disposibles.RemoveAt(i);
                         }
                 
                         Equalizers = preset.Equalizers;
                 
                         for (int i = 0; i < Equalizers.Count; i++)
                         {
-                            var disposible = Equalizers[i].WhenAnyValue(x => x.Value)
+                            IDisposable? disposible = Equalizers[i].WhenAnyValue(x => x.Value)
                                 .Subscribe((val)=>
                                 {
                                     if(IsUseEqualizer) UpdateFx();
                                 });
-                            Disposibles.Add(disposible);
+                            _disposibles.Add(disposible);
                         }
 
                     }
@@ -114,13 +114,13 @@ namespace AvaVKPlayer.ViewModels
         {
             for(int i=0; i < Equalizers?.Count; i++)
             {
-                ManagedBass.DirectX8.DXParamEQParameters dXParamEQParameters = new ManagedBass.DirectX8.DXParamEQParameters()
+                ManagedBass.DirectX8.DXParamEQParameters dXParamEqParameters = new ManagedBass.DirectX8.DXParamEQParameters()
                 {
                     fBandwidth = 12,
-                    fCenter = Equalizers[i].hz,
+                    fCenter = Equalizers[i].Hz,
                     fGain = 0,
                 };
-                Bass.FXSetParameters(channels[i], dXParamEQParameters);
+                Bass.FXSetParameters(_channels[i], dXParamEqParameters);
             }
         }
         public void ResetEqualizer()
@@ -134,7 +134,7 @@ namespace AvaVKPlayer.ViewModels
         {
             for(int i=0; i<Equalizers?.Count; i++)
             {
-                channels[i] = Bass.ChannelSetFX(PlayerControlViewModel.Player.GetStreamHandler(), EffectType.DXParamEQ, 0);
+                _channels[i] = Bass.ChannelSetFX(PlayerControlViewModel.Player.GetStreamHandler(), EffectType.DXParamEQ, 0);
             }
         }
 
@@ -142,13 +142,13 @@ namespace AvaVKPlayer.ViewModels
         {
             for(int i=0; i < Equalizers?.Count; i++)
             {
-                ManagedBass.DirectX8.DXParamEQParameters dXParamEQParameters = new ManagedBass.DirectX8.DXParamEQParameters()
+                ManagedBass.DirectX8.DXParamEQParameters dXParamEqParameters = new ManagedBass.DirectX8.DXParamEQParameters()
                 {
                     fBandwidth = 12,
-                    fCenter = Equalizers[i].hz,
+                    fCenter = Equalizers[i].Hz,
                     fGain = Equalizers[i].Value,
                 };
-                Bass.FXSetParameters(channels[i], dXParamEQParameters);
+                Bass.FXSetParameters(_channels[i], dXParamEqParameters);
             }
             PresetMenagerViewModel.SavePressets();
         }

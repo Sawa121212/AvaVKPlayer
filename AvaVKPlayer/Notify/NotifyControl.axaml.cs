@@ -9,9 +9,9 @@ namespace AvaVKPlayer.Notify
     public partial class NotifyControl : UserControl, INotifyControl
     {
 
-        private string? _NotifyTitle;
-        private string? _NotifyMessage;
-        private bool _NotifyShow;
+        private string? _notifyTitle;
+        private string? _notifyMessage;
+        private bool _notifyShow;
 
 
         public static readonly DirectProperty<NotifyControl, string?> NotifyTitleProperty =
@@ -53,23 +53,23 @@ namespace AvaVKPlayer.Notify
 
         public bool NotifyShow
         {
-            get => _NotifyShow;
-            set => SetAndRaise(NotifyShowProperty, ref _NotifyShow, value);
+            get => _notifyShow;
+            set => SetAndRaise(NotifyShowProperty, ref _notifyShow, value);
         }
         public string? NotifyTitle
         {
-            get => _NotifyTitle;
-            set => SetAndRaise(NotifyTitleProperty, ref _NotifyTitle, value);
+            get => _notifyTitle;
+            set => SetAndRaise(NotifyTitleProperty, ref _notifyTitle, value);
 
 
         }
 
         public string? NotifyMessage
         {
-            get => _NotifyMessage;
+            get => _notifyMessage;
             set
             {
-                SetAndRaise(NotifyMessageProperty, ref _NotifyMessage, value);
+                SetAndRaise(NotifyMessageProperty, ref _notifyMessage, value);
             }
         }
 
@@ -133,14 +133,14 @@ namespace AvaVKPlayer.Notify
         }
 
 
-        public void ShowNotify(string Title, string Message)
+        public void ShowNotify(string title, string message)
         {
             Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
             {
 
                 IsVisible = true;
-                NotifyTitle = Title;
-                NotifyMessage = Message;
+                NotifyTitle = title;
+                NotifyMessage = message;
 
 
             });

@@ -9,6 +9,7 @@ using AvaVKPlayer.Views;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace AvaVKPlayer.ViewModels
 {
@@ -47,13 +48,13 @@ namespace AvaVKPlayer.ViewModels
                 {
                     try
                     {
-                        var res = await GlobalVars.VkApi.Audio.AddAsync(vkModel.ID,
-                            vkModel.OwnerID,
+                        long res = await GlobalVars.VkApi.Audio.AddAsync(vkModel.Id,
+                            vkModel.OwnerId,
                             vkModel.AccessKey);
                         if (res > 0)
                         {
-                            vkModel.ID = res;
-                            vkModel.OwnerID = (long) (GlobalVars.VkApi?.UserId ?? 0);
+                            vkModel.Id = res;
+                            vkModel.OwnerId = (long) (GlobalVars.VkApi?.UserId ?? 0);
 
                             Events.AudioAddCall(vkModel);
                             Notify.NotifyManager.Instance.PopMessage(new Notify.NotifyData("Успешно добавлено",
@@ -78,12 +79,12 @@ namespace AvaVKPlayer.ViewModels
                 {
                     if (vkModel.IsDownload) return;
 
-                    var fileName = string.Format("{0}-{1}.mp3", vkModel.Artist, vkModel.Title);
+                    string? fileName = string.Format("{0}-{1}.mp3", vkModel.Artist, vkModel.Title);
                     SaveFileDialog dialog = new SaveFileDialog();
 
                     dialog.InitialFileName = fileName;
                     dialog.DefaultExtension = "*.mp3";
-                    var path = await dialog.ShowAsync(MainWindow.Instance);
+                    string? path = await dialog.ShowAsync(MainWindow.Instance);
 
                     if (path is null) return;
 
@@ -91,8 +92,8 @@ namespace AvaVKPlayer.ViewModels
 
                     try
                     {
-                        var res = await GlobalVars.VkApi.Audio.GetByIdAsync(new string[]
-                            {vkModel.GetAudioIDFormatWithAccessKey()});
+                        IEnumerable<Audio>? res = await GlobalVars.VkApi.Audio.GetByIdAsync(new string[]
+                            {vkModel.GetAudioIdFormatWithAccessKey()});
 
                         using (WebClient webClient = new WebClient())
                         {
@@ -123,8 +124,8 @@ namespace AvaVKPlayer.ViewModels
                 {
                     if (Album is null)
                     {
-                        var Awaiter = await GlobalVars.VkApi.Audio.DeleteAsync(vkModel.ID, vkModel.OwnerID);
-                        if (Awaiter == true)
+                        bool awaiter = await GlobalVars.VkApi.Audio.DeleteAsync(vkModel.Id, vkModel.OwnerId);
+                        if (awaiter == true)
                         {
                             Events.AudioRemoveCall(vkModel);
                             Notify.NotifyManager.Instance.PopMessage(
@@ -136,22 +137,22 @@ namespace AvaVKPlayer.ViewModels
                         List<string> audios = new List<string>();
                         try
                         {
-                            var Audiosres = await GlobalVars.VkApi.Audio.GetAsync(new AudioGetParams()
+                            VkCollection<Audio>? audiosres = await GlobalVars.VkApi.Audio.GetAsync(new AudioGetParams()
                             {
-                                OwnerId = Album.OwnerID,
-                                PlaylistId = Album.ID,
+                                OwnerId = Album.OwnerId,
+                                PlaylistId = Album.Id,
                                 Count = 6000
                             });
 
-                            for (int i = 0; i < Audiosres.Count; i++)
+                            for (int i = 0; i < audiosres.Count; i++)
                             {
-                                if (Audiosres[i].Id == vkModel.ID)
+                                if (audiosres[i].Id == vkModel.Id)
                                     continue;
 
-                                audios.Add(Audiosres[i].GetAudioIDFormatWithAccessKey());
+                                audios.Add(audiosres[i].GetAudioIdFormatWithAccessKey());
                             }
 
-                            var res = GlobalVars.VkApi.Audio.EditPlaylist(Album.OwnerID, (int) Album.ID, Album.Title,
+                            bool res = GlobalVars.VkApi.Audio.EditPlaylist(Album.OwnerId, (int) Album.Id, Album.Title,
                                 null, audios);
 
                             if (res)

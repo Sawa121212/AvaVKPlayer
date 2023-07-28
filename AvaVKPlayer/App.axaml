@@ -3,6 +3,7 @@
              xmlns:avaVkPlayer="clr-namespace:AvaVKPlayer"
              xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              x:Class="AvaVKPlayer.App">
+
     <Application.DataTemplates>
         <avaVkPlayer:ViewLocator />
     </Application.DataTemplates>

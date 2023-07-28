@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace AvaVKPlayer.Views
 {
-    public partial class EQWindow : UserControl
+    public partial class EqWindow : UserControl
     {
-        public EQWindow()
+        public EqWindow()
         {
             InitializeComponent();
         }

@@ -8,7 +8,7 @@ namespace AvaVKPlayer.ETC
 {
     public class WebElementServer
     {
-        public delegate void Message(string Data);
+        public delegate void Message(string data);
         public delegate void Error(Exception ex);
         public event Message MessageRecived;
         public event Error ErrorEvent;

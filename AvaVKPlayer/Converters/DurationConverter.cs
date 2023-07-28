@@ -13,7 +13,7 @@ namespace AvaVKPlayer.Converters
                 var time = new TimeSpan(0, 0, (int)value);
                 return time.Hours > 0 ? time.ToString(@"hh\:mm\:ss") : time.ToString(@"m\:ss");
             }
-            catch (Exception EX)
+            catch (Exception ex)
             {
                 return "00:00";
             }

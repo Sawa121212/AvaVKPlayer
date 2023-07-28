@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -21,10 +22,10 @@ using VkNet.Model;
 
 namespace AvaVKPlayer.ViewModels
 {
-    public class VkLoginControlViewModel : ViewModelBase
+    public class LoginControlViewModel : ViewModelBase
     {
         const int Port = 2654;
-        bool WaitStartServer = false;
+        bool _waitStartServer = false;
 
         private const string AuthUrl =
             @"https://oauth.vk.com/oauth/authorize?client_id=6463690" +
@@ -34,13 +35,13 @@ namespace AvaVKPlayer.ViewModels
             "&response_type=token" +
             "&revoke=1";
 
-        private Process? _BrowserProcess;
+        private Process? _browserProcess;
 
-        CancellationToken AuthCancelletionSource = new CancellationToken();
+        CancellationToken _authCancelletionSource = new CancellationToken();
 
         private WebElementServer? _webElementServer;
 
-        public VkLoginControlViewModel()
+        public LoginControlViewModel()
         {
             LoadSavedAccounts();
             SkipMenuIfOnlyOneAccount();
@@ -54,7 +55,7 @@ namespace AvaVKPlayer.ViewModels
             AuthCommand = ReactiveCommand.Create(() =>
             {
                 InfoText = "Открытие авторизации";
-                AuthCancelletionSource.ThrowIfCancellationRequested();
+                _authCancelletionSource.ThrowIfCancellationRequested();
 
                 Task.Run(async () =>
                 {
@@ -74,7 +75,7 @@ namespace AvaVKPlayer.ViewModels
                         if (_webElementServer.ServerStarted)
                         {
                             string winName = "WindowsWebBrowser.exe";
-                            string LinuxName = "Linux";
+                            string linuxName = "Linux";
                             string tmpfileEexecute = string.Empty;
                             string tmpfileEexecute2 = string.Empty;
                             string fileExecute = string.Empty;
@@ -83,8 +84,8 @@ namespace AvaVKPlayer.ViewModels
 
                             if (ETC.GlobalVars.CurrentPlatform == OSPlatform.Linux)
                             {
-                                tmpfileEexecute = Path.Combine("WebElement", LinuxName);
-                                tmpfileEexecute2 = LinuxName;
+                                tmpfileEexecute = Path.Combine("WebElement", linuxName);
+                                tmpfileEexecute2 = linuxName;
                             }
 
                             else if (ETC.GlobalVars.CurrentPlatform == OSPlatform.Windows)
@@ -103,7 +104,7 @@ namespace AvaVKPlayer.ViewModels
                             }
 
 
-                            var start = new ProcessStartInfo
+                            ProcessStartInfo? start = new ProcessStartInfo
                             {
                                 UseShellExecute = false,
                                 CreateNoWindow = true,
@@ -111,13 +112,13 @@ namespace AvaVKPlayer.ViewModels
                                 Arguments = args,
                             };
 
-                            _BrowserProcess = new Process {StartInfo = start};
+                            _browserProcess = new Process {StartInfo = start};
 
 
                             InfoText = "Ожидание конца авторизации";
 
-                            _BrowserProcess.Start();
-                            _BrowserProcess.WaitForExit();
+                            _browserProcess.Start();
+                            _browserProcess.WaitForExit();
                             OffServerAndUnsubscribe();
                         }
                     }
@@ -125,7 +126,7 @@ namespace AvaVKPlayer.ViewModels
                     {
                         InfoText = "Ошибка:" + ex.Message;
                     }
-                }, AuthCancelletionSource);
+                }, _authCancelletionSource);
             });
 
 
@@ -182,11 +183,11 @@ namespace AvaVKPlayer.ViewModels
                 string token = message.Split("=")[1].Split("&")[0];
                 string id = message.Split("=")[3].Split("&")[0];
 
-                _BrowserProcess?.Kill();
+                _browserProcess?.Kill();
 
                 OffServerAndUnsubscribe();
                 InfoText = "Авторизация успешна";
-                var api = Auth(token, long.Parse(id));
+                VkApi? api = Auth(token, long.Parse(id));
                 SaveAccount(api);
                 GlobalVars.VkApi = api;
             }
@@ -224,7 +225,7 @@ namespace AvaVKPlayer.ViewModels
                 key = Registry.CurrentUser.OpenSubKey("SOFTWARE", true)?.CreateSubKey(GlobalVars.AppName);
                 if (key != null)
                 {
-                    var data = (string?) key.GetValue(GlobalVars.SavedAccountsFileName);
+                    string? data = (string?) key.GetValue(GlobalVars.SavedAccountsFileName);
                     if (data is not null)
                         SavedAccounts = JsonConvert.DeserializeObject<ObservableCollection<SavedAccountModel>>(data);
                 }
@@ -237,7 +238,7 @@ namespace AvaVKPlayer.ViewModels
 
         private void LoadSavedAccountsFromConfig()
         {
-            var home = GlobalVars.HomeDirectory;
+            string? home = GlobalVars.HomeDirectory;
             if (string.IsNullOrEmpty(home)) return;
             string path = Path.Combine(home, ".config", GlobalVars.AppName, GlobalVars.SavedAccountsFileName);
             if (File.Exists(path))
@@ -247,10 +248,10 @@ namespace AvaVKPlayer.ViewModels
 
         private void SaveAccount(VkApi? vkApi)
         {
-            var accountEnumerable = SavedAccounts?.ToList().Where(x => x.UserID == vkApi?.UserId);
+            IEnumerable<SavedAccountModel>? accountEnumerable = SavedAccounts?.ToList().Where(x => x.UserId == vkApi?.UserId);
 
             if (accountEnumerable != null)
-                foreach (var savedAccountModel in accountEnumerable)
+                foreach (SavedAccountModel? savedAccountModel in accountEnumerable)
                     SavedAccounts?.Remove(savedAccountModel);
 
             AccountSaveProfileInfoParams accountData = null;
@@ -267,7 +268,7 @@ namespace AvaVKPlayer.ViewModels
                 new SavedAccountModel
                 {
                     Token = vkApi.Token,
-                    UserID = vkApi.UserId,
+                    UserId = vkApi.UserId,
                     Name = $"{accountData.FirstName} {accountData.LastName}"
                 });
 
@@ -298,7 +299,7 @@ namespace AvaVKPlayer.ViewModels
 
         private void SaveAccountsOnConfig(string? data)
         {
-            var home = GlobalVars.HomeDirectory;
+            string? home = GlobalVars.HomeDirectory;
             if (string.IsNullOrEmpty(home)) return;
             string path = Path.Combine(home, ".config", GlobalVars.AppName);
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
@@ -309,7 +310,7 @@ namespace AvaVKPlayer.ViewModels
 
         private VkApi Auth(string token, long id)
         {
-            var api = new VkApi();
+            VkApi? api = new VkApi();
 
             api.Authorize(new ApiAuthParams {AccessToken = token, UserId = id});
             return api;
@@ -320,7 +321,7 @@ namespace AvaVKPlayer.ViewModels
             try
             {
                 GlobalVars.CurrentAccount = account;
-                GlobalVars.VkApi = Auth(account?.Token, (long) account?.UserID);
+                GlobalVars.VkApi = Auth(account?.Token, (long) account?.UserId);
                 ActiveAccountSelectIndex = -1;
             }
             catch (Exception)
@@ -332,7 +333,7 @@ namespace AvaVKPlayer.ViewModels
 
         public virtual void SelectedItem(object sender, PointerPressedEventArgs args)
         {
-            var selectedAccount = args.GetContent<SavedAccountModel>();
+            SavedAccountModel? selectedAccount = args.GetContent<SavedAccountModel>();
             if (selectedAccount != null) AuthFromActiveAccount(selectedAccount);
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -19,58 +20,17 @@ namespace AvaVKPlayer.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private double _oldheight = 0;
-        private bool _SiderBarAnimationIsPlaying;
-        private bool _MenuIsOpen;
+        private bool _siderBarAnimationIsPlaying;
+        private bool _menuIsOpen;
 
-        private CurrentMusicListViewModel? _CurrentMusicListViewModel;
-        private AllMusicViewModel? _AllMusicListViewModel;
-        private AudioSearchViewModel? _SearchViewModel;
-        private RecomendationsViewModel? _RecomendationsViewModel;
-
-
-        public PlayerControlViewModel PlayerContext { get; set; }
-
-        public VkLoginControlViewModel? VkLoginViewModel { get; set; }
-
-        [Reactive] public ExceptionViewModel ExceptionViewModel { get; set; }
-
-        [Reactive] public AlbumsViewModel? AlbumsViewModel { get; set; }
-
-        [Reactive] public AudioViewModelBase? CurrentAudioViewModel { get; set; }
-
-        [Reactive] public RepostViewModel? RepostViewModel { get; set; }
-        [Reactive] public AddToAlbumViewModel? AddToAlbumViewModel { get; set; }
-
-        [Reactive] public SavedAccountModel CurrentAccountModel { get; set; }
-
-        [Reactive] public bool MenuTextIsVisible { get; set; }
-
-        [Reactive] public bool AlbumsIsVisible { get; set; }
-
-        [Reactive] public bool RepostViewIsVisible { get; set; }
-
-        [Reactive] public bool AddToAlbumIsVisible { get; set; }
-
-        [Reactive] public bool CurrentAudioViewIsVisible { get; set; }
-
-        [Reactive] public bool VkLoginIsVisible { get; set; } = true;
-
-        [Reactive] public int MenuSelectionIndex { get; set; }
-
-        [Reactive] public GridLength MenuColumnWidth { get; set; }
-
-        [Reactive] public bool ExceptionIsVisible { get; set; }
-
-        [Reactive] public bool IsMaximized { get; set; }
-
-        [Reactive] public IReactiveCommand AvatarPressedCommand { get; set; }
-
-        [Reactive] public IReactiveCommand OpenHideMiniPlayerCommand { get; set; }
-
+        private CurrentMusicListViewModel? _currentMusicListViewModel;
+        private AllMusicViewModel? _allMusicListViewModel;
+        private AudioSearchViewModel? _searchViewModel;
+        private RecomendationsViewModel? _recomendationsViewModel;
 
         public MainWindowViewModel()
         {
-            MenuColumnWidth = new GridLength(60);
+            MenuColumnWidth = new GridLength(50);
             IsMaximized = true;
             PlayerContext = PlayerControlViewModel.Instance;
             PlayerContext.AudioChangedEvent += PlayerContext_AudioChangedEvent;
@@ -81,7 +41,7 @@ namespace AvaVKPlayer.ViewModels
 
             Events.VkApiChanged += StaticObjects_VkApiChanged;
 
-            VkLoginViewModel = new VkLoginControlViewModel();
+            VkLoginViewModel = new LoginControlViewModel();
 
             OpenHideMiniPlayerCommand = ReactiveCommand.Create(() =>
             {
@@ -98,7 +58,7 @@ namespace AvaVKPlayer.ViewModels
                 else
                 {
                     IsMaximized = true;
-                    if (_MenuIsOpen)
+                    if (_menuIsOpen)
                     {
                         MenuColumnWidth = new GridLength(200);
                     }
@@ -148,44 +108,46 @@ namespace AvaVKPlayer.ViewModels
                 }
             };
 
+            // Раскрыть меню
             AvatarPressedCommand = ReactiveCommand.Create(() =>
             {
-                if (_SiderBarAnimationIsPlaying == false && !_MenuIsOpen)
+                switch (_siderBarAnimationIsPlaying)
                 {
-                    _SiderBarAnimationIsPlaying = true;
-                    Task.Run(async () =>
-                    {
-                        MenuTextIsVisible = true;
-
-                        for (var i = 60; i < 200; i += 5)
+                    case false when !_menuIsOpen:
+                        _siderBarAnimationIsPlaying = true;
+                        Task.Run(async () =>
                         {
-                            MenuColumnWidth = new GridLength(i);
-                            await Task.Delay(new TimeSpan(0, 0, 0, 0, 1));
-                        }
+                            /*for (int i = 60; i < 200; i += 5)
+                            {
+                                MenuColumnWidth = new GridLength(i);
+                                await Task.Delay(new TimeSpan(0, 0, 0, 0, 1));
+                            }*/
+                            MenuColumnWidth = new GridLength(200);
+                            MenuTextIsVisible = true;
+                            _siderBarAnimationIsPlaying = false;
+                            _menuIsOpen = true;
+                        });
+                        break;
 
-                        _SiderBarAnimationIsPlaying = false;
-                        _MenuIsOpen = true;
-                    });
-                }
-                else if (_SiderBarAnimationIsPlaying == false && _MenuIsOpen)
-                {
-                    _SiderBarAnimationIsPlaying = true;
-                    Task.Run(async () =>
-                    {
-                        for (var i = 200; i >= 60; i -= 5)
+                    case false when _menuIsOpen:
+                        _siderBarAnimationIsPlaying = true;
+                        Task.Run(async () =>
                         {
-                            MenuColumnWidth = new GridLength(i);
-                            await Task.Delay(new TimeSpan(0, 0, 0, 0, 1));
-                        }
-
-                        MenuTextIsVisible = false;
-                        _SiderBarAnimationIsPlaying = false;
-                        _MenuIsOpen = false;
-                    });
+                            /*for (int i = 200; i >= 60; i -= 5)
+                            {
+                                MenuColumnWidth = new GridLength(i);
+                                await Task.Delay(new TimeSpan(0, 0, 0, 0, 1));
+                            }*/
+                            MenuColumnWidth = new GridLength(60);
+                            MenuTextIsVisible = false;
+                            _siderBarAnimationIsPlaying = false;
+                            _menuIsOpen = false;
+                        });
+                        break;
                 }
             });
 
-            _SearchViewModel = new AudioSearchViewModel();
+            _searchViewModel = new AudioSearchViewModel();
 
             this.WhenAnyValue(vm => vm.MenuSelectionIndex).Subscribe(value => OpenViewFromMenu(value));
         }
@@ -228,7 +190,7 @@ namespace AvaVKPlayer.ViewModels
 
         public void ArtistClicked(object sender, PointerPressedEventArgs e)
         {
-            var tb = e.GetContent<AudioModel>();
+            AudioModel? tb = e.GetContent<AudioModel>();
             if (tb?.Artist != null)
             {
                 MenuSelectionIndex = 3;
@@ -238,11 +200,11 @@ namespace AvaVKPlayer.ViewModels
                     CurrentAudioViewModel.SelectedIndex = -1;
                 }
 
-                if (_SearchViewModel == null)
+                if (_searchViewModel == null)
                     return;
 
-                _SearchViewModel.IsLoading = true;
-                _SearchViewModel.SearchText = tb.Artist;
+                _searchViewModel.IsLoading = true;
+                _searchViewModel.SearchText = tb.Artist;
             }
         }
 
@@ -259,20 +221,20 @@ namespace AvaVKPlayer.ViewModels
                 {
                     case 0:
                     {
-                        CurrentAudioViewModel = _CurrentMusicListViewModel;
+                        CurrentAudioViewModel = _currentMusicListViewModel;
                         CurrentAudioViewModel?.SelectToModel(PlayerContext?.CurrentAudio, true);
 
                         break;
                     }
                     case 1:
                     {
-                        if (_AllMusicListViewModel == null)
+                        if (_allMusicListViewModel == null)
                         {
-                            _AllMusicListViewModel = new AllMusicViewModel();
-                            _AllMusicListViewModel.StartLoad();
+                            _allMusicListViewModel = new AllMusicViewModel();
+                            _allMusicListViewModel.StartLoad();
                         }
 
-                        CurrentAudioViewModel = _AllMusicListViewModel;
+                        CurrentAudioViewModel = _allMusicListViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
 
                         break;
@@ -291,7 +253,7 @@ namespace AvaVKPlayer.ViewModels
                     }
                     case 3:
                     {
-                        CurrentAudioViewModel = _SearchViewModel;
+                        CurrentAudioViewModel = _searchViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
 
 
@@ -299,13 +261,13 @@ namespace AvaVKPlayer.ViewModels
                     }
                     case 4:
                     {
-                        if (_RecomendationsViewModel is null)
+                        if (_recomendationsViewModel is null)
                         {
-                            _RecomendationsViewModel = new RecomendationsViewModel();
-                            _RecomendationsViewModel.StartLoad();
+                            _recomendationsViewModel = new RecomendationsViewModel();
+                            _recomendationsViewModel.StartLoad();
                         }
 
-                        CurrentAudioViewModel = _RecomendationsViewModel;
+                        CurrentAudioViewModel = _recomendationsViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
 
 
@@ -326,7 +288,7 @@ namespace AvaVKPlayer.ViewModels
             {
                 try
                 {
-                    _CurrentMusicListViewModel = new CurrentMusicListViewModel();
+                    _currentMusicListViewModel = new CurrentMusicListViewModel();
                     VkLoginIsVisible = false;
                     CurrentAccountModel = GlobalVars.CurrentAccount;
                     MenuSelectionIndex = 1;
@@ -349,7 +311,7 @@ namespace AvaVKPlayer.ViewModels
             {
                 PlayerContext.CurrentAudio = null;
             }
-            catch (Exception EX)
+            catch (Exception ex)
             {
             }
 
@@ -360,9 +322,9 @@ namespace AvaVKPlayer.ViewModels
             VkLoginIsVisible = true;
 
             AlbumsViewModel?.DataCollection?.Clear();
-            _RecomendationsViewModel?.DataCollection?.Clear();
-            _AllMusicListViewModel?.DataCollection?.Clear();
-            _SearchViewModel?.DataCollection?.Clear();
+            _recomendationsViewModel?.DataCollection?.Clear();
+            _allMusicListViewModel?.DataCollection?.Clear();
+            _searchViewModel?.DataCollection?.Clear();
             RepostViewModel?.DataCollection?.Clear();
             AddToAlbumViewModel?.DataCollection?.Clear();
 
@@ -370,9 +332,9 @@ namespace AvaVKPlayer.ViewModels
             AddToAlbumViewModel = null;
             CurrentAudioViewModel = null;
             AlbumsViewModel = null;
-            _RecomendationsViewModel = null;
-            _AllMusicListViewModel = null;
-            _SearchViewModel = null;
+            _recomendationsViewModel = null;
+            _allMusicListViewModel = null;
+            _searchViewModel = null;
             CurrentAccountModel = null;
 
             GC.Collect(0, GCCollectionMode.Optimized);
@@ -389,5 +351,45 @@ namespace AvaVKPlayer.ViewModels
             CurrentAudioViewModel.IsError = false;
             ExceptionIsVisible = false;
         }
+
+
+        public PlayerControlViewModel PlayerContext { get; set; }
+
+        public LoginControlViewModel? VkLoginViewModel { get; set; }
+
+        [Reactive] public ExceptionViewModel ExceptionViewModel { get; set; }
+
+        [Reactive] public AlbumsViewModel? AlbumsViewModel { get; set; }
+
+        [Reactive] public AudioViewModelBase? CurrentAudioViewModel { get; set; }
+
+        [Reactive] public RepostViewModel? RepostViewModel { get; set; }
+        [Reactive] public AddToAlbumViewModel? AddToAlbumViewModel { get; set; }
+
+        [Reactive] public SavedAccountModel CurrentAccountModel { get; set; }
+
+        [Reactive] public bool MenuTextIsVisible { get; set; }
+
+        [Reactive] public bool AlbumsIsVisible { get; set; }
+
+        [Reactive] public bool RepostViewIsVisible { get; set; }
+
+        [Reactive] public bool AddToAlbumIsVisible { get; set; }
+
+        [Reactive] public bool CurrentAudioViewIsVisible { get; set; }
+
+        [Reactive] public bool VkLoginIsVisible { get; set; } = true;
+
+        [Reactive] public int MenuSelectionIndex { get; set; }
+
+        [Reactive] public GridLength MenuColumnWidth { get; set; }
+
+        [Reactive] public bool ExceptionIsVisible { get; set; }
+
+        [Reactive] public bool IsMaximized { get; set; }
+
+        [Reactive] public ICommand AvatarPressedCommand { get; set; }
+
+        [Reactive] public ICommand OpenHideMiniPlayerCommand { get; set; }
     }
 }
