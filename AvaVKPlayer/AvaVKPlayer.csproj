@@ -58,9 +58,6 @@
     <Compile Update="Views\MusicListControl.axaml.cs">
       <DependentUpon>MusicListControl.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\LoginControl.axaml.cs">
-      <DependentUpon>LoginControl.axaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BASS Lib\Win\" />

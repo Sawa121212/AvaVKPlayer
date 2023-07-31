@@ -12,7 +12,6 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using AvaVKPlayer.ETC;
 using AvaVKPlayer.Models;
-using AvaVKPlayer.Notify;
 using AvaVKPlayer.ViewModels.Base;
 using ManagedBass;
 using ReactiveUI;
@@ -287,8 +286,8 @@ namespace AvaVKPlayer.ViewModels
 
                     if (_currentAudio.IsNotAvailable)
                     {
-                        Notify.NotifyManager.Instance.PopMessage(new NotifyData("Ошибка",
-                            $"Аудиозапись {_currentAudio.Artist} - {_currentAudio.Title} не доступна"));
+                        //Notify.NotifyManager.Instance.PopMessage(new NotifyData("Ошибка",
+                        //    $"Аудиозапись {_currentAudio.Artist} - {_currentAudio.Title} не доступна"));
                         if (AutoNext)
                         {
                             AutoNext = false;

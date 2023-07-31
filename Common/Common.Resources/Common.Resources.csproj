@@ -16,4 +16,10 @@
     <AvaloniaXaml Remove="Geometries.axaml" />
     <AvaloniaResource Include="Geometries.axaml" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="LoadingControl.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -149,7 +149,7 @@ namespace AvaVKPlayer.ViewModels
 
             _searchViewModel = new AudioSearchViewModel();
 
-            this.WhenAnyValue(vm => vm.MenuSelectionIndex).Subscribe(value => OpenViewFromMenu(value));
+            this.WhenAnyValue(vm => vm.MenuSelectionIndex).Subscribe(OpenViewFromMenu);
         }
 
         private void Events_AudioAddToAlbumEvent(AudioModel audiomodel)

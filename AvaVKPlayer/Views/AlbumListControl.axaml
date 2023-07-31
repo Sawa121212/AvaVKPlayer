@@ -7,7 +7,7 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:views="clr-namespace:AvaVKPlayer.Views"
-             xmlns:etc="clr-namespace:AvaVKPlayer.ETC">
+             xmlns:etc="clr-namespace:Common.Resources.LoadingControl;assembly=Common.Resources">
     <Grid>
         <ListBox SelectedIndex="{Binding SelectedIndex}"
                  Items="{Binding  DataCollection}">

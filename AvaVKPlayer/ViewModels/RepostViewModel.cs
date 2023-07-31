@@ -4,6 +4,7 @@ using Avalonia.Input;
 using AvaVKPlayer.ETC;
 using AvaVKPlayer.Models;
 using AvaVKPlayer.ViewModels.Interfaces;
+using Common.Core.ToDo;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using VkNet.Enums.Filters;
@@ -158,15 +159,15 @@ namespace AvaVKPlayer.ViewModels
                             RandomId = Utils.Random.Next(),
                             Attachments = GlobalVars.VkApi.Audio.GetById(new String[] { AudioModel.GetAudioIdFormatWithAccessKey() }),
                         });
-                        Notify.NotifyManager.Instance.PopMessage(
+                        /*Notify.NotifyManager.Instance.PopMessage(
                             new Notify.NotifyData("Успешно отправлено", "Аудиозапись отправлена: " + item.Title
-                            , TimeSpan.FromSeconds(2)));
+                            , TimeSpan.FromSeconds(2)));*/
                     }
                     catch (Exception)
                     {
-                        Notify.NotifyManager.Instance.PopMessage(
+                        /*Notify.NotifyManager.Instance.PopMessage(
                             new Notify.NotifyData("Ошибка отправки", "Возникла проблема при отправке сообщения",
-                            TimeSpan.FromSeconds(2)));
+                            TimeSpan.FromSeconds(2)));*/
                     }
                     finally { CloseViewEvent?.Invoke(); }
                 });

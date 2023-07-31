@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
+		<PackageReference Include="Avalonia" Version="0.10.21" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
+		<PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
+		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
+		<PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
+		<PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
+		<PackageReference Include="Material.Avalonia" Version="2.5.1" />
+		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
+		<PackageReference Include="VkNet" Version="1.75.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Views\LoginControl.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+</Project>

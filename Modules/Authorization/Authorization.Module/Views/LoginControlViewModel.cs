@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Authorization.Module.Domain;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,9 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Input;
-using AvaVKPlayer.ETC;
-using AvaVKPlayer.Models;
 using AvaVKPlayer.ViewModels.Base;
+using Common.Core;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using ReactiveUI;

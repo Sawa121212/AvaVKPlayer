@@ -6,7 +6,7 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:converters="clr-namespace:AvaVKPlayer.Converters"
-             xmlns:etc="clr-namespace:AvaVKPlayer.ETC"
+             xmlns:etc="clr-namespace:Common.Resources.LoadingControl;assembly=Common.Resources"
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="AvaVKPlayer.Views.MusicListControl">

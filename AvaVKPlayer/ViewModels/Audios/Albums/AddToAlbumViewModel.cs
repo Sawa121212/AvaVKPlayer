@@ -3,7 +3,6 @@ using System.Linq;
 using Avalonia.Input;
 using AvaVKPlayer.ETC;
 using AvaVKPlayer.Models;
-using AvaVKPlayer.Notify;
 using AvaVKPlayer.ViewModels.Interfaces;
 using ReactiveUI;
 using VkNet.Model;
@@ -19,8 +18,8 @@ namespace AvaVKPlayer.ViewModels.Audios.Albums
         {
             if (audioModel is null)
             {
-                Notify.NotifyManager.Instance.PopMessage(
-                    new NotifyData("Ошибка добавления",$"Аудиозапись не выбрана"));
+                //Notify.NotifyManager.Instance.PopMessage(
+                //    new NotifyData("Ошибка добавления",$"Аудиозапись не выбрана"));
                 throw new ArgumentNullException(nameof(audioModel));
             }
             else
@@ -40,13 +39,13 @@ namespace AvaVKPlayer.ViewModels.Audios.Albums
               
                     GlobalVars.VkApi.Audio.AddToPlaylist(item.OwnerId, item.Id, ids);
                 
-                    Notify.NotifyManager.Instance.PopMessage(
-                        new NotifyData("Успешно добавлено",$"Аудиозапись {_audioModel.Title} добавлена в альбом {item.Title}"));
+                    //Notify.NotifyManager.Instance.PopMessage(
+                    //    new NotifyData("Успешно добавлено",$"Аудиозапись {_audioModel.Title} добавлена в альбом {item.Title}"));
                 }
                 catch (Exception ex)
                 {
-                    Notify.NotifyManager.Instance.PopMessage(
-                        new NotifyData("Ошибка добавления",$"Аудиозапись {_audioModel.Title} не добавлена в альбом {item.Title}"));
+                    //Notify.NotifyManager.Instance.PopMessage(
+                    //    new NotifyData("Ошибка добавления",$"Аудиозапись {_audioModel.Title} не добавлена в альбом {item.Title}"));
                 }
             }
             CloseViewEvent?.Invoke();

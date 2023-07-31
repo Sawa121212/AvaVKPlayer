@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Newtonsoft.Json;
 
-namespace AvaVKPlayer.Models.Interfaces
+namespace Authorization.Module.Domain.Interfaces
 {
     public interface IImageBase
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Avalonia.Media.Imaging;
-using AvaVKPlayer.Models;
+using Common.Core.ToDo;
 using VkNet;
 using VkNet.Model;
 

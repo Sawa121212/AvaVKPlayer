@@ -1,8 +1,7 @@
 ﻿using System;
-using AvaVKPlayer.ETC;
 using VkNet.Enums.Filters;
 
-namespace AvaVKPlayer.Models
+namespace Authorization.Module.Domain
 {
     public class SavedAccountModel
     {

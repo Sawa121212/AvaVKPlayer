@@ -57,14 +57,14 @@ namespace AvaVKPlayer.ViewModels
                             vkModel.OwnerId = (long) (GlobalVars.VkApi?.UserId ?? 0);
 
                             Events.AudioAddCall(vkModel);
-                            Notify.NotifyManager.Instance.PopMessage(new Notify.NotifyData("Успешно добавлено",
-                                vkModel.Title));
+                            /*Notify.NotifyManager.Instance.PopMessage(new Notify.NotifyData("Успешно добавлено",
+                                vkModel.Title));*/
                         }
                     }
                     catch (Exception ex)
                     {
-                        Notify.NotifyManager.Instance.PopMessage(
-                            new Notify.NotifyData("Ошибка добавления", vkModel.Title));
+                        /*Notify.NotifyManager.Instance.PopMessage(
+                            new Notify.NotifyData("Ошибка добавления", vkModel.Title));*/
                     }
                 }
             });
@@ -102,8 +102,8 @@ namespace AvaVKPlayer.ViewModels
                             webClient.DownloadFileCompleted += delegate
                             {
                                 vkModel.IsDownload = false;
-                                Notify.NotifyManager.Instance.PopMessage(
-                                    new Notify.NotifyData("Скачивание завершено", fileName));
+                                /*Notify.NotifyManager.Instance.PopMessage(
+                                    new Notify.NotifyData("Скачивание завершено", fileName));*/
                             };
                             webClient.DownloadProgressChanged += (object o, DownloadProgressChangedEventArgs e) =>
                                 vkModel.DownloadPercent = e.ProgressPercentage;
@@ -111,8 +111,8 @@ namespace AvaVKPlayer.ViewModels
                     }
                     catch
                     {
-                        Notify.NotifyManager.Instance.PopMessage(
-                            new Notify.NotifyData("Ошибка скачивания", vkModel.Title));
+                        /*Notify.NotifyManager.Instance.PopMessage(
+                            new Notify.NotifyData("Ошибка скачивания", vkModel.Title));*/
                         vkModel.IsDownload = false;
                     }
                 }
@@ -128,8 +128,8 @@ namespace AvaVKPlayer.ViewModels
                         if (awaiter == true)
                         {
                             Events.AudioRemoveCall(vkModel);
-                            Notify.NotifyManager.Instance.PopMessage(
-                                new Notify.NotifyData("Аудиозапись удалена", vkModel.Title));
+                            /*Notify.NotifyManager.Instance.PopMessage(
+                                new Notify.NotifyData("Аудиозапись удалена", vkModel.Title));*/
                         }
                     }
                     else
@@ -158,15 +158,15 @@ namespace AvaVKPlayer.ViewModels
                             if (res)
                                 Events.AudioRmoveFromAlbumEventCall(vkModel);
 
-                            Notify.NotifyManager.Instance.PopMessage(
+                            /*Notify.NotifyManager.Instance.PopMessage(
                                 new Notify.NotifyData("Успешно удалено",
-                                    "Аудиозапись:" + vkModel.Title + "\n" + "удалена из " + Album.Title));
+                                    "Аудиозапись:" + vkModel.Title + "\n" + "удалена из " + Album.Title));*/
                         }
                         catch (Exception)
                         {
-                            Notify.NotifyManager.Instance.PopMessage(
+                           /*Notify.NotifyManager.Instance.PopMessage(
                                 new Notify.NotifyData("Ошибка удаления",
-                                    "Аудиозапись:" + vkModel.Title + "не была удалена"));
+                                    "Аудиозапись:" + vkModel.Title + "не была удалена"));*/
                         }
                         finally
                         {

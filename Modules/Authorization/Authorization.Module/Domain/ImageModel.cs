@@ -2,14 +2,14 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Authorization.Module.Domain.Interfaces;
 using Avalonia.Media.Imaging;
-using AvaVKPlayer.ETC;
-using AvaVKPlayer.Models.Interfaces;
+using Common.Core.ToDo;
 using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace AvaVKPlayer.Models
+namespace Authorization.Module.Domain
 {
     public class ImageModel : ReactiveObject, IImageBase
     {

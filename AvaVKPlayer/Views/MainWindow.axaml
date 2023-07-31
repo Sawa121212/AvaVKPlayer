@@ -177,7 +177,7 @@
                         IsVisible="{Binding DataContext.RepostViewIsVisible,
 							 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
 
-                    <notify:NotifyControl
+					<!--notify:NotifyControl
                         CornerRadius="5,0,0,0"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
@@ -189,7 +189,7 @@
                         <notify:NotifyControl.Background>
                             <SolidColorBrush Color="White" Opacity="0.9" />
                         </notify:NotifyControl.Background>
-                    </notify:NotifyControl>
+                    </notify:NotifyControl-->
 
                     <views:ExceptionView
                         DataContext="{Binding DataContext.ExceptionViewModel, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"

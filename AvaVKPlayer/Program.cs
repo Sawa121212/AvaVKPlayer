@@ -13,8 +13,6 @@ namespace AvaVKPlayer
         {
             BuildAvaloniaApp()
               .StartWithClassicDesktopLifetime(args);
-           
-
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
