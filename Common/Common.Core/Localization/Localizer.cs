@@ -75,12 +75,12 @@ namespace Common.Core.Localization
                 if (_resources == null || !_resources.Any())
                     return "<ERROR! LANGUAGE Common.Resources is empty>";
 
-                var row = GetExpression(key);
+                string? row = GetExpression(key);
 
                 if (string.IsNullOrEmpty(row))
                     return $"<ERROR! Not found key \"{key}\">";
 
-                var ret = row?.Replace(@"\\n", "\n");
+                string? ret = row?.Replace(@"\\n", "\n");
                 if (string.IsNullOrEmpty(ret))
                 {
                     ret = $"Localize:{key}";
@@ -99,9 +99,9 @@ namespace Common.Core.Localization
         public string GetExpression(string key)
         {
             if (_resources == null) return string.Empty;
-            foreach (var resource in _resources)
+            foreach (ResourceManager? resource in _resources)
             {
-                var row = resource?.GetString(key);
+                string? row = resource?.GetString(key);
                 if (!string.IsNullOrEmpty(row))
                     return row;
             }

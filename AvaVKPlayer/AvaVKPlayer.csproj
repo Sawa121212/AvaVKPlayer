@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>AvaVKPlayer.ico</ApplicationIcon>
     <StartupObject />
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <LangVersion>preview</LangVersion>
     <Authors>Sawa121212 and MukhinDmitriy</Authors>
@@ -13,62 +14,38 @@
     <PackageIcon>AvaVKPlayer.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
+
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.21" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.21" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
     <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
-    <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
-    <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
     <PackageReference Include="Material.Avalonia" Version="2.5.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
-    <PackageReference Include="ManagedBass" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
+    <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.1021" />
     <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
-    <PackageReference Include="VkNet" Version="1.75.0" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <Resource Include="Assets\t.otf" />
-  </ItemGroup>-->
-  <ItemGroup>
-    <Compile Update="Views\ExceptionView.axaml.cs">
-      <DependentUpon>ExceptionView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\NotifyControl.axaml.cs">
-      <DependentUpon>NotifyControl.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\RepostView.axaml.cs">
-      <DependentUpon>RepostView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MusicListControl.axaml.cs">
-      <DependentUpon>MusicListControl.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\LoginControl.axaml.cs">
-      <DependentUpon>LoginControl.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BASS Lib\Win\" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\Common\Common.Resources\Common.Resources.csproj" />
-    <ProjectReference Include="..\Modules\Notification.Module\Notification.Module.csproj" />
+    <ProjectReference Include="..\Domain\DataDomain\Player.Domain.csproj" />
+    <ProjectReference Include="..\Modules\Authorization\Authorization.Module\Authorization.Module.csproj" />
+    <ProjectReference Include="..\Modules\Equalizer\Equalizer.Module\Equalizer.Module.csproj" />
+    <ProjectReference Include="..\Modules\Notification\Notification.Module\Notification.Module.csproj" />
+    <ProjectReference Include="..\Modules\Player\Player.Module\Player.Module.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE">
@@ -79,5 +56,23 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Language.Designer.cs">
+      <DependentUpon>Language.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Language.resx">
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Language.ru.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

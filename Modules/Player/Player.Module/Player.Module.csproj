@@ -1,0 +1,87 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.21" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
+    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
+    <PackageReference Include="Material.Avalonia" Version="2.5.1" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
+    <PackageReference Include="ManagedBass" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
+    <PackageReference Include="VkNet" Version="1.75.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Domain\DataDomain\Player.Domain.csproj" />
+    <ProjectReference Include="..\..\Equalizer\Equalizer.Module\Equalizer.Module.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\AddToAlbumView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\AlbumListControl.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ExceptionView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MainView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MusicListControl.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PlayerControlView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>PlayerControlView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\RepostView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Views\AddToAlbumView.axaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Views\AlbumListControl.axaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Views\ExceptionView.axaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Views\MainWindow.axaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Views\MusicListControl.axaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Views\PlayerControl.axaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Views\RepostView.axaml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+
+</Project>
