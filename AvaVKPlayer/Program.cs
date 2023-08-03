@@ -1,27 +1,78 @@
+using System;
+using System.Threading;
 using Avalonia;
+using Avalonia.Dialogs;
+using Avalonia.Logging;
 using Avalonia.ReactiveUI;
 
 namespace AvaVKPlayer
 {
-
-    internal class Program
+    class Program
     {
-        // Initialization code. Don't use any Avalonia, third-party APIs or any
-        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-        // yet and stuff might break.
+        private const int TimeoutSeconds = 3;
+
+        [STAThread]
         public static void Main(string[] args)
         {
-            BuildAvaloniaApp()
-              .StartWithClassicDesktopLifetime(args);
+            // добавим Mutex для блокировки запуска повторного ПО
+            Mutex mutex = new(false, typeof(Program).FullName);
+
+            try
+            {
+                if (!mutex.WaitOne(TimeSpan.FromSeconds(TimeoutSeconds), true))
+                {
+                    return; // ждем TimeoutSeconds секунд
+                }
+
+                BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
         }
 
-        // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
         {
-            return AppBuilder.Configure<App>()
+            AppBuilder? builder = AppBuilder
+                .Configure<App>()
                 .UsePlatformDetect()
-                .LogToTrace()
-                .UseReactiveUI();
+                .With(new SkiaOptions()
+                {
+                    // 1 GB = 1,073,741,824 Byte
+                    MaxGpuResourceSizeBytes = new long?(1073741824L)
+                })
+                .With(new Win32PlatformOptions
+                {
+                    EnableMultitouch = true,
+                    AllowEglInitialization = true,
+                    UseWindowsUIComposition = false,
+                    OverlayPopups = true,
+                    UseDeferredRendering = true
+                })
+                .With(new X11PlatformOptions
+                {
+                    EnableMultiTouch = true,
+                    UseDBusMenu = true,
+                    UseGpu = true,
+                    OverlayPopups = true,
+                    UseDeferredRendering = true
+                })
+                .With(new AvaloniaNativePlatformOptions()
+                {
+                    UseGpu = true,
+                    OverlayPopups = true,
+                    UseDeferredRendering = true
+                })
+                .UseSkia()
+                .UseReactiveUI()
+                .UseManagedSystemDialogs();
+            ;
+
+#if DEBUG
+            builder.LogToTrace(LogEventLevel.Debug, LogArea.Property, LogArea.Layout, LogArea.Binding);
+#endif
+            return builder;
         }
     }
 }

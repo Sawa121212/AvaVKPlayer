@@ -18,11 +18,11 @@ namespace Common.Core.Localization
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var keyToUse = Key;
+            string? keyToUse = Key;
             if (!string.IsNullOrWhiteSpace(Context))
                 keyToUse = $"{Context}/{Key}";
 
-            var binding = new ReflectionBindingExtension($"[{keyToUse}]")
+            ReflectionBindingExtension? binding = new ReflectionBindingExtension($"[{keyToUse}]")
             {
                 Mode = BindingMode.OneWay,
                 Source = Localizer.Instance,

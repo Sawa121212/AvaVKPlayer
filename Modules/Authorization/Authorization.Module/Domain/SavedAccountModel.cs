@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Common.Core.ToDo;
 using VkNet.Enums.Filters;
+using VkNet.Model;
+using VkProvider.Module;
 
 namespace Authorization.Module.Domain
 {
@@ -18,21 +23,20 @@ namespace Authorization.Module.Domain
         {
             try
             {
-                var profileInfoAwaiter = await GlobalVars.VkApi.Users
-                    .GetAsync(new[] {(long) UserId}, ProfileFields.Photo50);
+                ReadOnlyCollection<User> profileInfoAwaiter =
+                    await VkApiManager.GetUsersAsync(new[] {(long) UserId}, ProfileFields.Photo50);
+                User res = profileInfoAwaiter?.First();
 
-                var res = profileInfoAwaiter[0];
-                if (res != null)
-                {
-                    if (Image is null)
-                        Image = new ImageModel();
-                    Image.ImageUrl = res.Photo50.AbsoluteUri;
-                    Image.LoadBitmapAsync();
-                }
+                if (res == null)
+                    return;
+
+                Image ??= new ImageModel();
+                Image.ImageUrl = res.Photo50.AbsoluteUri;
+                Image.LoadBitmapAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ex");
+                Console.WriteLine(ex.Message);
             }
         }
     }

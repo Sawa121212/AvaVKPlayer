@@ -10,8 +10,8 @@
         <ProgressBar Grid.Row="0"
                      Classes="Circle"
                      IsIndeterminate="True" />
-        <TextBlock Grid.Row="1"
+        <!--<TextBlock Grid.Row="1"
                    Text="Загрузка"
-                   Margin="5" />
+                   Margin="5" />-->
     </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using Avalonia;
@@ -17,7 +18,7 @@ namespace Common.Core.ToDo
             // ToDo
             Uri pathUri = new(@"Avares://AvaVKPlayer/Assets/" + path);
 
-            var res = AvaloniaLocator.Current?.GetService<IAssetLoader>()?.Open(pathUri);
+            Stream? res = AvaloniaLocator.Current?.GetService<IAssetLoader>()?.Open(pathUri);
             return res != null ? new Bitmap(res) : null;
         }
 

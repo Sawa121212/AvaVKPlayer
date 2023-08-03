@@ -1,0 +1,47 @@
+﻿using Avalonia.Controls;
+using Common.Core.Views.Interfaces;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+
+namespace Equalizer.Module.Views
+{
+    public class InputViewModel : ReactiveObject, ICloseView
+    {
+        [Reactive] public string Message { get; set; }
+        [Reactive] public string InputText { get; set; }
+
+        public bool Success { get; set; }
+        public IReactiveCommand OkCommand { get; set; }
+        public IReactiveCommand CancelCommand { get; set; }
+
+        public InputViewModel()
+        {
+            OkCommand = ReactiveCommand.Create<object>((inputDialog) =>
+            {
+                Success = true;
+                if (inputDialog is Window)
+                {
+                    Window? dialog = inputDialog as Window;
+                    dialog.Close(true);
+                }
+
+                CloseViewEvent?.Invoke();
+            });
+
+            CancelCommand = ReactiveCommand.Create<object>((inputDialog) =>
+            {
+                Success = false;
+                if (inputDialog is Window)
+                {
+                    Window? dialog = inputDialog as Window;
+                    dialog.Close(false);
+                }
+
+                CloseViewEvent?.Invoke();
+            });
+        }
+
+        public event ICloseView.CloseViewDelegate? CloseViewEvent;
+        public IReactiveCommand CloseCommand { get; set; }
+    }
+}

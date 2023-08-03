@@ -96,11 +96,11 @@ namespace Common.Core.Extensions
         /// <param name="text">Исходная строка.</param>
         public static string RemoveWhiteSpace(this string text)
         {
-            var sb = new StringBuilder();
+            StringBuilder? sb = new StringBuilder();
             if (text == null)
                 return sb.ToString();
 
-            foreach (var c in text.Where(c => !char.IsWhiteSpace(c)))
+            foreach (char c in text.Where(c => !char.IsWhiteSpace(c)))
             {
                 sb.Append(c);
             }
@@ -118,7 +118,7 @@ namespace Common.Core.Extensions
         /// Могут быть проблемы
         public static Size GetSize(this string text, string fontFamily, float fontSize)
         {
-            var formatted = new FormattedText(text, new Typeface(fontFamily), fontSize, TextAlignment.Left, TextWrapping.Wrap, Size.Infinity);
+            FormattedText? formatted = new FormattedText(text, new Typeface(fontFamily), fontSize, TextAlignment.Left, TextWrapping.Wrap, Size.Infinity);
 
             return new Size(formatted.Bounds.Width, formatted.Bounds.Height);
         }        

@@ -22,7 +22,7 @@ namespace Common.Core.Converters
                         {
                             try
                             {
-                                var parameterValue = Enum.Parse(enumValue.GetType(), parameterString);
+                                object? parameterValue = Enum.Parse(enumValue.GetType(), parameterString);
                                 return parameterValue.Equals(value);
                             }
                             catch
