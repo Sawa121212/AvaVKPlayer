@@ -68,6 +68,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\Common\Common.Resources\Common.Resources.csproj" />
+    <ProjectReference Include="..\Modules\Notification.Module\Notification.Module.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE">

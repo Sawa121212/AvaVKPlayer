@@ -26,6 +26,8 @@
     </Application.Resources>
 
     <Application.Styles>
+        <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
+
         <!-- Используем стиль Material.Avalonia -->
         <StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml" />
     </Application.Styles>
