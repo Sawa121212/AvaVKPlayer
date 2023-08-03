@@ -1,0 +1,172 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+
+    <Styles.Resources>
+        <SolidColorBrush x:Key="WarningColorBrush" Color="#FFCC00" />
+        <SolidColorBrush x:Key="SuccessColorBrush" Color="#89D185" />
+    </Styles.Resources>
+
+    <Style Selector="NotificationCard">
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth4" />
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}" />
+        <Setter Property="Width" Value="350" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignSelection}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="RenderTransformOrigin" Value="50%,75%" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <LayoutTransformControl Name="PART_LayoutTransformControl" UseRenderTransform="True">
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" BoxShadow="5 4 8 0 #4F000000"
+                            Margin="5 5 5 10">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                ClipToBounds="True">
+                            <DockPanel>
+                                <Border x:Name="PART_HeaderBar" Height="5"
+                                        CornerRadius="4 4 0 0"
+                                        DockPanel.Dock="Top" />
+
+                                <StackPanel Orientation="Horizontal">
+                                    <ContentControl x:Name="PART_ContentIcon" />
+                                    <ContentControl Name="PART_Content" MinHeight="64"
+                                                    Content="{TemplateBinding Content}" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </Border>
+                </LayoutTransformControl>
+            </ControlTemplate>
+        </Setter>
+
+        <Style.Animations>
+            <Animation Duration="0:0:0.45" Easing="QuadraticEaseIn" FillMode="Forward">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0" />
+                    <Setter Property="TranslateTransform.Y" Value="20" />
+                    <Setter Property="ScaleTransform.ScaleX" Value="0.85" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="0.85" />
+                </KeyFrame>
+                <KeyFrame Cue="30%">
+                    <Setter Property="TranslateTransform.Y" Value="-20" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="TranslateTransform.Y" Value="0" />
+                    <Setter Property="ScaleTransform.ScaleX" Value="1" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <Style Selector="NotificationCard[IsClosing=true] /template/ LayoutTransformControl#PART_LayoutTransformControl">
+        <Setter Property="RenderTransformOrigin" Value="50%,0%" />
+        <Style.Animations>
+            <Animation Duration="0:0:0.75" Easing="QuadraticEaseOut" FillMode="Forward">
+                <KeyFrame Cue="0%">
+                    <Setter Property="TranslateTransform.X" Value="0" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="TranslateTransform.X" Value="800" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="ScaleTransform.ScaleY" Value="0" />
+                    <Setter Property="TranslateTransform.X" Value="800" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <Style Selector="NotificationCard[IsClosing=true]">
+        <Style.Animations>
+            <Animation Duration="0:0:1.25" Easing="QuadraticEaseOut" FillMode="Forward">
+                <KeyFrame Cue="100%">
+                    <Setter Property="IsClosed" Value="True" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <!-- information -->
+    <Style Selector="NotificationCard:information /template/ ContentControl#PART_ContentIcon">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <avalonia:MaterialIcon
+                    Kind="Information"
+                    Foreground="{DynamicResource PrimaryHueMidBrush}"
+                    Width="32" Height="32"
+                    Margin="5 5 0 5 " />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="NotificationCard:information /template/ Border#PART_HeaderBar">
+        <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+    </Style>
+
+    <!-- success -->
+    <Style Selector="NotificationCard:success /template/ Border#PART_HeaderBar">
+        <Setter Property="Background" Value="{DynamicResource SuccessColorBrush}" />
+    </Style>
+    <Style Selector="NotificationCard:success /template/ ContentControl#PART_ContentIcon">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <avalonia:MaterialIcon
+                    Kind="CheckboxMarkedCircle"
+                    Foreground="{DynamicResource SuccessColorBrush}"
+                    Width="32" Height="32"
+                    Margin="5" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- warning -->
+    <Style Selector="NotificationCard:warning /template/ Border#PART_HeaderBar">
+        <Setter Property="Background" Value="{DynamicResource WarningColorBrush}" />
+    </Style>
+    <Style Selector="NotificationCard:warning /template/ ContentControl#PART_ContentIcon">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <avalonia:MaterialIcon
+                    Kind="Alert"
+                    Foreground="{DynamicResource WarningColorBrush}"
+                    Width="32" Height="32"
+                    Margin="5" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- error -->
+    <Style Selector="NotificationCard:error /template/ Border#PART_HeaderBar">
+        <Setter Property="Background" Value="{DynamicResource ValidationErrorBrush}" />
+    </Style>
+    <Style Selector="NotificationCard:error /template/ ContentControl#PART_ContentIcon">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <avalonia:MaterialIcon
+                    Kind="CloseCircle"
+                    Foreground="{DynamicResource ValidationErrorBrush}"
+                    Width="32" Height="32"
+                    Margin="5" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <StackPanel>
+                <NotificationCard Content="Testing" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+</Styles>
