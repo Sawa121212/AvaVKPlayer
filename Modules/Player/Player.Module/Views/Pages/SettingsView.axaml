@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:converters="clr-namespace:Common.Core.Converters;assembly=Common.Core"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:base="clr-namespace:Material.Styles.Themes.Base;assembly=Material.Styles"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             x:Class="Player.Module.Views.Pages.SettingsView">
+
+  <UserControl.Resources>
+    <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="Auto,Auto"
+        HorizontalAlignment="Center" VerticalAlignment="Center">
+    
+    <styles:Card Grid.Row="0">
+      <StackPanel Spacing="15" Margin="15">
+        <TextBlock Classes="Subtitle1" Text="Основные настройки" FontWeight="Bold" />
+
+        <Separator Height="1" Margin="0"/>
+        
+        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Язык"
+                     VerticalAlignment="Center" Margin="0 0 20 0" />
+
+          <styles:Card Grid.Row="0" Grid.Column="1" Padding="0" InsideClipping="True"
+                       HorizontalAlignment="Left" Margin="0,10">
+            <StackPanel Orientation="Horizontal" Height="32">
+              <RadioButton Classes="Button" GroupName="Lang"
+                           Content="Русский"
+                           IsChecked="{Binding CultureInfo, Converter={StaticResource  EnumToBooleanConverter}, ConverterParameter={x:Static localization:LanguagesEnum.ru}}"
+                           Command="{Binding Path=ChangeLanguageCommand}" />
+              <RadioButton Classes="Button" GroupName="Lang"
+                           Content=" English "
+                           IsChecked="{Binding CultureInfo, Converter={StaticResource  EnumToBooleanConverter}, ConverterParameter={x:Static localization:LanguagesEnum.en}}"
+                           Command="{Binding Path=ChangeLanguageCommand}" />
+            </StackPanel>
+          </styles:Card>
+
+          <TextBlock Grid.Row="1" Grid.Column="0" 
+                     Text="Тема" 
+                     VerticalAlignment="Center" Margin="0 0 20 0" />
+          <styles:Card Grid.Row="1" Grid.Column="1" Padding="0" InsideClipping="True"
+                       HorizontalAlignment="Left" Margin="0,10">
+            <StackPanel Orientation="Horizontal" Height="32">
+              <RadioButton Content="Светлая"
+                           Classes="Button" GroupName="ThemeGroup"
+                           IsChecked="{Binding ThemeMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static base:BaseThemeMode.Light}}"
+                           Command="{Binding Path=ChangeMaterialUiThemeCommand}" />
+              <RadioButton Content="Темная"
+                           Classes="Button" GroupName="ThemeGroup"
+                           IsChecked="{Binding ThemeMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static base:BaseThemeMode.Dark}}"
+                           Command="{Binding Path=ChangeMaterialUiThemeCommand}" />
+            </StackPanel>
+          </styles:Card>
+        </Grid>        
+      </StackPanel>
+    </styles:Card>
+
+    <!-- Back-->
+    <Button Grid.Row="1" Command="{Binding MoveBackCommand}" Margin="0,15">
+      <Button.Content>
+        <Grid ColumnDefinitions="Auto, 8, *">
+          <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+          <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+        </Grid>
+      </Button.Content>
+    </Button>
+  </Grid>
+</UserControl>

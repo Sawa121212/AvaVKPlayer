@@ -13,12 +13,13 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Common.Core.ToDo;
 using Common.Core.Views;
+using Prism.Regions;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Authorization.Module.Views
 {
-    public class AuthorizationViewModel : ViewModelBase
+    public class AuthorizationViewModel : ViewModelBase, INavigationAware
     {
         const int Port = 2654;
         bool _waitStartServer = false;
@@ -39,6 +40,7 @@ namespace Authorization.Module.Views
 
         private WebElementServer? _webElementServer;
         private readonly IAuthorizationService _authorizationService;
+        private IRegionNavigationJournal _journal;
 
         public AuthorizationViewModel(IAuthorizationService authorizationService)
         {
@@ -195,6 +197,24 @@ namespace Authorization.Module.Views
         {
         }
 
+        private void OnGoBack()
+        {
+            _journal.GoBack();
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            _journal = navigationContext.NavigationService.Journal;
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
 
         public ObservableCollection<SavedAccountModel>? SavedAccounts { get; set; } = new();
 
@@ -208,7 +228,7 @@ namespace Authorization.Module.Views
         [Reactive] public int ActiveAccountSelectIndex { get; set; }
 
 
-        public ICommand? AuthCommand { get; set; }
-        public ICommand? RemoveAccountCommand { get; set; }
+        public ICommand AuthCommand { get; set; }
+        public ICommand RemoveAccountCommand { get; set; }
     }
 }

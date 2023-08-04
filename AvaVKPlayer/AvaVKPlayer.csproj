@@ -4,10 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ApplicationIcon>AvaVKPlayer.ico</ApplicationIcon>
-    <StartupObject />
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <LangVersion>preview</LangVersion>
     <Authors>Sawa121212 and MukhinDmitriy</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Sawa121212/AvaVKPlayer</PackageProjectUrl>
@@ -30,23 +27,20 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.21" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
-    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
-    <PackageReference Include="Material.Avalonia" Version="2.5.1" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.21" />
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
     <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.1021" />
-    <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.Core\Common.Core.csproj" />
-    <ProjectReference Include="..\Common\Common.Resources\Common.Resources.csproj" />
     <ProjectReference Include="..\Domain\DataDomain\Player.Domain.csproj" />
     <ProjectReference Include="..\Modules\Authorization\Authorization.Module\Authorization.Module.csproj" />
     <ProjectReference Include="..\Modules\Equalizer\Equalizer.Module\Equalizer.Module.csproj" />
     <ProjectReference Include="..\Modules\Notification\Notification.Module\Notification.Module.csproj" />
     <ProjectReference Include="..\Modules\Player\Player.Module\Player.Module.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>

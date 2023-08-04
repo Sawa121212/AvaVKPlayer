@@ -1,6 +1,4 @@
-﻿using static Common.Core.ToDo.GlobalVars;
-
-namespace Common.Core.ToDo
+﻿namespace Common.Core.ToDo
 {
     public class Events
     {

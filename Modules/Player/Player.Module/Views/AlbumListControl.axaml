@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Player.Module.Views.AlbumListControl"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:views="clr-namespace:Player.Module.Views"
-             xmlns:resources="clr-namespace:Common.Resources;assembly=Common.Resources">
+             xmlns:resources="clr-namespace:Common.Resources;assembly=Common.Resources"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Player.Module.Views.AlbumListControl">
+
     <Grid>
         <ListBox SelectedIndex="{Binding SelectedIndex}"
                  Items="{Binding  DataCollection}">

@@ -2,8 +2,7 @@
 {
     public static class RegionNameService
     {
-
-        public static string ShellRegionName => "ShellRegion";
-        public static string ContentRegionName => "ContentRegion";
+        public const string ShellRegionName = "ShellRegion";
+        public const string ContentRegionName = "ContentRegion";
     }
 }

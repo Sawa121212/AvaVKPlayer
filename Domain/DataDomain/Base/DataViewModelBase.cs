@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Reactive.Linq;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Layout;
-using Avalonia.Threading;
-using Common.Core.ToDo;
-using Common.Core.Views;
-using ReactiveUI;
+﻿using Common.Core.Views;
 using ReactiveUI.Fody.Helpers;
 
 namespace Player.Domain.Base

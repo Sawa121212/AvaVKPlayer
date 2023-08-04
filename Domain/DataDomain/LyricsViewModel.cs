@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Common.Core.ToDo;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using VkNet.Model;
