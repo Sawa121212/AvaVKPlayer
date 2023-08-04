@@ -31,7 +31,7 @@ namespace Notification.Module.Services
         public void SetHostWindow(IAvaloniaObject hostWindow)
         {
             if (hostWindow is not Window window) return;
-            WindowNotificationManager? notificationManager = new WindowNotificationManager(window)
+            WindowNotificationManager? notificationManager = new(window)
             {
                 Position = NotificationPosition.BottomRight,
                 MaxItems = 4,

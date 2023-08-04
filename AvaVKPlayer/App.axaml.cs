@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Resources;
 using Authorization.Module;
 using Authorization.Module.Services;
+using Authorization.Module.Views;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -12,7 +13,6 @@ using AvaVKPlayer.Properties;
 using AvaVKPlayer.Views;
 using Common.Core.Localization;
 using Common.Core.Regions;
-using DryIoc;
 using Equalizer.Module;
 using Notification.Module;
 using Notification.Module.Services;
@@ -33,16 +33,18 @@ namespace AvaVKPlayer
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            // Initializes Prism.Avalonia - DO NOT REMOVE
             base.Initialize();
         }
 
-        private Window GetAppShell()
+        protected override Window CreateShell()
         {
             return Container.Resolve<ShellView>();
         }
 
         /// <summary>
-        /// Регистрация служб приложения
+        /// Регистрация служб и отображений приложения
         /// </summary>
         /// <param name="containerRegistry"></param>
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -58,9 +60,7 @@ namespace AvaVKPlayer
                 ;
 
             // Views - Generic
-            containerRegistry.Register<ShellView>();
-
-            containerRegistry.RegisterForNavigation<MainView>();
+            containerRegistry.RegisterSingleton<ShellView>();
         }
 
         /// <summary>
@@ -80,42 +80,40 @@ namespace AvaVKPlayer
             base.ConfigureModuleCatalog(moduleCatalog);
         }
 
-        protected override Window CreateShell()
+        protected override void InitializeShell(IAvaloniaObject shell)
         {
-            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                throw new Exception(@"ApplicationLifetime is not {nameof(IClassicDesktopStyleApplicationLifetime)}");
-            }
+            base.InitializeShell(shell);
 
-            // Добавим локализацию
+            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
             ILocalizer? localizer = Container.Resolve<ILocalizer>();
             localizer.AddResourceManager(new ResourceManager(typeof(Language)));
 
-            Window? mainWindow = GetAppShell();
-
-            if (mainWindow != null)
+            desktop.MainWindow = CreateShell();
+            if (desktop.MainWindow != null)
             {
-                desktop.MainWindow = mainWindow;
-
                 INotificationService? notifyService = Container.Resolve<INotificationService>();
                 notifyService.SetHostWindow(desktop.MainWindow);
+                desktop.MainWindow.Show();
             }
 
             Dispatcher.UIThread.InvokeAsync(() => { localizer.ChangeLanguage("ru"); },
                 DispatcherPriority.SystemIdle);
-
-            return desktop.MainWindow;
         }
 
         /// <summary>Called after <seealso cref="Initialize"/>.</summary>
         protected override void OnInitialized()
         {
-            // установим регин, на котором будем показывать окно Авторизации
-            Container.Resolve<IAuthorizationService>().SetRegionName(RegionNameService.ShellRegionName);
+            // ToDo: remove line
+            Container.Resolve<IRegionManager>().RequestNavigate(RegionNameService.ShellRegionName, nameof(MainView));
 
-            // Register initial Views to Region.
-            IRegionManager? regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion(RegionNameService.ShellRegionName, nameof(MainView));
+            // ToDo: uncomment lines
+            // установим регион, на котором будем показывать окно Авторизации
+            /*IAuthorizationService? authorizationService = Container.Resolve<IAuthorizationService>();
+            authorizationService.SetRegionName(RegionNameService.ShellRegionName);
+            authorizationService.SetAuthorizationMode();*/
         }
 
         /// <summary>

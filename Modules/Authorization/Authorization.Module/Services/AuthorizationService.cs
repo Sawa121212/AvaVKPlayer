@@ -90,10 +90,7 @@ namespace Authorization.Module.Services
         /// <inheritdoc cref="SetAuthorizationMode" />
         public void SetAuthorizationMode()
         {
-            if (_regionManager.Regions.ContainsRegionWithName(_regionName))
-            {
-                _regionManager.RequestNavigate(_regionName, nameof(AuthorizationView));
-            }
+            ShowAuthorizationView();
         }
 
         // Показать окно авторизации

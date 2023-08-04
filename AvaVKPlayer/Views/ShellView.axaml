@@ -1,8 +1,8 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
-        prism:ViewModelLocator.AutoWireViewModel="True"
         xmlns:regions="clr-namespace:Common.Core.Regions;assembly=Common.Core"
+        prism:ViewModelLocator.AutoWireViewModel="True"
         x:Class="AvaVKPlayer.Views.ShellView"
         WindowStartupLocation="CenterScreen"
         Icon="/Assets/AvaVKPlayer.ico"
@@ -11,7 +11,7 @@
         Width="900" Height="700">
 
     <Panel>
-        <!-- Content Region -->
+        <!-- Region -->
         <ContentControl prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ShellRegionName}" />
     </Panel>
 </Window>

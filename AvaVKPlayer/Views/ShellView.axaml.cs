@@ -1,21 +1,27 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Notification.Module.Services;
+using Prism.Ioc;
 
-namespace AvaVKPlayer.Views{
-
-public partial class ShellView : Window
+namespace AvaVKPlayer.Views
 {
-    public ShellView()
+    public partial class ShellView : Window
     {
-        InitializeComponent();
+        public ShellView()
+        {
+            InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+            this.AttachDevTools();
 #endif
-    }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+            //var notifyService = ContainerLocator.Current.Resolve<INotificationService>();
+            //notifyService.SetHostWindow(this);
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
-} }
+}

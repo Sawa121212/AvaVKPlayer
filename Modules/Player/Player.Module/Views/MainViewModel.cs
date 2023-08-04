@@ -8,19 +8,21 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
 using Common.Core.ToDo;
-using Common.Core.Views;
 using Player.Domain;
 using Player.Domain.ETC;
 using Player.Module.ViewModels.Audios;
 using Player.Module.ViewModels.Audios.Albums;
 using Player.Module.ViewModels.Base;
 using Player.Module.ViewModels.Exceptions;
+using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Regions;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Player.Module.Views
 {
-    public class MainViewModel : ViewModelBase
+    public partial class MainViewModel : BindableBase, INavigationAware
     {
         private double _oldheight = 0;
         private bool _siderBarAnimationIsPlaying;
@@ -31,9 +33,13 @@ namespace Player.Module.Views
         private AudioSearchViewModel? _searchViewModel;
         private RecomendationsViewModel? _recomendationsViewModel;
 
-        public MainViewModel(IAuthorizationService authorizationService)
+        public MainViewModel(IAuthorizationService authorizationService, IRegionManager regionManager)
         {
             _authorizationService = authorizationService;
+            _regionManager = regionManager;
+            ShowSettingsCommand = new DelegateCommand(OnShowSettings);
+            ShowAboutCommand = new DelegateCommand(OnShowAbout);
+
             MenuColumnWidth = new GridLength(50);
             IsMaximized = true;
 

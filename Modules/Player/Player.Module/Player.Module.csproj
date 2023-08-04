@@ -30,58 +30,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\AddToAlbumView.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\AlbumListControl.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ExceptionView.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MainView.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>MainView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MusicListControl.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\PlayerControlView.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>PlayerControlView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\RepostView.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="Properties\Language.Designer.cs">
+      <DependentUpon>Language.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Views\AddToAlbumView.axaml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="Views\AlbumListControl.axaml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="Views\ExceptionView.axaml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="Views\MainWindow.axaml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="Views\MusicListControl.axaml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="Views\PlayerControl.axaml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="Views\RepostView.axaml">
-      <SubType>Designer</SubType>
-    </None>
+    <EmbeddedResource Update="Properties\Language.resx">
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Language.ru.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

@@ -1,17 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:prism="http://prismlibrary.com/"
-        prism:ViewModelLocator.AutoWireViewModel="True"
-        xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-        xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-        xmlns:views="clr-namespace:Player.Module.Views"
-        xmlns:views1="clr-namespace:Authorization.Module.Views;assembly=Authorization.Module"
-        mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="300"
-        x:Class="Player.Module.Views.MainView">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:views="clr-namespace:Player.Module.Views"
+             xmlns:views1="clr-namespace:Authorization.Module.Views;assembly=Authorization.Module"
+             mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="300"
+             x:Class="Player.Module.Views.MainView">
 
     <!--<Design.DataContext>
         <views:MainViewModel />
@@ -116,17 +116,26 @@
                 </ListBoxItem>
             </ListBox>
 
-            <!-- Settings -->
             <StackPanel Grid.Column="0" Grid.Row="2"
                         Orientation="Vertical"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="5" Spacing="3">
+                <!-- Settings -->
                 <Button
                     Classes="Flat"
                     Content="{avalonia:MaterialIconExt Kind=Settings, Size=32}"
                     Width="32" Height="32"
-                    ToolTip.Tip="Settings" />
+                    ToolTip.Tip="Settings"
+                    Command="{Binding ShowSettingsCommand}" />
+
+                <!-- About -->
+                <Button
+                    Classes="Flat"
+                    Content="{avalonia:MaterialIconExt Kind=Information, Size=32}"
+                    Width="32" Height="32"
+                    ToolTip.Tip="About"
+                    Command="{Binding ShowAboutCommand}" />
 
                 <!-- Выйти -->
                 <Button
@@ -158,21 +167,21 @@
                          Margin="10">
                 <Panel>
                     <views:MusicListControl
-                        IsVisible="{Binding DataContext.CurrentAudioViewIsVisible, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                        DataContext="{Binding DataContext.CurrentAudioViewModel, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                        IsVisible="{ReflectionBinding  DataContext.CurrentAudioViewIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        DataContext="{ReflectionBinding  DataContext.CurrentAudioViewModel, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
 
                     <views:AlbumListControl
-                        IsVisible="{Binding DataContext.AlbumsIsVisible, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                        DataContext="{Binding DataContext.AlbumsViewModel, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                        IsVisible="{ReflectionBinding  DataContext.AlbumsIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        DataContext="{ReflectionBinding  DataContext.AlbumsViewModel, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
 
                     <views1:AuthorizationView
-                        IsVisible="{Binding DataContext.VkLoginIsVisible, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                        DataContext="{Binding VkLoginViewModel}" />
+                        IsVisible="{ReflectionBinding  DataContext.VkLoginIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        DataContext="{ReflectionBinding  VkLoginViewModel}" />
 
                     <views:RepostView
-                        DataContext="{Binding DataContext.RepostViewModel, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                        IsVisible="{Binding DataContext.RepostViewIsVisible,
-							 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+                        DataContext="{ReflectionBinding  DataContext.RepostViewModel, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        IsVisible="{ReflectionBinding  DataContext.RepostViewIsVisible,
+							 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
 
                     <!--notify:NotifyControl
                         CornerRadius="5,0,0,0"
@@ -189,9 +198,10 @@
                     </notify:NotifyControl-->
 
                     <views:ExceptionView
-                        DataContext="{Binding DataContext.ExceptionViewModel, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                        IsVisible="{Binding DataContext.ExceptionIsVisible,
-							 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+                        DataContext="{Binding  DataContext.ExceptionViewModel, 
+                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        IsVisible="{Binding  DataContext.ExceptionIsVisible,
+                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                 </Panel>
             </styles:Card>
         </Grid>
