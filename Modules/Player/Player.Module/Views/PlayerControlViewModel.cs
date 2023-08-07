@@ -37,7 +37,7 @@ namespace Player.Module.Views
         private AudioModel _currentAudio;
         private bool _mute;
         private bool _pauseButtonIsVisible;
-        private bool _playButtonIsVisible = true;
+        private bool _playerIsPlaying = true;
         private int _playPosition = 0;
         private bool _repeat;
         private bool _shuffling;
@@ -65,12 +65,12 @@ namespace Player.Module.Views
                     return;
 
                 EqualizerViewModel.UpdateFx();
-                PauseButtonVisible();
+                OnUpdatePlayerStatus();
             });
             PauseCommand = ReactiveCommand.Create(() =>
             {
                 if (Player.Pause())
-                    PlayButtonVisible();
+                    OnUpdatePlayerStatus();
             });
             NextCommand = ReactiveCommand.Create(() => PlayNext());
             PreviousCommand = ReactiveCommand.Create(() => PlayPrevious());
@@ -123,18 +123,10 @@ namespace Player.Module.Views
             SetPlaylistEvent?.Invoke(audioCollection, selectedIndex);
         }
 
-        private void PlayButtonVisible()
+        private void OnUpdatePlayerStatus()
         {
-            PlayButtonIsVisible = true;
-            PauseButtonIsVisible = false;
+            PlayerIsPlaying = !_playerIsPlaying;
         }
-
-        private void PauseButtonVisible()
-        {
-            PlayButtonIsVisible = false;
-            PauseButtonIsVisible = true;
-        }
-
 
         private void PlayerControlViewModel_SetPlaylistEvent(ObservableCollection<AudioModel>? audioCollection,
             int selectedIndex)
@@ -290,7 +282,7 @@ namespace Player.Module.Views
                         return;
                     }
 
-                    PauseButtonVisible();
+                    OnUpdatePlayerStatus();
 
 
                     _timer?.Start();
@@ -320,16 +312,10 @@ namespace Player.Module.Views
 
         public Domain.Player Player { get; set; }
 
-        public bool PlayButtonIsVisible
+        public bool PlayerIsPlaying
         {
-            get => _playButtonIsVisible;
-            set => this.RaiseAndSetIfChanged(ref _playButtonIsVisible, value);
-        }
-
-        public bool PauseButtonIsVisible
-        {
-            get => _pauseButtonIsVisible;
-            set => this.RaiseAndSetIfChanged(ref _pauseButtonIsVisible, value);
+            get => _playerIsPlaying;
+            set => this.RaiseAndSetIfChanged(ref _playerIsPlaying, value);
         }
 
         public CancellationToken CancellationToken { get; private set; } = new CancellationToken();

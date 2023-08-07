@@ -7,15 +7,18 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source='avares://Common.Resources/Geometries.axaml' />
-                <themes:BundledTheme BaseTheme="Dark" PrimaryColor="Blue" SecondaryColor="Amber" />
+                <themes:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Amber" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
-        <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
-
         <!-- Используем стиль Material.Avalonia -->
         <StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml" />
+
+        <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
+
+        <!-- Подключаем в конце, чтобы изменить уже загруженные стили -->
+        <StyleInclude Source='avares://Common.Resources/CustomStyles.axaml' />
     </Application.Styles>
 </Application>

@@ -1,5 +1,4 @@
 ﻿using Authorization.Module.Domain;
-using Common.Core.ToDo;
 using Player.Domain.Base;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -19,7 +18,7 @@ namespace Player.Domain
             Image = new ImageModel
             {
                 DecodeWidth = 50,
-                Bitmap = GlobalVars.DefaultMusicImage
+                //Bitmap = GlobalVars.DefaultMusicImage
             };
         }
 
