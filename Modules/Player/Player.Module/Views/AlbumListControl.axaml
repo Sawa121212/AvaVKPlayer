@@ -8,11 +8,14 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:views="clr-namespace:Player.Module.Views"
              xmlns:resources="clr-namespace:Common.Resources;assembly=Common.Resources"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:m3="clr-namespace:Common.Resources.m3;assembly=Common.Resources"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Player.Module.Views.AlbumListControl">
 
     <Grid>
-        <ListBox SelectedIndex="{Binding SelectedIndex}"
+        <ListBox Classes="NoFeedback"
+                 SelectedIndex="{Binding SelectedIndex}"
                  Items="{Binding  DataCollection}">
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
@@ -57,24 +60,44 @@
                     <WrapPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <Border IsHitTestVisible="False" CornerRadius="10" Width="120" Height="120">
-                            <Border.Background>
-                                <ImageBrush Source="{Binding Image.Bitmap}" />
-                            </Border.Background>
-                        </Border>
-                        <TextBlock IsHitTestVisible="False" Width="120" Margin="10,3" TextAlignment="Center"
-                                   TextWrapping="Wrap" HorizontalAlignment="Center" Height="40" Text="{Binding Title}" />
-                    </StackPanel>
+                    <m3:Card Classes="Outlined" Width="130">
+                        <m3:Card.Image>
+                            <Panel>
+                                <Border Height="120"
+                                        VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                        IsHitTestVisible="False"
+                                        IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"
+                                        Background="#e6edf5">
+                                    <avalonia:MaterialIcon Kind="PlaylistMusic"
+                                                           Foreground="#6e9acb" Width="64" Height="64" />
+                                </Border>
+                                <Border Height="120"
+                                        VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                        IsHitTestVisible="False"
+                                        IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <Border.Background>
+                                        <ImageBrush Source="{Binding Image.Bitmap}" Stretch="Fill" />
+                                    </Border.Background>
+                                </Border>
+                            </Panel>
+                        </m3:Card.Image>
+                        <TextBlock Text="{Binding Title}"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center" HorizontalAlignment="Center"
+                                   IsHitTestVisible="False" Margin="10,3" />
+                    </m3:Card>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Grid
-            IsVisible="{Binding DataContext.MusicFromAlbumIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-            RowDefinitions="Auto,*">
-            <Button Command="{Binding BackToAlbumListCommand}" Background="Transparent" Margin="10,0,0,0">
+
+        <Grid RowDefinitions="Auto,*"
+              IsVisible="{Binding DataContext.MusicFromAlbumIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+            <Button Background="Transparent"
+                    Command="{Binding BackToAlbumListCommand}"
+                    Margin="10,0,0,0">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <Path UseLayoutRounding="True" VerticalAlignment="Center" Margin="-5,0,0,0" Height="15"

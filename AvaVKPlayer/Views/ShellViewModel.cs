@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using Common.Core.Extensions;
 using Common.Core.Localization;
+using Common.Core.Views;
 using Prism.Mvvm;
 
 namespace AvaVKPlayer.Views
 {
-    public class ShellViewModel : BindableBase
+    public class ShellViewModel : ViewModelBase
     {
         private LanguagesEnum _appCultureInfo;
         private readonly ILocalizer _localizer;

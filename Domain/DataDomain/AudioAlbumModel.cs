@@ -1,5 +1,4 @@
 ﻿using Authorization.Module.Domain;
-using Common.Core.ToDo;
 using Player.Domain.Base;
 using VkNet.Model;
 
@@ -11,16 +10,16 @@ namespace Player.Domain
         {
             Image = new ImageModel
             {
-                Bitmap = GlobalVars.DefaultAlbumImage,
+                //Bitmap = GlobalVars.DefaultAlbumImage,
                 DecodeWidth = 0
             };
 
 
             Title = audioPlaylist.Title;
 
-            Id = (long)audioPlaylist.Id;
+            Id = (long) audioPlaylist.Id;
 
-            OwnerId = (long)audioPlaylist.OwnerId;
+            OwnerId = (long) audioPlaylist.OwnerId;
 
             IsFollowing = audioPlaylist.IsFollowing;
 

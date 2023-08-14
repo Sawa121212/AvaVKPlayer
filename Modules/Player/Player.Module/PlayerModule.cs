@@ -40,8 +40,6 @@ namespace Player.Module
         {
             // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
             containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
-
-            //_regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(MainView));
         }
     }
 }
