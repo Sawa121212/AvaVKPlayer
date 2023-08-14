@@ -26,13 +26,6 @@ namespace Player.Module.ViewModels.Audios
             });
         }
 
-        public IReactiveCommand BackToAlbumListCommand { get; set; }
-
-        [Reactive] public MusicFromAlbumViewModel? MusicFromAlbumViewModel { get; set; }
-
-        [Reactive] public bool MusicFromAlbumIsVisible { get; set; }
-
-
         public override void SelectedItem(object sender, PointerPressedEventArgs args)
         {
             AudioAlbumModel? item = args?.GetContent<AudioAlbumModel>();
@@ -61,5 +54,12 @@ namespace Player.Module.ViewModels.Audios
                 DataCollection.StartLoadImagesAsync();
             }
         }
+
+
+        [Reactive] public MusicFromAlbumViewModel? MusicFromAlbumViewModel { get; set; }
+
+        [Reactive] public bool MusicFromAlbumIsVisible { get; set; }
+
+        public IReactiveCommand BackToAlbumListCommand { get; set; }
     }
 }

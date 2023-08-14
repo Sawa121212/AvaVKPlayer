@@ -1,25 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
-    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <AvaloniaResource Include="**\*.xaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.21" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaXaml Remove="Geometries.axaml" />
-    <AvaloniaResource Include="Geometries.axaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="LoadingControl.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
+    <PackageReference Include="Material.Avalonia" Version="2.5.1" />
   </ItemGroup>
 </Project>

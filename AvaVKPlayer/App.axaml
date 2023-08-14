@@ -19,6 +19,7 @@
         <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
 
         <!-- Подключаем в конце, чтобы изменить уже загруженные стили -->
-        <StyleInclude Source='avares://Common.Resources/CustomStyles.axaml' />
+        <StyleInclude Source="avares://Common.Resources/m3/Material3ToolKit.xaml" />
+        <StyleInclude Source="avares://Common.Resources/CustomStyles.xaml" />
     </Application.Styles>
 </Application>

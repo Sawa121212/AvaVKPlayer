@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Reflection;
 using System.Resources;
 using Authorization.Module;
@@ -44,12 +44,12 @@ namespace AvaVKPlayer
         }
 
         /// <summary>
-        /// Регистрация служб и отображений приложения
+        /// Р РµРіРёСЃС‚СЂР°С†РёСЏ СЃР»СѓР¶Р± Рё РѕС‚РѕР±СЂР°Р¶РµРЅРёР№ РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
         /// <param name="containerRegistry"></param>
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            // Регистрация General служб приложения 
+            // Р РµРіРёСЃС‚СЂР°С†РёСЏ General СЃР»СѓР¶Р± РїСЂРёР»РѕР¶РµРЅРёСЏ 
             containerRegistry
                 .RegisterSingleton<ILocalizer, Localizer>()
                 .RegisterSingleton<IResourceProvider, ResourceProvider>(Assembly.GetExecutingAssembly().FullName)
@@ -64,7 +64,7 @@ namespace AvaVKPlayer
         }
 
         /// <summary>
-        /// Регистрация модулей приложения
+        /// Р РµРіРёСЃС‚СЂР°С†РёСЏ РјРѕРґСѓР»РµР№ РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
         /// <param name="moduleCatalog"></param>
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -87,7 +87,7 @@ namespace AvaVKPlayer
             if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
 
-            // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
+            // Р”РѕР±Р°РІРёРј СЂРµСЃСѓСЂСЃ Р›РѕРєР°Р»РёР·Р°С†РёРё РІ "РєРѕР»Р»РµРєС†РёСЋ СЂРµСЃСѓСЂСЃРѕРІ Р»РѕРєР°Р»РёР·Р°С†РёРё"
             ILocalizer? localizer = Container.Resolve<ILocalizer>();
             localizer.AddResourceManager(new ResourceManager(typeof(Language)));
 
@@ -110,15 +110,15 @@ namespace AvaVKPlayer
             Container.Resolve<IRegionManager>().RequestNavigate(RegionNameService.ShellRegionName, nameof(MainView));
 
             // ToDo: uncomment lines
-            // установим регион, на котором будем показывать окно Авторизации
+            // СѓСЃС‚Р°РЅРѕРІРёРј СЂРµРіРёРѕРЅ, РЅР° РєРѕС‚РѕСЂРѕРј Р±СѓРґРµРј РїРѕРєР°Р·С‹РІР°С‚СЊ РѕРєРЅРѕ РђРІС‚РѕСЂРёР·Р°С†РёРё
             /*IAuthorizationService? authorizationService = Container.Resolve<IAuthorizationService>();
             authorizationService.SetRegionName(RegionNameService.ShellRegionName);
             authorizationService.SetAuthorizationMode();*/
         }
 
         /// <summary>
-        /// ViewModel Locator. Мы работаем с View, а не с ViewModel!
-        /// Ищем ViewModel для View в той же папке, где и View лежит.
+        /// ViewModel Locator. РњС‹ СЂР°Р±РѕС‚Р°РµРј СЃ View, Р° РЅРµ СЃ ViewModel!
+        /// РС‰РµРј ViewModel РґР»СЏ View РІ С‚РѕР№ Р¶Рµ РїР°РїРєРµ, РіРґРµ Рё View Р»РµР¶РёС‚.
         /// </summary>
         protected override void ConfigureViewModelLocator()
         {

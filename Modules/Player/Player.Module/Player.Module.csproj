@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Common.Resources\Common.Resources.csproj" />
     <ProjectReference Include="..\..\..\Domain\DataDomain\Player.Domain.csproj" />
     <ProjectReference Include="..\..\Equalizer\Equalizer.Module\Equalizer.Module.csproj" />
   </ItemGroup>

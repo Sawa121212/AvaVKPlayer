@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Threading;
 using Avalonia;
 using Avalonia.Dialogs;
@@ -17,14 +17,14 @@ namespace AvaVKPlayer
         [STAThread]
         public static void Main(string[] args)
         {
-            // добавим Mutex для блокировки запуска повторного ПО
+            // РґРѕР±Р°РІРёРј Mutex РґР»СЏ Р±Р»РѕРєРёСЂРѕРІРєРё Р·Р°РїСѓСЃРєР° РїРѕРІС‚РѕСЂРЅРѕРіРѕ РџРћ
             Mutex mutex = new(false, typeof(Program).FullName);
 
             try
             {
                 if (!mutex.WaitOne(TimeSpan.FromSeconds(TimeoutSeconds), true))
                 {
-                    return; // ждем TimeoutSeconds секунд
+                    return; // Р¶РґРµРј TimeoutSeconds СЃРµРєСѓРЅРґ
                 }
 
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);

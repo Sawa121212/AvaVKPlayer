@@ -1,4 +1,5 @@
 ﻿using Common.Core.Regions;
+using Common.Resources.m3.Navigation;
 using Player.Module.Views.Pages;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -33,6 +34,7 @@ namespace Player.Module.Views
             ShowSettingsCommand.RaiseCanExecuteChanged();
             ShowAboutCommand.RaiseCanExecuteChanged();
         }
+
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {

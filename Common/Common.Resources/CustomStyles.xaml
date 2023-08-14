@@ -1,0 +1,28 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+
+    <!-- ToggleButton.Gray -->
+    <Style Selector="ToggleButton.Gray:not(:checked)">
+        <Setter Property="Foreground"
+                Value="{DynamicResource MaterialDesignToolTipBackground}" />
+    </Style>
+
+    <Style Selector="ToggleButton.Gray:checked">
+        <Setter Property="Foreground"
+                Value="{DynamicResource PrimaryHueMidBrush}" />
+    </Style>
+
+    <!--  -->
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <StackPanel>
+                <Border IsHitTestVisible="False" CornerRadius="12" Width="120" Height="120"
+                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                        Background="#e6edf5">
+                    <avalonia:MaterialIcon Kind="PlaylistMusic" Foreground="#6e9acb" Width="42" Height="42" />
+                </Border>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+</Styles>

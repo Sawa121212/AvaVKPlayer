@@ -1,0 +1,241 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:m3="clr-namespace:Common.Resources.m3"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple">
+
+    <Style Selector="m3|Card">
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="{Binding ShadowDepth}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="ScaleOnPointerOver" Value="False" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent" ClipToBounds="False">
+                    <Border
+                        assists:ShadowAssist.ShadowDepth="{Binding RelativeSource={RelativeSource TemplatedParent}, 
+                                Path=(assists:ShadowAssist.ShadowDepth)}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="False">
+
+                        <Border
+                            Name="PART_ClipBorder"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            ClipToBounds="{TemplateBinding InsideClipping}"
+                            assists:ShadowAssist.ShadowDepth="{Binding RelativeSource={RelativeSource TemplatedParent}, 
+                                    Path=(assists:ShadowAssist.ShadowDepth)}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <Grid RowDefinitions="Auto, *">
+
+                                <!-- PART_Container -->
+                                <Border Grid.Row="0"
+                                        Name="PART_Image"
+                                        Background="{DynamicResource MaterialDesignCardBackground}"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                        IsVisible="{TemplateBinding Image, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                        ClipToBounds="True">
+                                    <ContentPresenter Content="{TemplateBinding Image}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                </Border>
+
+                                <!-- PART_Content -->
+                                <Border Grid.Row="1" Name="pointerOverBorder"
+                                        Background="{DynamicResource MaterialDesignSelection}"/>
+
+                                <ripple:RippleEffect Grid.Row="1"
+                                                     Name="Ripple"
+                                                     RippleFill="{TemplateBinding Foreground}"
+                                                     Focusable="False"
+                                                     ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                     Padding="{TemplateBinding Padding}">
+                                    <Border Name="PART_Content"
+                                            Padding="{TemplateBinding Padding}"
+                                            Margin="0,3">
+
+                                        <Grid RowDefinitions="Auto, Auto, Auto, *, Auto">
+
+                                            <!-- Headline -->
+                                            <ContentPresenter Grid.Row="1"
+                                                              Name="HeadlinePresenter"
+                                                              Content="{TemplateBinding Headline}">
+                                                <ContentPresenter.DataTemplates>
+                                                    <DataTemplate DataType="system:String">
+                                                        <TextBlock Classes="Headline6"
+                                                                   Text="{Binding .}"
+                                                                   TextWrapping="Wrap" />
+                                                    </DataTemplate>
+                                                    <DataTemplate>
+                                                        <ContentPresenter
+                                                            Content="{TemplateBinding Content}"
+                                                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                                    </DataTemplate>
+                                                </ContentPresenter.DataTemplates>
+                                            </ContentPresenter>
+
+                                            <!-- Subhead -->
+                                            <ContentPresenter Grid.Row="2" Name="SubheadPresenter"
+                                                              Content="{TemplateBinding Subhead}">
+                                                <ContentPresenter.DataTemplates>
+                                                    <DataTemplate DataType="system:String">
+                                                        <TextBlock Classes="Subtitle1"
+                                                                   Text="{Binding .}"
+                                                                   TextWrapping="Wrap" />
+                                                    </DataTemplate>
+                                                    <DataTemplate>
+                                                        <ContentPresenter
+                                                            Content="{TemplateBinding Content}"
+                                                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                                    </DataTemplate>
+                                                </ContentPresenter.DataTemplates>
+                                            </ContentPresenter>
+
+                                            <!-- Content -->
+                                            <ContentPresenter Grid.Row="3" Name="ContentPresenter"
+                                                              Content="{TemplateBinding Content}"
+                                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                        </Grid>
+                                    </Border>
+                                </ripple:RippleEffect>
+
+                            </Grid>
+                        </Border>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform"
+                                               Easing="ExponentialEaseOut"
+                                               Duration="0:0:0.25" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="m3|Card:disabled">
+        <Setter Property="Opacity" Value="0.62" />
+    </Style>
+
+    <!-- Scale pointerover -->
+    <Style Selector="m3|Card[ScaleOnPointerOver=True]">
+        <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+
+    <Style Selector="m3|Card[ScaleOnPointerOver=True]:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.04)" />
+    </Style>
+
+    <!-- Transitions -->
+    <Style Selector="m3|Card:not(.notransitions) /template/ Border#pointerOverBorder">
+        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Duration="0:0:0.25" Property="Opacity" Easing="LinearEasing" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style
+        Selector="m3|Card:not(:pointerover) /template/ Border#pointerOverBorder">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+
+    <!-- Container Border -->
+    <Style Selector="m3|Card[OutlinedImage=True] /template/Border#PART_Image">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignSelection}" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!--Filled-->
+    <Style Selector="m3|Card.Filled">
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth0" />
+        <Setter Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+        <Setter Property="assists:ButtonAssist.HoverColor" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="assists:ButtonAssist.ClickFeedbackColor" Value="{Binding $self.Foreground}" />
+    </Style>
+
+    <Style Selector="m3|Card.Filled:not(.notransitions) /template/ Border#pointerOverBorder">
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Duration="0:0:0.25" Property="Opacity" Easing="LinearEasing" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style
+        Selector="m3|Card.Filled:not(:pointerover) /template/ Border#pointerOverBorder">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+
+    <!--Outlined-->
+    <Style Selector="m3|Card.Outlined">
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignSelection}" />
+    </Style>
+
+    <Design.PreviewWith>
+        <Border Padding="40">
+            <StackPanel Spacing="8">
+                <m3:Card
+                    Headline="Header Text"
+                    Subhead="Subhead Text"
+                    IsEnabled="False">
+                    <m3:Card.Image>
+                        <Image HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Stretch="Fill" Height="128" Width="128"
+                               Opacity="0.3"
+                               Source="{StaticResource OpenedBoxDrawingImage}" />
+                    </m3:Card.Image>
+
+                    <TextBlock Text="Content" />
+                </m3:Card>
+
+                <m3:Card Headline="Header Text"
+                         Subhead="Subhead Text">
+                    <TextBlock Text="Filled" />
+                </m3:Card>
+
+                <m3:Card Classes="Filled"
+                         Headline="Header Text"
+                         Subhead="Subhead Text">
+                    <TextBlock Text="Filled" />
+                </m3:Card>
+
+                <m3:Card Classes="Outlined"
+                         Headline="Header Text"
+                         Subhead="Subhead Text"
+                         ScaleOnPointerOver="True">
+                    <TextBlock Text="Outlined" />
+                </m3:Card>
+
+                <m3:Card Classes="Filled"
+                         Headline="Header Text - Header Text - Header Text"
+                         Subhead="Subhead Text - Subhead Text - Subhead Text"
+                         ScaleOnPointerOver="True"
+                         OutlinedImage="True"
+                         Width="150">
+                    <m3:Card.Image>
+                        <Image HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Stretch="Fill" Height="128" Width="128"
+                               Opacity="0.3"
+                               Source="{StaticResource OpenedBoxDrawingImage}" />
+                    </m3:Card.Image>
+
+                    <TextBlock Text="Content - Content - Content - Content" />
+                </m3:Card>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+</Styles>

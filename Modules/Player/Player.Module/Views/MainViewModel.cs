@@ -7,7 +7,12 @@ using Authorization.Module.Views;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
+using Common.Core.Regions;
 using Common.Core.ToDo;
+using Common.Core.Views;
+using Common.Resources.m3.Navigation;
+using Material.Icons;
+using Material.Icons.Avalonia;
 using Player.Domain;
 using Player.Domain.ETC;
 using Player.Module.ViewModels.Audios;
@@ -15,6 +20,7 @@ using Player.Module.ViewModels.Audios.Albums;
 using Player.Module.ViewModels.Base;
 using Player.Module.ViewModels.Exceptions;
 using Prism.Commands;
+using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using ReactiveUI;
@@ -22,19 +28,22 @@ using ReactiveUI.Fody.Helpers;
 
 namespace Player.Module.Views
 {
-    public partial class MainViewModel : BindableBase, INavigationAware
+    public partial class MainViewModel : ViewModelBase, INavigationAware
     {
         private double _oldheight = 0;
         private bool _siderBarAnimationIsPlaying;
         private bool _menuIsOpen;
+        private readonly IContainerProvider _containerProvider;
         private readonly IAuthorizationService _authorizationService;
         private CurrentMusicListViewModel? _currentMusicListViewModel;
         private AllMusicViewModel? _allMusicListViewModel;
         private AudioSearchViewModel? _searchViewModel;
         private RecomendationsViewModel? _recomendationsViewModel;
 
-        public MainViewModel(IAuthorizationService authorizationService, IRegionManager regionManager)
+        public MainViewModel(IContainerProvider containerProvider, IAuthorizationService authorizationService,
+            IRegionManager regionManager)
         {
+            _containerProvider = containerProvider;
             _authorizationService = authorizationService;
             _regionManager = regionManager;
             ShowSettingsCommand = new DelegateCommand(OnShowSettings);
@@ -162,7 +171,60 @@ namespace Player.Module.Views
             _searchViewModel = new AudioSearchViewModel();
 
             this.WhenAnyValue(vm => vm.MenuSelectionIndex).Subscribe(OpenViewFromMenu);
+
+            NavigationMenu = new NavigationMenu();
+
+            NavigationMenu.AddItem(new NavigationItem()
+            {
+                Index = 0,
+                Title = "Текущий плейлист",
+                Icon = new MaterialIcon() {Kind = MaterialIconKind.MusicBoxMultiple, Width = 32, Height = 32},
+                ToolTip = "Плейлист",
+                Content = _containerProvider.Resolve<MusicListControl>(),
+                DataContext = _currentMusicListViewModel
+            });
+
+            NavigationMenu.AddItem(new NavigationItem()
+            {
+                Index = 1,
+                Title = "Музыка",
+                Icon = new MaterialIcon() {Kind = MaterialIconKind.Music, Width = 32, Height = 32},
+                ToolTip = "Музыка",
+                Content = _containerProvider.Resolve<MusicListControl>(),
+                DataContext = _allMusicListViewModel
+            });
+
+            NavigationMenu.AddItem(new NavigationItem()
+            {
+                Index = 2,
+                Title = "Альбомы",
+                Icon = new MaterialIcon() {Kind = MaterialIconKind.Album, Width = 32, Height = 32},
+                ToolTip = "Альбомы",
+                Content = _containerProvider.Resolve<AlbumListControl>(),
+                DataContext = typeof(OpenAlbumViewModel)
+            });
+
+            NavigationMenu.AddItem(new NavigationItem()
+            {
+                Index = 3,
+                Title = "Поиск",
+                Icon = new MaterialIcon() {Kind = MaterialIconKind.Search, Width = 32, Height = 32},
+                ToolTip = "Поиск",
+                Content = _containerProvider.Resolve<MusicListControl>(),
+                DataContext = _searchViewModel
+            });
+
+            NavigationMenu.AddItem(new NavigationItem()
+            {
+                Index = 4,
+                Title = "Рекомендации",
+                Icon = new MaterialIcon() {Kind = MaterialIconKind.ThumbUp, Width = 32, Height = 32},
+                ToolTip = "Рекомендации",
+                Content = _containerProvider.Resolve<MusicListControl>(),
+                DataContext = _currentMusicListViewModel
+            });
         }
+
 
         private void Events_AudioAddToAlbumEvent(AudioModel audiomodel)
         {
@@ -228,6 +290,7 @@ namespace Player.Module.Views
                 CurrentAudioViewIsVisible = true;
                 CurrentAudioViewModel = null;
                 AlbumsIsVisible = false;
+                ContentControl content = NavigationMenuSelection.Content;
 
                 switch (menuIndex)
                 {
@@ -256,6 +319,7 @@ namespace Player.Module.Views
                         if (AlbumsViewModel == null)
                         {
                             AlbumsViewModel = new OpenAlbumViewModel(_authorizationService);
+                            content.DataContext = AlbumsViewModel;
                             AlbumsViewModel.StartLoad();
                         }
 
@@ -267,7 +331,6 @@ namespace Player.Module.Views
                     {
                         CurrentAudioViewModel = _searchViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
-
 
                         break;
                     }
@@ -281,7 +344,6 @@ namespace Player.Module.Views
 
                         CurrentAudioViewModel = _recomendationsViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
-
 
                         break;
                     }
@@ -369,6 +431,8 @@ namespace Player.Module.Views
 
         public AuthorizationViewModel? VkLoginViewModel { get; set; }
 
+        [Reactive] public NavigationMenu NavigationMenu { get; set; }
+        [Reactive] public NavigationItem NavigationMenuSelection { get; set; }
         [Reactive] public ExceptionViewModel ExceptionViewModel { get; set; }
 
         [Reactive] public AlbumsViewModel? AlbumsViewModel { get; set; }
