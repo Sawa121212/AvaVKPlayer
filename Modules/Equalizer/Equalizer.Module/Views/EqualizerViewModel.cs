@@ -1,61 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using Equalizer.Module.Domain;
 using ManagedBass;
 using ManagedBass.DirectX8;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace Equalizer.Module.Views
 {
-    public class EqualizerViewModel : ReactiveObject
+    public class EqualizerControlViewModel : ReactiveObject
     {
-        private int[] _channels;
-
-        private List<IDisposable?> _disposibles;
-
-        [Reactive] public bool EqualizerManagerIsVisible { get; set; }
-
-        [Reactive] public string EqualizerTitle { get; set; }
-
-        [Reactive] public bool IsUseEqualizer { get; set; }
-
-        [Reactive] public bool IsEnabled { get; set; }
-
-        [Reactive] public IReactiveCommand ResetCommand { get; set; }
-
-        public IReactiveCommand OpenPresetManager { get; set; }
-
-        [Reactive] public List<Domain.Equalizer> Equalizers { get; set; }
-
-        [Reactive] public EqualizerPresetMenagerViewModel PresetMenagerViewModel { get; set; }
-
-        public EqualizerViewModel()
+        public EqualizerControlViewModel()
         {
-            PresetMenagerViewModel = new EqualizerPresetMenagerViewModel();
-
-            PresetMenagerViewModel.CloseViewEvent += PresetMenagerViewModelOnCloseViewEvent;
-
-            OpenPresetManager = ReactiveCommand.Create(() => { EqualizerManagerIsVisible = true; });
-
+            _channels = new int[8];
             _disposibles = new List<IDisposable?>();
 
-
-            this.WhenAnyValue(x => x.IsUseEqualizer).Subscribe((val) =>
-            {
-                if (val is false)
-                {
-                    DisableEqualizer();
-                }
-                else
-                {
-                    UpdateFx();
-                }
-            });
-
-
-            _channels = new int[8];
-
+            PresetMenagerViewModel = new EqualizerPresetsManagerViewModel();
+            PresetMenagerViewModel.CloseViewEvent += PresetManagerViewModelOnCloseViewEvent;
 
             PresetMenagerViewModel
                 .SavedEqualizerData
@@ -88,15 +49,27 @@ namespace Equalizer.Module.Views
                         }
                     }
                 });
+
+            this.WhenAnyValue(x => x.IsUseEqualizer).Subscribe((val) =>
+            {
+                if (val is false)
+                {
+                    DisableEqualizer();
+                }
+                else
+                {
+                    UpdateFx();
+                }
+            });
+
+            OpenPresetManager = ReactiveCommand.Create(() => { EqualizerManagerIsVisible = true; });
         }
 
-        private void PresetMenagerViewModelOnCloseViewEvent()
-        {
-            EqualizerManagerIsVisible = false;
-        }
 
-
-        public void DisableEqualizer()
+        /// <summary>
+        /// Выключить эквалайзер
+        /// </summary>
+        private void DisableEqualizer()
         {
             for (int i = 0; i < Equalizers?.Count; i++)
             {
@@ -110,6 +83,9 @@ namespace Equalizer.Module.Views
             }
         }
 
+        /// <summary>
+        /// Сбросить настройки эквалайзера
+        /// </summary>
         public void ResetEqualizer()
         {
             for (int i = 0; i < Equalizers?.Count; i++)
@@ -118,6 +94,9 @@ namespace Equalizer.Module.Views
             }
         }
 
+        /// <summary>
+        /// Обновить эквалайзер
+        /// </summary>
         public void UpdateEqualizer()
         {
             for (int i = 0; i < Equalizers?.Count; i++)
@@ -126,12 +105,15 @@ namespace Equalizer.Module.Views
             }
         }
 
+        /// <summary>
+        /// Обновить эффекты
+        /// </summary>
         public void UpdateFx()
         {
             for (int i = 0; i < Equalizers?.Count; i++)
             {
-                ManagedBass.DirectX8.DXParamEQParameters dXParamEqParameters =
-                    new ManagedBass.DirectX8.DXParamEQParameters()
+                DXParamEQParameters dXParamEqParameters =
+                    new()
                     {
                         fBandwidth = 12,
                         fCenter = Equalizers[i].Hz,
@@ -142,5 +124,30 @@ namespace Equalizer.Module.Views
 
             PresetMenagerViewModel.SavePressets();
         }
+
+        private void PresetManagerViewModelOnCloseViewEvent()
+        {
+            EqualizerManagerIsVisible = false;
+        }
+
+        private int[] _channels;
+
+        private List<IDisposable?> _disposibles;
+
+        public bool EqualizerManagerIsVisible { get; set; }
+
+        public string EqualizerTitle { get; set; }
+
+        public bool IsUseEqualizer { get; set; }
+
+        public bool IsEnabled { get; set; }
+
+        public List<Domain.Equalizer> Equalizers { get; set; }
+
+        public EqualizerPresetsManagerViewModel PresetMenagerViewModel { get; set; }
+
+        public ICommand ResetCommand { get; set; }
+
+        public ICommand OpenPresetManager { get; }
     }
 }

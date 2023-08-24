@@ -10,20 +10,12 @@ using Material.Styles.Themes;
 using Material.Styles.Themes.Base;
 using Prism.Commands;
 using Prism.Regions;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI;
 
-namespace Player.Module.Views.Pages
+namespace VkPlayer.Module.Views.Pages
 {
     public class SettingsViewModel : ViewModelBase, INavigationAware
     {
-        private readonly ILocalizer _localizer;
-        private readonly IRegionManager _regionManager;
-        private LanguagesEnum _currentAppCultureInfo;
-        private BaseThemeMode _currentThemeMode;
-        private PaletteHelper _paletteHelper;
-        private IRegionNavigationJournal _journal;
-        private bool _initialized;
-
         public SettingsViewModel(ILocalizer localizer)
         {
             _localizer = localizer;
@@ -118,17 +110,36 @@ namespace Player.Module.Views.Pages
         /// <summary>
         /// Application Language / Язык приложения
         /// </summary>
-        [Reactive]
-        public LanguagesEnum CultureInfo { get; set; }
+
+        public LanguagesEnum CultureInfo
+        {
+            get => _cultureInfo;
+            set => this.RaiseAndSetIfChanged(ref _cultureInfo, value);
+        }
 
         /// <summary>
         /// Тема приложения
         /// </summary>
-        [Reactive]
-        public BaseThemeMode ThemeMode { get; set; }
+
+        public BaseThemeMode ThemeMode
+        {
+            get => _themeMode;
+            set => this.RaiseAndSetIfChanged(ref _themeMode, value);
+        }
 
         public ICommand MoveBackCommand { get; }
         public ICommand ChangeLanguageCommand { get; }
         public ICommand ChangeMaterialUiThemeCommand { get; }
+
+
+        private readonly ILocalizer _localizer;
+        private readonly IRegionManager _regionManager;
+        private LanguagesEnum _currentAppCultureInfo;
+        private BaseThemeMode _currentThemeMode;
+        private PaletteHelper _paletteHelper;
+        private IRegionNavigationJournal _journal;
+        private bool _initialized;
+        private BaseThemeMode _themeMode;
+        private LanguagesEnum _cultureInfo;
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using Avalonia.Layout;
-using Player.Domain;
-using Player.Domain.ETC;
-using Player.Module.ViewModels.Base;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
+using VkPlayer.Module.ViewModels.Base;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels.Audios
+namespace VkPlayer.Module.ViewModels.Audios
 {
     public sealed class MusicFromAlbumViewModel : AudioViewModelBase
     {
@@ -32,6 +32,11 @@ namespace Player.Module.ViewModels.Audios
         private void MusicFromAlbumViewModel_AudioRemoveEvent(AudioModel audioModel) =>
             AllDataCollection?.Remove(audioModel);
 
+
+        /// <inheritdoc />
+        public override void OnSelected(AudioModel item)
+        {
+        }
 
         protected override void LoadData()
         {

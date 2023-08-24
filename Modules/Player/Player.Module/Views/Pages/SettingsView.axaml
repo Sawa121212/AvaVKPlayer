@@ -10,7 +10,7 @@
              xmlns:base="clr-namespace:Material.Styles.Themes.Base;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
-             x:Class="Player.Module.Views.Pages.SettingsView">
+             x:Class="VkPlayer.Module.Views.Pages.SettingsView">
 
   <UserControl.Resources>
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />

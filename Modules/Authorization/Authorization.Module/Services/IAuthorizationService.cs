@@ -33,20 +33,46 @@ namespace Authorization.Module.Services
         /// </summary>
         /// <param name="login">Логин</param>
         /// <param name="password">Пароль</param>
-        Task<bool> Authorization(string login, string password);
+        Task<bool> Authorization(VkApi vkApi);
 
         /// <summary>
         /// Сохраненный пользователь
         /// </summary>
         public User StoredUser { get; }
 
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
         SavedAccountModel CurrentAccount { get; set; }
 
-
+        /// <summary>
+        /// Загрузить сохраненных пользователей
+        /// </summary>
+        /// <returns></returns>
         ObservableCollection<SavedAccountModel>? LoadSavedAccounts();
+
+        /// <summary>
+        /// Сохранить аккаунт
+        /// </summary>
         void SaveAccounts();
-        void SaveAccount(VkApi api);
-        void AuthFromActiveAccount(SavedAccountModel first);
-        VkApi Auth(string token, long parse);
+
+        /// <summary>
+        /// Сохранить аккаунт
+        /// </summary>
+        void AddAccount(VkApi api);
+
+        /// <summary>
+        /// Выполнить авторизацию из активного аккаунта
+        /// </summary>
+        /// <param name="first"></param>
+        void AuthorizationFromActiveAccount(SavedAccountModel accountModel);
+
+        /// <summary>
+        /// Выполнить авторизацию
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="parse"></param>
+        /// <returns></returns>
+        bool AuthByTokenAndId(string token, long parse);
     }
 }

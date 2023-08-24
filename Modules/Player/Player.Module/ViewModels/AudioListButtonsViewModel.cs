@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Player.Domain;
-using Player.Domain.ETC;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels
+namespace VkPlayer.Module.ViewModels
 {
     public class AudioListButtonsViewModel : ReactiveObject
     {
@@ -150,7 +149,8 @@ namespace Player.Module.ViewModels
                                 audios.Add(audiosres[i].GetAudioIdFormatWithAccessKey());
                             }
 
-                            bool res = VkApiManager.EditAudioPlaylist(Album.OwnerId, (int) Album.Id, Album.Title, null, audios);
+                            bool res = VkApiManager.EditAudioPlaylist(Album.OwnerId, (int) Album.Id, Album.Title, null,
+                                audios);
 
                             if (res) ;
                             // ToDo Events.AudioRmoveFromAlbumEventCall(vkModel);
@@ -175,23 +175,23 @@ namespace Player.Module.ViewModels
         }
 
         public AudioAlbumModel Album { get; set; } = null;
-        [Reactive] public bool AudioDownloadIsVisible { get; set; }
+        public bool AudioDownloadIsVisible { get; set; }
 
-        [Reactive] public bool AudioAddIsVisible { get; set; }
+        public bool AudioAddIsVisible { get; set; }
 
-        [Reactive] public bool AudioRemoveIsVisible { get; set; }
+        public bool AudioRemoveIsVisible { get; set; }
 
-        [Reactive] public bool AudioAddToAlbumIsVisible { get; set; }
+        public bool AudioAddToAlbumIsVisible { get; set; }
 
-        [Reactive] public bool AudioRepostIsVisible { get; set; }
+        public bool AudioRepostIsVisible { get; set; }
 
 
         public ICommand AudioAddCommand { get; set; }
-        public IReactiveCommand AudioDownloadCommand { get; set; }
-        public IReactiveCommand AudioRemoveCommand { get; set; }
-        public IReactiveCommand AudioAddToAlbumCommand { get; set; }
-        public IReactiveCommand AudioRepostCommand { get; set; }
+        public ICommand AudioDownloadCommand { get; set; }
+        public ICommand AudioRemoveCommand { get; set; }
+        public ICommand AudioAddToAlbumCommand { get; set; }
+        public ICommand AudioRepostCommand { get; set; }
 
-        public IReactiveCommand AudioOpenLyricsCommand { get; set; }
+        public ICommand AudioOpenLyricsCommand { get; set; }
     }
 }

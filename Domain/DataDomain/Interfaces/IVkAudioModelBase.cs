@@ -1,10 +1,28 @@
-﻿namespace Player.Domain.Interfaces
+﻿namespace VkPlayer.Domain.Interfaces
 {
+    /// <summary>
+    /// Медиа: музыка или альбом
+    /// </summary>
     public interface IVkAudiOrAlbumModelBase : IVkModelBase
     {
-        public long OwnerId { get; set; }
-        public string Artist { get; set; }
-        public string AccessKey { get; set; }
-        public string Subtitle { get; set; }
+        /// <summary>
+        /// Идентификатор владельца вложения
+        /// </summary>
+        public long OwnerId { get; }
+
+        /// <summary>
+        /// Исполнитель
+        /// </summary>
+        public string Artist { get; }
+
+        /// <summary>
+        /// Ключ доступа
+        /// </summary>
+        public string AccessKey { get; }
+
+        /// <summary>
+        /// Подзаголовок вложения
+        /// </summary>
+        public string Subtitle { get; }
     }
 }

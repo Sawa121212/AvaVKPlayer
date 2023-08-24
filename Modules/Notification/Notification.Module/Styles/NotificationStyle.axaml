@@ -9,7 +9,7 @@
     </Styles.Resources>
 
     <Style Selector="NotificationCard">
-        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth4" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth2" />
         <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}" />
         <Setter Property="Width" Value="350" />
         <Setter Property="FontSize" Value="14" />

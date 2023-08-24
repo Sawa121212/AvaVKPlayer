@@ -1,4 +1,4 @@
-﻿namespace Player.Domain
+﻿namespace VkPlayer.Domain
 {
     public enum RepostToType
     {

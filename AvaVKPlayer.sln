@@ -19,9 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notificatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notification.Module", "Modules\Notification\Notification.Module\Notification.Module.csproj", "{E15FA4D9-2AF4-45BF-8FC9-4A604B9C0237}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Player", "Player", "{28EC4A60-1CFD-4D96-AC9D-93285C50F319}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VkPlayer", "VkPlayer", "{28EC4A60-1CFD-4D96-AC9D-93285C50F319}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Player.Domain", "Domain\DataDomain\Player.Domain.csproj", "{AF455F18-0C3A-44F7-803C-82F214C05205}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkPlayer.Domain", "Domain\DataDomain\VkPlayer.Domain.csproj", "{AF455F18-0C3A-44F7-803C-82F214C05205}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Equalizer", "Equalizer", "{3952ED0C-3A6A-46A6-A850-7188D53D4B16}"
 EndProject
@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VkApi", "VkApi", "{0BD179B9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkProvider.Module", "Modules\VkApi\VkApi.Module\VkProvider.Module.csproj", "{F1A8E5BE-F465-4506-ACDA-CF0EC7E17AA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Player.Module", "Modules\Player\Player.Module\Player.Module.csproj", "{A3ACD0C1-9D8D-4CCC-AAAB-B40A22AAA36B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkPlayer.Module", "Modules\Player\Player.Module\VkPlayer.Module.csproj", "{A3ACD0C1-9D8D-4CCC-AAAB-B40A22AAA36B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Resources", "Common\Common.Resources\Common.Resources.csproj", "{0E321960-1040-4CC4-9163-486AA6961C8F}"
 EndProject

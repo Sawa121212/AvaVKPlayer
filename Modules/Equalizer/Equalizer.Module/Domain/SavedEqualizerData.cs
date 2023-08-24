@@ -1,37 +1,50 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace Equalizer.Module.Domain
 {
+    /// <summary>
+    /// Сохраненные данные эквалайзера
+    /// </summary>
     public class SavedEqualizerData : ReactiveObject
     {
-        [Reactive] public ObservableCollection<EqualizerPresset> EqualizerPressets { get; set; }
-
-        [Reactive] public int SelectedPresset { get; set; }
-
         public SavedEqualizerData()
         {
             EqualizerPressets = new ObservableCollection<EqualizerPresset>();
         }
 
+        /// <summary>
+        /// Добавить предустановку эквалайзера
+        /// </summary>
+        /// <param name="presset"></param>
         public void AddPreset(EqualizerPresset presset)
         {
             EqualizerPressets.Add(presset);
         }
 
-
+        /// <summary>
+        /// Удалить предустановку эквалайзера
+        /// </summary>
+        /// <param name="index"></param>
         public void RemovePreset(int index)
         {
             EqualizerPressets.RemoveAt(index);
         }
 
+        /// <summary>
+        /// Удалить предустановку эквалайзера
+        /// </summary>
+        /// <param name="presset"></param>
         public void RemovePreset(EqualizerPresset presset)
         {
             EqualizerPressets.Remove(presset);
         }
 
+
+        /// <summary>
+        /// Удалить выбранную предустановку эквалайзера
+        /// </summary>
         public void RemoveSelectedPreset()
         {
             try
@@ -43,11 +56,36 @@ namespace Equalizer.Module.Domain
             }
         }
 
+        /// <summary>
+        /// Получить количество предустановок
+        /// </summary>
+        /// <returns></returns>
         public int GetCount()
         {
-            if (EqualizerPressets is not null)
-                return EqualizerPressets.Count;
-            return 0;
+            return EqualizerPressets.Count;
         }
+
+        /// <summary>
+        /// Предустановки эквалайзеров
+        /// </summary>
+
+        public ObservableCollection<EqualizerPresset> EqualizerPressets
+        {
+            get => _equalizerPressets;
+            set => this.RaiseAndSetIfChanged(ref _equalizerPressets, value);
+        }
+
+        /// <summary>
+        /// Выбранная предустановки
+        /// </summary>
+
+        public int SelectedPresset
+        {
+            get => _selectedPresset;
+            set => this.RaiseAndSetIfChanged(ref _selectedPresset, value);
+        }
+
+        private ObservableCollection<EqualizerPresset> _equalizerPressets;
+        private int _selectedPresset;
     }
 }

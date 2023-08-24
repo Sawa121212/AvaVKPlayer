@@ -7,31 +7,20 @@ using Avalonia.Media.Imaging;
 using Common.Core.ToDo;
 using Newtonsoft.Json;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace Authorization.Module.Domain
 {
     public class ImageModel : ReactiveObject, IImageBase
     {
-        public static Semaphore Semaphore = new(50, 50);
-
-        public int DecodeWidth { get; set; }
-
-        public string ImageUrl { get; set; }
-        public bool ImageIsloaded { get; set; }
-
-
-        [JsonIgnore]
-        [Reactive]
-        public Bitmap? Bitmap { get; set; }
-
         ~ImageModel()
         {
-
             if (Bitmap != null && ImageIsloaded)
+            {
                 Bitmap.Dispose();
-
+            }
         }
+
+        /// <inheritdoc />
         public async Task<Stream?> LoadImageStreamAsync()
         {
             return await Task.Run(async () =>
@@ -42,7 +31,6 @@ namespace Authorization.Module.Domain
                         return null;
 
                     byte[]? bytes = null;
-
 
                     bytes = await Utils.HttpClient.GetByteArrayAsync(ImageUrl);
 
@@ -55,13 +43,15 @@ namespace Authorization.Module.Domain
             });
         }
 
-        public virtual async void LoadBitmapAsync()
+        /// <inheritdoc />
+        public virtual async Task LoadBitmapAsync()
         {
             if (string.IsNullOrEmpty(ImageUrl) is false && ImageIsloaded is false)
+            {
                 try
                 {
                     Semaphore.WaitOne();
-                    using (Stream? imageStream = await LoadImageStreamAsync())
+                    await using (Stream? imageStream = await LoadImageStreamAsync())
                     {
                         if (imageStream is null)
                             return;
@@ -77,8 +67,26 @@ namespace Authorization.Module.Domain
                 {
                     Semaphore.Release();
                 }
+            }
         }
 
+        public int DecodeWidth { get; set; }
 
+        /// <inheritdoc />
+        public string ImageUrl { get; set; }
+
+        /// <inheritdoc />
+        public bool ImageIsloaded { get; set; }
+
+        /// <inheritdoc />
+        [JsonIgnore]
+        public Bitmap? Bitmap
+        {
+            get => _bitmap;
+            set => this.RaiseAndSetIfChanged(ref _bitmap, value);
+        }
+
+        public static Semaphore Semaphore = new(50, 50);
+        private Bitmap _bitmap;
     }
 }

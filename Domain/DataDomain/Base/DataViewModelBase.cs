@@ -1,14 +1,23 @@
 ﻿using Common.Core.Views;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI;
 
-namespace Player.Domain.Base
+namespace VkPlayer.Domain.Base
 {
     public abstract class DataViewModelBase : ViewModelBase
     {
-        // ToDo [Reactive] public ExceptionViewModel ExceptionModel { get; set; }
+        private bool _isError;
+        private bool _isLoading;
 
-        [Reactive] public bool IsError { get; set; }
+        public bool IsError
+        {
+            get => _isError;
+            set => this.RaiseAndSetIfChanged(ref _isError, value);
+        }
 
-        [Reactive] public bool IsLoading { get; set; }
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
+        }
     }
 }

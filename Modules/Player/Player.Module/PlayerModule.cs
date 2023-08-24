@@ -1,22 +1,21 @@
 using System.Resources;
 using Common.Core.Localization;
-using Common.Core.Regions;
-using Player.Module.Properties;
-using Player.Module.ViewModels.Audios.Albums;
-using Player.Module.ViewModels.Exceptions;
-using Player.Module.Views;
-using Player.Module.Views.Pages;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using VkPlayer.Module.Properties;
+using VkPlayer.Module.ViewModels.Audios.Albums;
+using VkPlayer.Module.ViewModels.Exceptions;
+using VkPlayer.Module.Views;
+using VkPlayer.Module.Views.Pages;
 
-namespace Player.Module
+namespace VkPlayer.Module
 {
-    public class PlayerModule : IModule
+    public class VkPlayerModule : IModule
     {
         private readonly IRegionManager _regionManager;
 
-        public PlayerModule(IRegionManager regionManager)
+        public VkPlayerModule(IRegionManager regionManager)
         {
             _regionManager = regionManager;
         }
@@ -27,7 +26,7 @@ namespace Player.Module
             containerRegistry.RegisterForNavigation<AddToAlbumView, AddToAlbumViewModel>();
             containerRegistry.RegisterForNavigation<AlbumListControl>();
             containerRegistry.RegisterForNavigation<ExceptionView, ExceptionViewModel>();
-            containerRegistry.RegisterForNavigation<MusicListControl>();
+            containerRegistry.RegisterForNavigation<MusicListControlView>();
             containerRegistry.RegisterForNavigation<PlayerControlView, PlayerControlViewModel>();
             containerRegistry.RegisterForNavigation<RepostView, RepostViewModel>();
 

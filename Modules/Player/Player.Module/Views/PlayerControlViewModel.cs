@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -13,67 +14,27 @@ using Avalonia.Threading;
 using Common.Core.Views;
 using Equalizer.Module.Views;
 using ManagedBass;
-using Player.Domain;
-using Player.Domain.ETC;
+using Prism.Commands;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
 using Timer = System.Timers.Timer;
 
-namespace Player.Module.Views
+namespace VkPlayer.Module.Views
 {
     public partial class PlayerControlViewModel : ViewModelBase
     {
-        public delegate void OpenRepostWindowDelegate(AudioModel audioModel);
-
-        public delegate void SetCollection(ObservableCollection<AudioModel> audioCollection, int selectedIndex);
-
-        public delegate void AudioChanged(AudioModel? model);
-
-        private static ObservableCollection<AudioModel>? _playList;
-        private static ObservableCollection<AudioModel>? _allData;
-
-        private static PlayerControlViewModel? _instance;
-
-        private AudioModel _currentAudio;
-        private bool _mute;
-        private bool _pauseButtonIsVisible;
-        private bool _playerIsPlaying = true;
-        private int _playPosition = 0;
-        private bool _repeat;
-        private bool _shuffling;
-        private bool _useEqualizer;
-        private Task? _playTask;
-        private readonly Timer _timer = new();
-        private double _volume = 1;
-
-
-        private PlayerControlViewModel()
+        public PlayerControlViewModel()
         {
-            Player = new Domain.Player();
+            Player = new Player();
             CurrentAudio = null;
-            EqualizerViewModel = new EqualizerViewModel();
-            OpenCloseEqualizer = ReactiveCommand.Create(() =>
-            {
-                if (EqualizerIsOpen)
-                    EqualizerIsOpen = false;
-                else EqualizerIsOpen = true;
-            });
+            EqualizerViewModel = new EqualizerControlViewModel();
+            OpenCloseEqualizer = ReactiveCommand.Create(() => { EqualizerIsOpen = !EqualizerIsOpen; });
 
-            PlayCommand = ReactiveCommand.Create(() =>
-            {
-                if (!Player.Play())
-                    return;
-
-                EqualizerViewModel.UpdateFx();
-                OnUpdatePlayerStatus();
-            });
-            PauseCommand = ReactiveCommand.Create(() =>
-            {
-                if (Player.Pause())
-                    OnUpdatePlayerStatus();
-            });
-            NextCommand = ReactiveCommand.Create(() => PlayNext());
-            PreviousCommand = ReactiveCommand.Create(() => PlayPrevious());
+            PlayCommand = new DelegateCommand(OnPlay);
+            PauseCommand = new DelegateCommand(OnPause);
+            NextCommand = new DelegateCommand(PlayNext);
+            PreviousCommand = new DelegateCommand(PlayPrevious);
 
 
             RepeatToggleCommand = ReactiveCommand.Create(() => { Repeat = !Repeat; });
@@ -125,10 +86,11 @@ namespace Player.Module.Views
 
         private void OnUpdatePlayerStatus()
         {
-            PlayerIsPlaying = !_playerIsPlaying;
+            IsPlaying = !IsPlaying;
         }
 
-        private void PlayerControlViewModel_SetPlaylistEvent(ObservableCollection<AudioModel>? audioCollection,
+        private void PlayerControlViewModel_SetPlaylistEvent(
+            ObservableCollection<AudioModel>? audioCollection,
             int selectedIndex)
         {
             if (audioCollection == null)
@@ -145,43 +107,79 @@ namespace Player.Module.Views
 
             bool isEnd = (PlayPosition == CurrentAudio.Duration)
                          || (Player.GetStatus() == PlaybackState.Stopped);
-            if (isEnd && !Repeat)
+
+            switch (isEnd)
             {
-                PlayNext();
-                AutoNext = true;
-            }
-            else if (isEnd && Repeat)
-            {
-                Player.Update();
-                Player.Play();
+                case true when !Repeat:
+                    PlayNext();
+                    AutoNext = true;
+                    break;
+                case true when Repeat:
+                    Player.Update();
+                    Player.Play();
+                    break;
             }
         }
 
         private void PlayNext()
         {
-            if (_playList != null)
+            if (_playList == null)
             {
-                List<AudioModel>? list = _playList.ToList();
-                int index = list.IndexOf(CurrentAudio);
-                if (index < list.Count - 1)
-                {
-                    CurrentAudio = list[index + 1];
-                    AudioChangedEvent?.Invoke(_currentAudio);
-                }
+                return;
             }
+
+            List<AudioModel>? list = _playList.ToList();
+            int index = list.IndexOf(CurrentAudio);
+            if (index >= list.Count - 1)
+            {
+                return;
+            }
+
+            CurrentAudio = list[index + 1];
+            AudioChangedEvent?.Invoke(_currentAudio);
         }
 
         private void PlayPrevious()
         {
-            if (_playList != null)
+            if (_playList == null)
             {
-                List<AudioModel>? list = _playList.ToList();
-                int index = list.IndexOf(CurrentAudio);
-                if (index > 0)
-                {
-                    CurrentAudio = list[index - 1];
-                    AudioChangedEvent?.Invoke(_currentAudio);
-                }
+                return;
+            }
+
+            List<AudioModel>? list = _playList.ToList();
+            int index = list.IndexOf(CurrentAudio);
+
+            if (index <= 0)
+            {
+                return;
+            }
+
+            CurrentAudio = list[index - 1];
+            AudioChangedEvent?.Invoke(_currentAudio);
+        }
+
+        private void OnPlay()
+        {
+            if (IsPlaying)
+            {
+                OnPause();
+                return;
+            }
+
+            if (!Player.Play())
+            {
+                return;
+            }
+
+            EqualizerViewModel.UpdateFx();
+            OnUpdatePlayerStatus();
+        }
+
+        private void OnPause()
+        {
+            if (Player.Pause())
+            {
+                OnUpdatePlayerStatus();
             }
         }
 
@@ -233,8 +231,7 @@ namespace Player.Module.Views
             set
             {
                 this.RaiseAndSetIfChanged(ref _volume, value);
-                if (Volume == 0) Mute = true;
-                else Mute = false;
+                Mute = Volume == 0;
                 Player.SetVolume(_volume);
             }
         }
@@ -310,18 +307,31 @@ namespace Player.Module.Views
             }
         }
 
-        public Domain.Player Player { get; set; }
-
-        public bool PlayerIsPlaying
+        public Player Player
         {
-            get => _playerIsPlaying;
-            set => this.RaiseAndSetIfChanged(ref _playerIsPlaying, value);
+            get => _player;
+            set => this.RaiseAndSetIfChanged(ref _player, value);
         }
 
-        public CancellationToken CancellationToken { get; private set; } = new CancellationToken();
-        public bool IsBusy { get; set; }
+        public bool IsPlaying
+        {
+            get => _isPlaying;
+            set => this.RaiseAndSetIfChanged(ref _isPlaying, value);
+        }
 
-        private bool AutoNext { get; set; }
+        public CancellationToken CancellationToken { get; private set; } = new();
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => this.RaiseAndSetIfChanged(ref _isBusy, value);
+        }
+
+        private bool AutoNext
+        {
+            get => _autoNext;
+            set => this.RaiseAndSetIfChanged(ref _autoNext, value);
+        }
 
         public static PlayerControlViewModel Instance =>
             _instance is null ? _instance = new PlayerControlViewModel() : _instance;
@@ -332,23 +342,60 @@ namespace Player.Module.Views
 
 
         public event AudioChanged AudioChangedEvent;
-        public EqualizerViewModel EqualizerViewModel { get; set; }
+
+        public EqualizerControlViewModel EqualizerViewModel
+        {
+            get => _equalizerViewModel;
+            set => this.RaiseAndSetIfChanged(ref _equalizerViewModel, value);
+        }
+
+        public bool EqualizerIsOpen
+        {
+            get => _equalizerIsOpen;
+            set => this.RaiseAndSetIfChanged(ref _equalizerIsOpen, value);
+        }
+
+        public delegate void OpenRepostWindowDelegate(AudioModel audioModel);
+
+        public delegate void SetCollection(ObservableCollection<AudioModel> audioCollection, int selectedIndex);
+
+        public delegate void AudioChanged(AudioModel? model);
+
+        private static ObservableCollection<AudioModel>? _playList;
+        private static ObservableCollection<AudioModel>? _allData;
+
+        private static PlayerControlViewModel? _instance;
+
+        private AudioModel _currentAudio;
+        private bool _mute;
+        private bool _pauseButtonIsVisible;
+        private int _playPosition = 0;
+        private bool _repeat;
+        private bool _shuffling;
+        private bool _useEqualizer;
+        private Task? _playTask;
+        private readonly Timer _timer = new();
+        private double _volume = 1;
+        private Player _player;
+        private bool _isPlaying;
+        private bool _isBusy;
+        private bool _autoNext;
+        private EqualizerControlViewModel _equalizerViewModel;
+        private bool _equalizerIsOpen;
 
 
-        [Reactive] public bool EqualizerIsOpen { get; set; }
+        public ICommand PlayCommand { get; set; }
+        public ICommand PauseCommand { get; set; }
 
-        public IReactiveCommand PlayCommand { get; set; }
-        public IReactiveCommand PauseCommand { get; set; }
+        public ICommand NextCommand { get; set; }
 
-        public IReactiveCommand NextCommand { get; set; }
+        public ICommand PreviousCommand { get; set; }
 
-        public IReactiveCommand PreviousCommand { get; set; }
+        public ICommand RepeatToggleCommand { get; set; }
+        public ICommand MuteToggleCommand { get; set; }
 
-        public IReactiveCommand RepeatToggleCommand { get; set; }
-        public IReactiveCommand MuteToggleCommand { get; set; }
-
-        public IReactiveCommand ShuffleToogleCommand { get; set; }
-        public IReactiveCommand RepostCommand { get; set; }
-        public IReactiveCommand OpenCloseEqualizer { get; set; }
+        public ICommand ShuffleToogleCommand { get; set; }
+        public ICommand RepostCommand { get; set; }
+        public ICommand OpenCloseEqualizer { get; set; }
     }
 }

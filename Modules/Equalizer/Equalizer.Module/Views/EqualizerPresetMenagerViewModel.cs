@@ -2,41 +2,20 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Windows.Input;
 using Common.Core.Views.Interfaces;
 using Equalizer.Module.Domain;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace Equalizer.Module.Views
 {
-    public class EqualizerPresetMenagerViewModel : ReactiveObject, ICloseView
+    public class EqualizerPresetsManagerViewModel : ReactiveObject, ICloseView
     {
-        private int[] _hz = new int[] {80, 170, 310, 600, 1000, 3000, 6000, 12000};
-
-        public const string FileName = "EqualizerPressets.json";
-        public const string DefaultPresetName = "Обычный";
-
-
-        [Reactive] public bool TitleInputIsVisible { get; set; }
-
-
-        [Reactive] public InputViewModel TitleInputViewModel { get; set; }
-
-        [Reactive] public SavedEqualizerData SavedEqualizerData { get; private set; }
-
-        public IReactiveCommand AddPreset { get; set; }
-        public IReactiveCommand RemovePreset { get; set; }
-
-
-        public event ICloseView.CloseViewDelegate? CloseViewEvent;
-        public IReactiveCommand CloseCommand { get; set; }
-
-
-        public EqualizerPresetMenagerViewModel()
+        public EqualizerPresetsManagerViewModel()
         {
             LoadingPressets();
 
-            TitleInputViewModel = new InputViewModel()
+            TitleInputViewModel = new InputDialogViewModel()
             {
                 Message = "Название пресета",
             };
@@ -57,6 +36,10 @@ namespace Equalizer.Module.Views
             });
         }
 
+        /// <summary>
+        /// Применить прессет
+        /// </summary>
+        /// <param name="index"></param>
         public void ApplyPreset(int index)
         {
             SavedEqualizerData.SelectedPresset = index;
@@ -79,13 +62,16 @@ namespace Equalizer.Module.Views
                 SavedEqualizerData.AddPreset(preset);
 
                 TitleInputViewModel.InputText = string.Empty;
-                this.SavePressets();
+                SavePressets();
             }
 
             TitleInputIsVisible = false;
         }
 
-        public void LoadingPressets()
+        /// <summary>
+        /// Загрузить прессеты
+        /// </summary>
+        private void LoadingPressets()
         {
             try
             {
@@ -101,20 +87,41 @@ namespace Equalizer.Module.Views
                 if (SavedEqualizerData?.GetCount() == 0 ||
                     SavedEqualizerData?.EqualizerPressets.Count(x => x.Title == DefaultPresetName) == 0)
                 {
-                    EqualizerPresset presset = new EqualizerPresset()
+                    EqualizerPresset presset = new()
                     {
-                        IsDefault = true,
                         Title = DefaultPresetName,
                         Equalizers = _hz.Select(x => new Domain.Equalizer(x)).ToList(),
+                        IsDefault = true
                     };
                     SavedEqualizerData.EqualizerPressets.Insert(0, presset);
                 }
             }
         }
 
+        /// <summary>
+        /// Сохранить прессеты
+        /// </summary>
         public void SavePressets()
         {
             File.WriteAllText(FileName, JsonSerializer.Serialize(SavedEqualizerData).Trim());
         }
+
+        private int[] _hz = new int[] {80, 170, 310, 600, 1000, 3000, 6000, 12000};
+
+        public const string FileName = "EqualizerPressets.json";
+        public const string DefaultPresetName = "Обычный";
+
+
+        public bool TitleInputIsVisible { get; set; }
+
+        public InputDialogViewModel TitleInputViewModel { get; set; }
+
+        public SavedEqualizerData SavedEqualizerData { get; private set; }
+
+        public IReactiveCommand AddPreset { get; }
+        public IReactiveCommand RemovePreset { get; }
+
+        public ICommand CloseCommand { get; }
+        public event ICloseView.CloseViewDelegate? CloseViewEvent;
     }
 }

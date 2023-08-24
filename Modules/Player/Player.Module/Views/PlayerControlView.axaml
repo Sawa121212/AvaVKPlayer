@@ -5,18 +5,23 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="70"
-             x:Class="Player.Module.Views.PlayerControlView"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:views="clr-namespace:Equalizer.Module.Views;assembly=Equalizer.Module"
-             xmlns:converters="clr-namespace:Player.Module.Converters"
-             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles">
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:converters="clr-namespace:VkPlayer.Module.Converters"
+             xmlns:views1="clr-namespace:VkPlayer.Module.Views"
+             x:Class="VkPlayer.Module.Views.PlayerControlView">
 
     <UserControl.Resources>
         <converters:DurationConverter x:Key="DurationConverter" />
     </UserControl.Resources>
+
+    <Design.DataContext>
+        <views1:PlayerControlViewModel />
+    </Design.DataContext>
 
     <styles:Card CornerRadius="16"
                  assists:ShadowAssist.ShadowDepth="Depth1"
@@ -36,14 +41,14 @@
                                        Classes="Mini" assists:ShadowAssist.ShadowDepth="Depth2"
                                        Content="{avalonia:MaterialIconExt Kind=Play, Size=32}"
                                        Foreground="White"
-                                       IsVisible="{Binding PlayerIsPlaying}"
+                                       IsVisible="{Binding !IsPlaying}"
                                        Command="{Binding PlayCommand}" />
                 <styles:FloatingButton Grid.Column="0"
                                        Classes="Mini" assists:ShadowAssist.ShadowDepth="Depth2"
                                        Content="{avalonia:MaterialIconExt Kind=Pause, Size=32}"
                                        Background="{DynamicResource MaterialDesignToolTipBackground}"
                                        Foreground="{DynamicResource MaterialDesignPaper}"
-                                       IsVisible="{Binding PlayerIsPlaying}"
+                                       IsVisible="{Binding IsPlaying}"
                                        Command="{Binding PlayCommand}" />
 
                 <!-- Previous -->
@@ -51,7 +56,8 @@
                         Classes="Flat" Width="32"
                         Foreground="{DynamicResource MaterialDesignToolTipBackground}"
                         Content="{avalonia:MaterialIconExt Kind=SkipPrevious, Size=32}"
-                        Command="{Binding PreviousCommand}" />
+                        Command="{Binding PreviousCommand}"
+                        Margin="3 0 0 0" />
 
                 <!-- Next -->
                 <Button Grid.Column="2"
@@ -80,12 +86,12 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Image -->
-                <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
-                        VerticalAlignment="Center" HorizontalAlignment="Center"
-                        Background="#e6edf5"
-                        CornerRadius="12" Width="60" Height="60">
-                    <avalonia:MaterialIcon Kind="MusicNote" Foreground="#6e9acb" Width="42" Height="42" />
-                </Border>
+                <ContentControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                                Classes="MusicNoteImage"
+                                VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Width="60" Height="60"
+                                IsVisible="{Binding CurrentAudio.Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}" />
+
                 <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                         VerticalAlignment="Center" HorizontalAlignment="Center"
                         CornerRadius="12"
@@ -214,9 +220,9 @@
                                     </ia:EventTriggerBehavior>
                                 </i:Interaction.Behaviors>
 
-                                <views:EqWindow x:Name="QW"
-                                                DataContext="{Binding EqualizerViewModel}">
-                                </views:EqWindow>
+                                <views:EqualizerControlView x:Name="QW"
+                                                            DataContext="{Binding EqualizerViewModel}">
+                                </views:EqualizerControlView>
                             </Border>
                         </Popup>
                     </Grid>

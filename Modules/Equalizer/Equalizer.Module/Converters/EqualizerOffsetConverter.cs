@@ -8,15 +8,13 @@ namespace Equalizer.Module.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is double.NaN) return value;
-            if (value is double)
-                return -(int) ((double) value / 2);
-            else if (value is int)
+            return value switch
             {
-                return -(int) ((int) value / 2);
-            }
-
-            return value;
+                double.NaN => value,
+                double val => -(int) (val / 2),
+                int i => -(int) (i / 2),
+                _ => value
+            };
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

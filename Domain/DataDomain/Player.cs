@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using ManagedBass;
-using Player.Domain.ETC;
+using VkPlayer.Domain.ETC;
 using VkProvider.Module;
 
-namespace Player.Domain
+namespace VkPlayer.Domain
 {
+    /// <summary>
+    /// Плеер
+    /// </summary>
     public class Player
     {
         private int _stream;
@@ -29,7 +32,10 @@ namespace Player.Domain
             return Convert.ToInt32(Bass.ChannelBytes2Seconds(_stream, Bass.ChannelGetPosition(_stream)));
         }
 
-
+        /// <summary>
+        /// Установить позицию
+        /// </summary>
+        /// <param name="val"></param>
         public void SetPositon(double val)
         {
             try
@@ -61,7 +67,11 @@ namespace Player.Domain
                 SetStream(audioModel);
         }
 
-
+        /// <summary>
+        /// Запустить
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public bool Play(AudioModel model)
         {
             try
@@ -77,12 +87,19 @@ namespace Player.Domain
             }
         }
 
+        /// <summary>
+        /// Запустить
+        /// </summary>
+        /// <returns></returns>
         public bool Play()
         {
             return Bass.ChannelPlay(_stream);
         }
 
-
+        /// <summary>
+        /// Остановить
+        /// </summary>
+        /// <returns></returns>
         public bool Stop()
         {
             try
@@ -100,6 +117,10 @@ namespace Player.Domain
             }
         }
 
+        /// <summary>
+        /// Пауза
+        /// </summary>
+        /// <returns></returns>
         public bool Pause()
         {
             try
@@ -112,11 +133,19 @@ namespace Player.Domain
             }
         }
 
+        /// <summary>
+        /// Установить громкость
+        /// </summary>
+        /// <param name="volume"></param>
         public void SetVolume(double volume)
         {
             Bass.ChannelSetAttribute(_stream, ChannelAttribute.Volume, volume);
         }
 
+        /// <summary>
+        /// Получить статус плеера
+        /// </summary>
+        /// <returns></returns>
         public PlaybackState GetStatus() =>
             Bass.ChannelIsActive(_stream);
     }

@@ -1,9 +1,9 @@
 ﻿using Authorization.Module.Domain;
 using Authorization.Module.Domain.Interfaces;
-using Player.Domain.Interfaces;
 using VkNet.Model;
+using VkPlayer.Domain.Interfaces;
 
-namespace Player.Domain
+namespace VkPlayer.Domain
 {
     public class RepostModel : IVkModelBase
     {

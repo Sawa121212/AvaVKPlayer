@@ -1,9 +1,9 @@
 ﻿using System;
 using Common.Core.ToDo;
-using Player.Domain.Base;
 using ReactiveUI;
+using VkPlayer.Domain.Base;
 
-namespace Player.Module.ViewModels.Exceptions
+namespace VkPlayer.Module.ViewModels.Exceptions
 {
     public class ExceptionViewModel : ReactiveObject
     {

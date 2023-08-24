@@ -1,22 +1,21 @@
 ﻿using System.Threading.Tasks;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using VkNet.Model;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels
+namespace VkPlayer.Module.ViewModels
 {
     public class LyricsViewModel : ReactiveObject
     {
-        [Reactive] public string Text { get; set; }
+        public string Text { get; set; }
 
-        [Reactive] public bool IsVisible { get; set; } = false;
+        public bool IsVisible { get; set; } = false;
 
         private long? _id = 0;
 
         public LyricsViewModel(long? lyricsId)
         {
-            this._id = lyricsId;
+            _id = lyricsId;
         }
 
         public void StartLoad()

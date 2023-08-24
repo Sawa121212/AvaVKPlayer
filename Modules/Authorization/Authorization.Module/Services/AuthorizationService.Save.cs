@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Authorization.Module.Domain;
+using Avalonia.Controls.Notifications;
+using Common.Core.Extensions;
 using Common.Core.ToDo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -14,39 +16,61 @@ namespace Authorization.Module.Services
 {
     public partial class AuthorizationService
     {
-        public void SaveAccount(VkApi? vkApi)
+        /// <inheritdoc />
+        public void AddAccount(VkApi? vkApi)
         {
             IEnumerable<SavedAccountModel>? accountEnumerable =
                 SavedAccounts?.ToList().Where(x => x.UserId == vkApi?.UserId);
 
             if (accountEnumerable != null)
+            {
                 foreach (SavedAccountModel? savedAccountModel in accountEnumerable)
+                {
                     SavedAccounts?.Remove(savedAccountModel);
+                }
+            }
 
             AccountSaveProfileInfoParams accountData = null;
             try
             {
                 accountData = vkApi?.Account?.GetProfileInfo();
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                //ToDo InfoText = "Ошибка:" + ex.Message;
+                _notificationService.Show("Error", $"SaveAccount\n{exp.Message}", NotificationType.Error);
             }
 
-            SavedAccounts?.Insert(0,
-                new SavedAccountModel
-                {
-                    Token = vkApi.Token,
-                    UserId = vkApi.UserId,
-                    Name = $"{accountData.FirstName} {accountData.LastName}"
-                });
+            SavedAccounts?.Insert(0, new SavedAccountModel()
+            {
+                Token = vkApi.Token,
+                UserId = vkApi.UserId,
+                Name = $"{accountData.FirstName} {accountData.LastName}",
+                Status = accountData.Status
+            });
 
             CurrentAccount = SavedAccounts.First();
+
+            SaveAccounts();
         }
 
+        /// <inheritdoc />
         public void SaveAccounts()
         {
-            string saveText = JsonConvert.SerializeObject(SavedAccounts);
+            List<AccountDTO> dto = SavedAccounts.Select(accountModel => new AccountDTO()
+                {
+                    UserId = accountModel.UserId,
+                    Token = accountModel.Token,
+                    IsDefault = accountModel.IsDefault,
+                })
+                .ToList();
+
+            if (!dto.Any())
+            {
+                return;
+            }
+
+            string saveText = JsonConvert.SerializeObject(dto);
+
             if (GlobalVars.CurrentPlatform == OSPlatform.Windows)
                 SaveAccountsOnRegistry(saveText);
             else SaveAccountsOnConfig(saveText);

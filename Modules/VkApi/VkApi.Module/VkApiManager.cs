@@ -20,7 +20,7 @@ namespace VkProvider.Module
                 if (_vkApi is not null)
                     return _vkApi;
 
-                _vkApi = new VkNet.VkApi();
+                _vkApi = new VkApi();
                 _vkApi.Authorize(new ApiAuthParams
                 {
                     AccessToken = "4b0168fd4b0168fd4b0168fd8f4b676c6744b014b0168fd1093d8fdf1e3c0017422a04c"
@@ -34,6 +34,11 @@ namespace VkProvider.Module
                 Console.WriteLine("ApiChanged");
                 // ToDo Events.VkaPiChangedCall();
             }
+        }
+
+        public static async Task<AccountSaveProfileInfoParams> GetProfileInfoAsync()
+        {
+            return await VkApi.Account.GetProfileInfoAsync();
         }
 
         /// <summary>

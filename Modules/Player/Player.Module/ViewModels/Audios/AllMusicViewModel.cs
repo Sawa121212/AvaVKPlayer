@@ -4,25 +4,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls.Notifications;
 using Avalonia.Layout;
-using Player.Domain;
-using Player.Domain.ETC;
-using Player.Module.ViewModels.Base;
-using Player.Module.Views;
+using Notification.Module.Services;
+using ReactiveUI;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
+using VkPlayer.Module.ViewModels.Base;
+using VkPlayer.Module.Views;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels.Audios
+namespace VkPlayer.Module.ViewModels.Audios
 {
     public sealed class AllMusicViewModel : AudioViewModelBase
     {
-        CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        bool _searching = false;
-
-        public AllMusicViewModel()
-
+        public AllMusicViewModel(INotificationService notificationService)
         {
+            _notificationService = notificationService;
             // ToDo Events.AudioAddEvent += Events_AudioAddEvent;
             // ToDo Events.AudioRemoveEvent += Events_AudioRemoveEvent;
             StartSearchObservable(new TimeSpan(0, 0, 0, 1, 0));
@@ -120,6 +120,28 @@ namespace Player.Module.ViewModels.Audios
         }
 
 
+        /// <inheritdoc />
+        public override void OnSelected(AudioModel item)
+        {
+            if (CurrentAudioModel == item || DataCollection == null || SelectedItem == null)
+            {
+                return;
+            }
+
+            if (SelectedItem.IsNotAvailable)
+            {
+                _notificationService.Show("Ошибка", "Введите все данные", NotificationType.Warning);
+                return;
+            }
+
+            int index = DataCollection.IndexOf(SelectedItem);
+            PlayerControlViewModel.SetPlaylist(new ObservableCollection<AudioModel>(DataCollection.ToList()),
+                index);
+
+            SelectToModel(SelectedItem, false);
+        }
+
+        /// <inheritdoc />
         protected override void LoadData()
         {
             VkCollection<Audio>? res = VkApiManager.GetAudio(new AudioGetParams
@@ -139,5 +161,16 @@ namespace Player.Module.ViewModels.Audios
 
             AllDataCollection = DataCollection;
         }
+
+        public AudioModel CurrentAudioModel
+        {
+            get => _currentAudioModel;
+            set => this.RaiseAndSetIfChanged(ref _currentAudioModel, value);
+        }
+
+        private readonly INotificationService _notificationService;
+        CancellationTokenSource _cancellationTokenSource = new();
+        bool _searching = false;
+        private AudioModel _currentAudioModel;
     }
 }

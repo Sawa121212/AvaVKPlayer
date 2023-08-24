@@ -4,7 +4,7 @@ using Common.Core.Views;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace Player.Module.Views.Pages
+namespace VkPlayer.Module.Views.Pages
 {
     /// <summary>
     /// О программе

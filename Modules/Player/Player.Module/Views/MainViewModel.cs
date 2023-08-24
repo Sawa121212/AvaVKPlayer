@@ -2,50 +2,50 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Authorization.Module.Domain;
+using Authorization.Module.Events;
 using Authorization.Module.Services;
 using Authorization.Module.Views;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Threading;
-using Common.Core.Regions;
 using Common.Core.ToDo;
 using Common.Core.Views;
 using Common.Resources.m3.Navigation;
 using Material.Icons;
 using Material.Icons.Avalonia;
-using Player.Domain;
-using Player.Domain.ETC;
-using Player.Module.ViewModels.Audios;
-using Player.Module.ViewModels.Audios.Albums;
-using Player.Module.ViewModels.Base;
-using Player.Module.ViewModels.Exceptions;
+using Notification.Module.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
-using Prism.Mvvm;
 using Prism.Regions;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
+using VkPlayer.Module.ViewModels.Audios;
+using VkPlayer.Module.ViewModels.Audios.Albums;
+using VkPlayer.Module.ViewModels.Base;
+using VkPlayer.Module.ViewModels.Exceptions;
 
-namespace Player.Module.Views
+namespace VkPlayer.Module.Views
 {
     public partial class MainViewModel : ViewModelBase, INavigationAware
     {
-        private double _oldheight = 0;
-        private bool _siderBarAnimationIsPlaying;
-        private bool _menuIsOpen;
-        private readonly IContainerProvider _containerProvider;
-        private readonly IAuthorizationService _authorizationService;
-        private CurrentMusicListViewModel? _currentMusicListViewModel;
-        private AllMusicViewModel? _allMusicListViewModel;
-        private AudioSearchViewModel? _searchViewModel;
-        private RecomendationsViewModel? _recomendationsViewModel;
-
-        public MainViewModel(IContainerProvider containerProvider, IAuthorizationService authorizationService,
-            IRegionManager regionManager)
+        public MainViewModel(
+            IContainerProvider containerProvider,
+            IEventAggregator eventAggregator,
+            IAuthorizationService authorizationService,
+            IRegionManager regionManager,
+            INotificationService notificationService)
         {
             _containerProvider = containerProvider;
+            _eventAggregator = eventAggregator;
             _authorizationService = authorizationService;
+            _notificationService = notificationService;
             _regionManager = regionManager;
+
+            OnUpdateCurrentAccountInfo();
+
             ShowSettingsCommand = new DelegateCommand(OnShowSettings);
             ShowAboutCommand = new DelegateCommand(OnShowAbout);
 
@@ -58,38 +58,38 @@ namespace Player.Module.Views
             //ToDo Events.AudioRepostEvent += Events_AudioRepostEvent;
             //ToDo Events.AudioAddToAlbumEvent += Events_AudioAddToAlbumEvent;
             ExceptionViewModel.ViewExitEvent += ExceptionViewModel_ViewExitEvent;
-            //ToDo Events.VkApiChanged += StaticObjects_VkApiChanged;
 
             VkLoginViewModel = new AuthorizationViewModel(_authorizationService);
 
             // ToDo in ShellView
-            /*OpenHideMiniPlayerCommand = ReactiveCommand.Create(() =>
+            OpenHideMiniPlayerCommand = ReactiveCommand.Create(() =>
             {
-                if (IsMaximized)
-                {
-                    IsMaximized = false;
-                    _oldheight = MainView.Instance.Height;
-                    MenuColumnWidth = new GridLength(0);
-                    MainView.Instance.Topmost = true;
-                    MainView.Instance.MinHeight = 100;
-                    MainView.Instance.Height = 100;
-                    MainView.Instance.MaxHeight = 100;
-                }
-                else
-                {
-                    IsMaximized = true;
-                    if (_menuIsOpen)
-                    {
-                        MenuColumnWidth = new GridLength(200);
-                    }
-                    else MenuColumnWidth = new GridLength(60);
-
-                    MainView.Instance.Topmost = false;
-                    MainView.Instance.MaxHeight = Double.PositiveInfinity;
-                    MainView.Instance.MinHeight = 400;
-                    MainView.Instance.Height = _oldheight;
-                }
-            });*/
+                /*
+                                if (IsMaximized)
+                                {
+                                    IsMaximized = false;
+                                    _oldheight = MainView.Instance.Height;
+                                    MenuColumnWidth = new GridLength(0);
+                                    MainView.Instance.Topmost = true;
+                                    MainView.Instance.MinHeight = 100;
+                                    MainView.Instance.Height = 100;
+                                    MainView.Instance.MaxHeight = 100;
+                                }
+                                else
+                                {
+                                    IsMaximized = true;
+                                    if (_menuIsOpen)
+                                    {
+                                        MenuColumnWidth = new GridLength(200);
+                                    }
+                                    else MenuColumnWidth = new GridLength(60);
+                
+                                    MainView.Instance.Topmost = false;
+                                    MainView.Instance.MaxHeight = Double.PositiveInfinity;
+                                    MainView.Instance.MinHeight = 400;
+                                    MainView.Instance.Height = _oldheight;
+                                }*/
+            });
 
             InvokeHandler.TaskErrorResponsedEvent += (handlerObject, exception) =>
             {
@@ -170,6 +170,8 @@ namespace Player.Module.Views
 
             _searchViewModel = new AudioSearchViewModel();
 
+            _eventAggregator.GetEvent<AuthorizeEvent>().Subscribe(OnShowMainView);
+
             this.WhenAnyValue(vm => vm.MenuSelectionIndex).Subscribe(OpenViewFromMenu);
 
             NavigationMenu = new NavigationMenu();
@@ -180,7 +182,7 @@ namespace Player.Module.Views
                 Title = "Текущий плейлист",
                 Icon = new MaterialIcon() {Kind = MaterialIconKind.MusicBoxMultiple, Width = 32, Height = 32},
                 ToolTip = "Плейлист",
-                Content = _containerProvider.Resolve<MusicListControl>(),
+                Content = _containerProvider.Resolve<MusicListControlView>(),
                 DataContext = _currentMusicListViewModel
             });
 
@@ -190,7 +192,7 @@ namespace Player.Module.Views
                 Title = "Музыка",
                 Icon = new MaterialIcon() {Kind = MaterialIconKind.Music, Width = 32, Height = 32},
                 ToolTip = "Музыка",
-                Content = _containerProvider.Resolve<MusicListControl>(),
+                Content = _containerProvider.Resolve<MusicListControlView>(),
                 DataContext = _allMusicListViewModel
             });
 
@@ -210,7 +212,7 @@ namespace Player.Module.Views
                 Title = "Поиск",
                 Icon = new MaterialIcon() {Kind = MaterialIconKind.Search, Width = 32, Height = 32},
                 ToolTip = "Поиск",
-                Content = _containerProvider.Resolve<MusicListControl>(),
+                Content = _containerProvider.Resolve<MusicListControlView>(),
                 DataContext = _searchViewModel
             });
 
@@ -220,7 +222,7 @@ namespace Player.Module.Views
                 Title = "Рекомендации",
                 Icon = new MaterialIcon() {Kind = MaterialIconKind.ThumbUp, Width = 32, Height = 32},
                 ToolTip = "Рекомендации",
-                Content = _containerProvider.Resolve<MusicListControl>(),
+                Content = _containerProvider.Resolve<MusicListControlView>(),
                 DataContext = _currentMusicListViewModel
             });
         }
@@ -228,10 +230,9 @@ namespace Player.Module.Views
 
         private void Events_AudioAddToAlbumEvent(AudioModel audiomodel)
         {
-            AddToAlbumViewModel = new AddToAlbumViewModel(audiomodel, _authorizationService);
+            AddToAlbumViewModel = new AddToAlbumViewModel(audiomodel, _authorizationService, _notificationService);
             AddToAlbumViewModel.StartLoad();
             AddToAlbumViewModel.CloseViewEvent += AddToAlbumViewModel_CloseViewEvent;
-            AddToAlbumIsVisible = true;
         }
 
         private void AddToAlbumViewModel_CloseViewEvent()
@@ -239,7 +240,6 @@ namespace Player.Module.Views
             AddToAlbumViewModel.CloseViewEvent -= AddToAlbumViewModel_CloseViewEvent;
             AddToAlbumViewModel?.DataCollection?.Clear();
             AddToAlbumViewModel = null;
-            AddToAlbumIsVisible = false;
         }
 
         private void PlayerContext_AudioChangedEvent(AudioModel? model)
@@ -251,35 +251,35 @@ namespace Player.Module.Views
         {
             RepostViewModel = new RepostViewModel(RepostToType.Friend, audioModel);
             RepostViewModel.CloseViewEvent += RepostViewModel_CloseViewEvent;
-            RepostViewIsVisible = true;
         }
 
         private void RepostViewModel_CloseViewEvent()
         {
             RepostViewModel.CloseViewEvent -= RepostViewModel_CloseViewEvent;
             RepostViewModel?.DataCollection?.Clear();
-            RepostViewIsVisible = false;
             RepostViewModel = null;
         }
 
         public void ArtistClicked(object sender, PointerPressedEventArgs e)
         {
             AudioModel? tb = e.GetContent<AudioModel>();
-            if (tb?.Artist != null)
+            if (tb?.Artist == null)
             {
-                MenuSelectionIndex = 3;
-                if (PlayerContext?.CurrentAudio != null)
-                {
-                    CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, false);
-                    CurrentAudioViewModel.SelectedIndex = -1;
-                }
-
-                if (_searchViewModel == null)
-                    return;
-
-                _searchViewModel.IsLoading = true;
-                _searchViewModel.SearchText = tb.Artist;
+                return;
             }
+
+            MenuSelectionIndex = 3;
+            if (PlayerContext?.CurrentAudio != null)
+            {
+                CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, false);
+                CurrentAudioViewModel.SelectedIndex = -1;
+            }
+
+            if (_searchViewModel == null)
+                return;
+
+            _searchViewModel.IsLoading = true;
+            _searchViewModel.SearchText = tb.Artist;
         }
 
         public void OpenViewFromMenu(int menuIndex)
@@ -287,9 +287,7 @@ namespace Player.Module.Views
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 ExceptionIsVisible = false;
-                CurrentAudioViewIsVisible = true;
                 CurrentAudioViewModel = null;
-                AlbumsIsVisible = false;
                 ContentControl content = NavigationMenuSelection.Content;
 
                 switch (menuIndex)
@@ -298,20 +296,20 @@ namespace Player.Module.Views
                     {
                         CurrentAudioViewModel = _currentMusicListViewModel;
                         CurrentAudioViewModel?.SelectToModel(PlayerContext?.CurrentAudio, true);
-
+                        content.DataContext = CurrentAudioViewModel;
                         break;
                     }
                     case 1:
                     {
                         if (_allMusicListViewModel == null)
                         {
-                            _allMusicListViewModel = new AllMusicViewModel();
+                            _allMusicListViewModel = new AllMusicViewModel(_notificationService);
                             _allMusicListViewModel.StartLoad();
                         }
 
                         CurrentAudioViewModel = _allMusicListViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
-
+                        content.DataContext = CurrentAudioViewModel;
                         break;
                     }
                     case 2:
@@ -319,18 +317,20 @@ namespace Player.Module.Views
                         if (AlbumsViewModel == null)
                         {
                             AlbumsViewModel = new OpenAlbumViewModel(_authorizationService);
-                            content.DataContext = AlbumsViewModel;
                             AlbumsViewModel.StartLoad();
                         }
 
-                        CurrentAudioViewIsVisible = false;
-                        AlbumsIsVisible = true;
+                        content.DataContext = AlbumsViewModel;
                         break;
                     }
                     case 3:
                     {
                         CurrentAudioViewModel = _searchViewModel;
-                        CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
+                        if (CurrentAudioViewModel != null)
+                        {
+                            CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
+                            content.DataContext = CurrentAudioViewModel;
+                        }
 
                         break;
                     }
@@ -344,7 +344,7 @@ namespace Player.Module.Views
 
                         CurrentAudioViewModel = _recomendationsViewModel;
                         CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, true);
-
+                        content.DataContext = CurrentAudioViewModel;
                         break;
                     }
                     case 5:
@@ -356,44 +356,46 @@ namespace Player.Module.Views
             });
         }
 
-        private void StaticObjects_VkApiChanged()
+        /// <summary>
+        /// Обновить информацию о текущем аккаунте
+        /// </summary>
+        private void OnUpdateCurrentAccountInfo()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 try
                 {
                     _currentMusicListViewModel = new CurrentMusicListViewModel();
-                    VkLoginIsVisible = false;
                     CurrentAccountModel = _authorizationService.CurrentAccount;
                     MenuSelectionIndex = 1;
 
-                    if (CurrentAccountModel.Image is null)
-                        CurrentAccountModel.LoadAvatar();
+                    /*if (CurrentAccountModel.Image is null)
+                        CurrentAccountModel.LoadAvatar();*/
                 }
-                catch (Exception ex)
+                catch (Exception exp)
                 {
-                    Console.WriteLine("EErr");
+                    _notificationService.Show("Error",
+                        $"Ошибка при обновлении информации о текущем аккаунте.\n{exp.Message}", NotificationType.Error);
                 }
             });
-
-            //ToDo Events.VkApiChanged -= StaticObjects_VkApiChanged;
         }
 
+        /// <summary>
+        /// Выйти из аккаунта
+        /// </summary>
         private void AccountExit()
         {
             try
             {
                 PlayerContext.CurrentAudio = null;
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
+                _notificationService.Show("Error",
+                    $"Ошибка при очистке информации о музыке.\n{exp.Message}", NotificationType.Error);
             }
 
-            CurrentAudioViewIsVisible = false;
-            AlbumsIsVisible = false;
-            RepostViewIsVisible = false;
             ExceptionIsVisible = false;
-            VkLoginIsVisible = true;
 
             AlbumsViewModel?.DataCollection?.Clear();
             _recomendationsViewModel?.DataCollection?.Clear();
@@ -416,7 +418,7 @@ namespace Player.Module.Views
             GC.Collect(2, GCCollectionMode.Optimized);
             GC.Collect(3, GCCollectionMode.Optimized);
 
-            //ToDo Events.VkApiChanged += StaticObjects_VkApiChanged;
+            OnUpdateCurrentAccountInfo();
         }
 
         private void ExceptionViewModel_ViewExitEvent()
@@ -427,45 +429,131 @@ namespace Player.Module.Views
         }
 
 
-        public PlayerControlViewModel PlayerContext { get; set; }
+        public PlayerControlViewModel PlayerContext
+        {
+            get => _playerContext;
+            set => this.RaiseAndSetIfChanged(ref _playerContext, value);
+        }
 
-        public AuthorizationViewModel? VkLoginViewModel { get; set; }
+        public AuthorizationViewModel? VkLoginViewModel
+        {
+            get => _vkLoginViewModel;
+            set => this.RaiseAndSetIfChanged(ref _vkLoginViewModel, value);
+        }
 
-        [Reactive] public NavigationMenu NavigationMenu { get; set; }
-        [Reactive] public NavigationItem NavigationMenuSelection { get; set; }
-        [Reactive] public ExceptionViewModel ExceptionViewModel { get; set; }
+        public NavigationMenu NavigationMenu
+        {
+            get => _navigationMenu;
+            set => this.RaiseAndSetIfChanged(ref _navigationMenu, value);
+        }
 
-        [Reactive] public AlbumsViewModel? AlbumsViewModel { get; set; }
+        public NavigationItem NavigationMenuSelection
+        {
+            get => _navigationMenuSelection;
+            set => this.RaiseAndSetIfChanged(ref _navigationMenuSelection, value);
+        }
 
-        [Reactive] public AudioViewModelBase? CurrentAudioViewModel { get; set; }
+        public ExceptionViewModel ExceptionViewModel
+        {
+            get => _exceptionViewModel;
+            set => this.RaiseAndSetIfChanged(ref _exceptionViewModel, value);
+        }
 
-        [Reactive] public RepostViewModel? RepostViewModel { get; set; }
-        [Reactive] public AddToAlbumViewModel? AddToAlbumViewModel { get; set; }
+        public AlbumsViewModel? AlbumsViewModel
+        {
+            get => _albumsViewModel;
+            set => this.RaiseAndSetIfChanged(ref _albumsViewModel, value);
+        }
 
-        [Reactive] public SavedAccountModel CurrentAccountModel { get; set; }
+        public AudioViewModelBase? CurrentAudioViewModel
+        {
+            get => _currentAudioViewModel;
+            set => this.RaiseAndSetIfChanged(ref _currentAudioViewModel, value);
+        }
 
-        [Reactive] public bool MenuTextIsVisible { get; set; }
+        public RepostViewModel? RepostViewModel
+        {
+            get => _repostViewModel;
+            set => this.RaiseAndSetIfChanged(ref _repostViewModel, value);
+        }
 
-        [Reactive] public bool AlbumsIsVisible { get; set; }
+        public AddToAlbumViewModel? AddToAlbumViewModel
+        {
+            get => _addToAlbumViewModel;
+            set => this.RaiseAndSetIfChanged(ref _addToAlbumViewModel, value);
+        }
 
-        [Reactive] public bool RepostViewIsVisible { get; set; }
+        /// <summary>
+        /// Текущий аккаунт
+        /// </summary>
 
-        [Reactive] public bool AddToAlbumIsVisible { get; set; }
+        public SavedAccountModel CurrentAccountModel
+        {
+            get => _currentAccountModel;
+            set => this.RaiseAndSetIfChanged(ref _currentAccountModel, value);
+        }
 
-        [Reactive] public bool CurrentAudioViewIsVisible { get; set; }
+        /// <summary>
+        /// Видимость расширяемого текста меню
+        /// </summary>
 
-        [Reactive] public bool VkLoginIsVisible { get; set; } = true;
+        public bool MenuTextIsVisible
+        {
+            get => _menuTextIsVisible;
+            set => this.RaiseAndSetIfChanged(ref _menuTextIsVisible, value);
+        }
 
-        [Reactive] public int MenuSelectionIndex { get; set; }
+        public int MenuSelectionIndex
+        {
+            get => _menuSelectionIndex;
+            set => this.RaiseAndSetIfChanged(ref _menuSelectionIndex, value);
+        }
 
-        [Reactive] public GridLength MenuColumnWidth { get; set; }
+        public GridLength MenuColumnWidth
+        {
+            get => _menuColumnWidth;
+            set => this.RaiseAndSetIfChanged(ref _menuColumnWidth, value);
+        }
 
-        [Reactive] public bool ExceptionIsVisible { get; set; }
+        public bool ExceptionIsVisible { get; set; }
 
-        [Reactive] public bool IsMaximized { get; set; }
+        public bool IsMaximized
+        {
+            get => _isMaximized;
+            set => this.RaiseAndSetIfChanged(ref _isMaximized, value);
+        }
 
-        [Reactive] public ICommand AvatarPressedCommand { get; set; }
+        public ICommand AvatarPressedCommand { get; }
 
-        [Reactive] public ICommand OpenHideMiniPlayerCommand { get; set; }
+        public ICommand OpenHideMiniPlayerCommand { get; }
+
+
+        private readonly IContainerProvider _containerProvider;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly INotificationService _notificationService;
+        private readonly IEventAggregator _eventAggregator;
+
+        private CurrentMusicListViewModel? _currentMusicListViewModel;
+        private AllMusicViewModel? _allMusicListViewModel;
+        private AudioSearchViewModel? _searchViewModel;
+        private RecomendationsViewModel? _recomendationsViewModel;
+
+        private double _oldheight = 0;
+        private bool _siderBarAnimationIsPlaying;
+        private bool _menuIsOpen;
+        private PlayerControlViewModel _playerContext;
+        private AuthorizationViewModel _vkLoginViewModel;
+        private NavigationMenu _navigationMenu;
+        private SavedAccountModel _currentAccountModel;
+        private GridLength _menuColumnWidth;
+        private int _menuSelectionIndex;
+        private bool _isMaximized;
+        private bool _menuTextIsVisible;
+        private AddToAlbumViewModel _addToAlbumViewModel;
+        private NavigationItem _navigationMenuSelection;
+        private ExceptionViewModel _exceptionViewModel;
+        private AlbumsViewModel _albumsViewModel;
+        private AudioViewModelBase _currentAudioViewModel;
+        private RepostViewModel _repostViewModel;
     }
 }

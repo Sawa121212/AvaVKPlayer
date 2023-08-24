@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Reactive.Linq;
 using Avalonia.Layout;
-using Player.Domain.ETC;
-using Player.Module.ViewModels.Base;
 using ReactiveUI;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
+using VkPlayer.Module.ViewModels.Base;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels.Audios
+namespace VkPlayer.Module.ViewModels.Audios
 {
     public class AudioSearchViewModel : AudioViewModelBase
     {
-        public AudioSearchViewModel()
+        public AudioSearchViewModel() : base()
         {
             IsLoading = false;
 
@@ -33,6 +34,11 @@ namespace Player.Module.ViewModels.Audios
                     StartLoad();
                 }
             });
+        }
+
+        /// <inheritdoc />
+        public override void OnSelected(AudioModel item)
+        {
         }
 
         protected override void LoadData()

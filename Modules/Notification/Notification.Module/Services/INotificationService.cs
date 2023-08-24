@@ -4,6 +4,9 @@ using Avalonia.Controls.Notifications;
 
 namespace Notification.Module.Services
 {
+    /// <summary>
+    /// Сервис отображения уведомления
+    /// </summary>
     public interface INotificationService
     {
         /// <summary>
@@ -11,11 +14,15 @@ namespace Notification.Module.Services
         /// </summary>
         int NotificationTimeout { get; set; }
 
-        /// <summary>Установить главное окно для сообщений</summary>
+        /// <summary>
+        /// Установить главное окно для сообщений
+        /// </summary>
         /// <param name="window">Родительское окно</param>
         void SetHostWindow(IAvaloniaObject window);
 
-        /// <summary>Показать уведомление</summary>
+        /// <summary>
+        /// Показать уведомление
+        /// </summary>
         /// <param name="title">Заголовок</param>
         /// <param name="message">Текст</param>
         /// <param name="notificationType">Тип уведомления</param>

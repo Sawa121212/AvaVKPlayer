@@ -1,11 +1,12 @@
 ﻿using Avalonia.Layout;
-using Player.Domain.ETC;
-using Player.Module.ViewModels.Base;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
+using VkPlayer.Module.ViewModels.Base;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels.Audios
+namespace VkPlayer.Module.ViewModels.Audios
 {
     public sealed class RecomendationsViewModel : AudioViewModelBase
     {
@@ -16,6 +17,11 @@ namespace Player.Module.ViewModels.Audios
             StartScrollChangedObservable(LoadMusicsAction, Orientation.Vertical);
 
             AudioListButtons.AudioRemoveIsVisible = false;
+        }
+
+        /// <inheritdoc />
+        public override void OnSelected(AudioModel item)
+        {
         }
 
         protected override void LoadData()
