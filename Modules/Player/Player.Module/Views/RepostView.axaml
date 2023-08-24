@@ -5,9 +5,9 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:resources="clr-namespace:Common.Resources;assembly=Common.Resources"
-             xmlns:converters="clr-namespace:Player.Module.Converters"
+             xmlns:converters="clr-namespace:VkPlayer.Module.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Player.Module.Views.RepostView">
+             x:Class="VkPlayer.Module.Views.RepostView">
 
     <UserControl.Resources>
         <converters:RepostTypeConverter x:Key="RepostTypeConverter" />

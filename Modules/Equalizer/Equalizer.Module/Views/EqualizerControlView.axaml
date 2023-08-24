@@ -6,7 +6,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:views="clr-namespace:Equalizer.Module.Views"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
-             x:Class="Equalizer.Module.Views.EqWindow">
+             x:Class="Equalizer.Module.Views.EqualizerControlView">
 
     <Grid RowDefinitions="Auto,*,Auto">
 
@@ -16,8 +16,9 @@
             HorizontalAlignment="Center" />
 
         <ListBox Grid.Row="1"
+                 Items="{Binding Equalizers}"
                  IsEnabled="{Binding IsEnabled}"
-                 HorizontalAlignment="Center" Items="{Binding Equalizers}">
+                 HorizontalAlignment="Center">
 
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -47,7 +48,9 @@
                                     Minimum="-10" Maximum="+10" />
                         </Grid>
 
-                        <TextBlock HorizontalAlignment="Center" Margin="15,0,0,0" Text="{Binding Title}" />
+                        <TextBlock Text="{Binding Title}"
+                                   HorizontalAlignment="Center"
+                                   Margin="15,0,0,0" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -63,11 +66,11 @@
                 OnContent="Вкл"
                 OffContent="Выкл" />
 
-            <Button Content="Пресеты" Command="{Binding OpenPresetManager}" />
+            <Button Content="Прессеты" Command="{Binding OpenPresetManager}" />
 
         </StackPanel>
 
-        <views:EqualizerPresetsManager
+        <views:EqualizerPresetsManagerView
             Grid.RowSpan="4"
             IsVisible="{Binding DataContext.EqualizerManagerIsVisible,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
             DataContext="{Binding PresetMenagerViewModel}" />

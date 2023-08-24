@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Equalizer.Module.Views
 {
-    public partial class InputViewDialog :UserControl
+    public partial class InputDialogView :UserControl
     {
-        public InputViewDialog()
+        public InputDialogView()
         {
             InitializeComponent();
 

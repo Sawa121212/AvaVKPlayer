@@ -5,9 +5,9 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Equalizer.Module.Views.InputViewDialog">
+             x:Class="Equalizer.Module.Views.InputDialogView">
 
-    <Grid>
+    <Panel>
         <StackPanel Spacing="10" VerticalAlignment="Center" Margin="10">
             <TextBlock Text="{Binding Message}" FontSize="20" />
             <TextBox Text="{Binding InputText}" />
@@ -15,11 +15,13 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="3">
                 <Button Content="Продолжить"
                         Command="{Binding OkCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                        CommandParameter="{Binding 
+                            RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 <Button Content="Отмена"
                         Command="{Binding CancelCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                        CommandParameter="{Binding 
+                            RelativeSource={RelativeSource AncestorType=UserControl}}" />
             </StackPanel>
         </StackPanel>
-    </Grid>
+    </Panel>
 </UserControl>

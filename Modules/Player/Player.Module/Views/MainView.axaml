@@ -8,11 +8,11 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-             xmlns:views="clr-namespace:Player.Module.Views"
              xmlns:regions="clr-namespace:Common.Core.Regions;assembly=Common.Core"
              xmlns:navigation="clr-namespace:Common.Resources.m3.Navigation;assembly=Common.Resources"
+             xmlns:views="clr-namespace:VkPlayer.Module.Views"
              mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="600"
-             x:Class="Player.Module.Views.MainView">
+             x:Class="VkPlayer.Module.Views.MainView">
 
     <!--<Design.DataContext>
         <views:MainViewModel />
@@ -49,16 +49,21 @@
                     </i:Interaction.Behaviors>
                 </Ellipse>
 
-                <TextBlock Text="{Binding CurrentAccountModel.Name}"
+                <TextBlock Classes="Body2"
+                           Text="{Binding CurrentAccountModel.Name}"
                            IsVisible="{Binding MenuTextIsVisible}"
                            VerticalAlignment="Center" TextTrimming="150" Margin="1,0,0,0" />
-                <TextBlock Text="{Binding CurrentAccountModel.UserId}"
+                <TextBlock Classes="Body2"
+                           Text="{Binding CurrentAccountModel.Status}"
+                           IsVisible="{Binding MenuTextIsVisible}"
+                           VerticalAlignment="Center" TextTrimming="150" Margin="1,0,0,0" />
+                <TextBlock Classes="Body2"
+                           Text="{Binding CurrentAccountModel.UserId}"
                            IsVisible="{Binding MenuTextIsVisible}"
                            VerticalAlignment="Center" TextTrimming="150" Margin="1,0,0,0" />
             </StackPanel>
 
             <!-- Menu -->
-
             <ListBox Grid.Column="0" Grid.Row="1"
                      Items="{Binding NavigationMenu.ItemSource}"
                      SelectedItem="{Binding Path=NavigationMenuSelection, Mode=TwoWay}"

@@ -4,10 +4,11 @@
         <TargetFramework>net5.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Version>0.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia" Version="0.10.21" />
+      <PackageReference Include="Avalonia" Version="0.10.22" />
       <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
     </ItemGroup>
 

@@ -1,11 +1,10 @@
-﻿using Common.Core.Regions;
-using Common.Resources.m3.Navigation;
-using Player.Module.Views.Pages;
+﻿using Authorization.Module.Events;
+using Common.Core.Regions;
 using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
+using VkPlayer.Module.Views.Pages;
 
-namespace Player.Module.Views
+namespace VkPlayer.Module.Views
 {
     public partial class MainViewModel
     {
@@ -28,13 +27,20 @@ namespace Player.Module.Views
             _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(AboutView));
         }
 
+        /// <summary>
+        /// Показать главное отображение
+        /// </summary>
+        private void OnShowMainView(AuthorizeEvent authorizeEvent)
+        {
+            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(MainView));
+        }
+
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             _journal = navigationContext.NavigationService.Journal;
             ShowSettingsCommand.RaiseCanExecuteChanged();
             ShowAboutCommand.RaiseCanExecuteChanged();
         }
-
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {

@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Input;
-using Player.Domain;
-using Player.Module.ViewModels.Base;
-using Player.Module.Views;
+using VkPlayer.Domain;
+using VkPlayer.Module.ViewModels.Base;
+using VkPlayer.Module.Views;
 
-namespace Player.Module.ViewModels.Audios
+namespace VkPlayer.Module.ViewModels.Audios
 {
     public class CurrentMusicListViewModel : AudioViewModelBase
     {
-        public CurrentMusicListViewModel()
+        public CurrentMusicListViewModel() : base()
         {
-            
             SearchIsVisible = false;
             IsLoading = false;
             PlayerControlViewModel.SetPlaylistEvent += PlayerControlViewModelOnSetPlaylistEvent;
@@ -20,23 +19,26 @@ namespace Player.Module.ViewModels.Audios
             AudioListButtons.AudioAddToAlbumIsVisible = false;
         }
 
-        public override void SelectedItem(object sender, PointerPressedEventArgs args)
+        /// <inheritdoc />
+        public override void OnSelected(AudioModel item)
+        {
+        }
+
+        public override void OnSelectedItem(object sender, PointerPressedEventArgs args)
         {
             PlayerControlViewModel.SetPlaylistEvent -= PlayerControlViewModelOnSetPlaylistEvent;
-            base.SelectedItem(sender, args);
+            base.OnSelectedItem(sender, args);
             PlayerControlViewModel.SetPlaylistEvent += PlayerControlViewModelOnSetPlaylistEvent;
         }
-        
+
 
         private void PlayerControlViewModelOnSetPlaylistEvent(IEnumerable<AudioModel> audiocollection,
             int selectedindex)
         {
-           
             DataCollection = new ObservableCollection<AudioModel>();
             DataCollection.AddRange(audiocollection);
             AllDataCollection = DataCollection;
             SelectedIndex = selectedindex;
-            
         }
     }
 }

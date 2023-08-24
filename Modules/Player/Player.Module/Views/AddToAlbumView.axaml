@@ -7,7 +7,7 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Player.Module.Views.AddToAlbumView">
+             x:Class="VkPlayer.Module.Views.AddToAlbumView">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

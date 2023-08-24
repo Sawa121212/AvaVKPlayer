@@ -6,17 +6,20 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-             xmlns:views="clr-namespace:Player.Module.Views"
              xmlns:resources="clr-namespace:Common.Resources;assembly=Common.Resources"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:m3="clr-namespace:Common.Resources.m3;assembly=Common.Resources"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:views="clr-namespace:VkPlayer.Module.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Player.Module.Views.AlbumListControl">
+             x:Class="VkPlayer.Module.Views.AlbumListControl">
 
     <Grid>
+        <!-- Albums -->
         <ListBox Classes="NoFeedback"
                  SelectedIndex="{Binding SelectedIndex}"
-                 Items="{Binding  DataCollection}">
+                 Items="{Binding  DataCollection}"
+                 IsVisible="{Binding !DataContext.IsVisibleMusicFromAlbum, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
                     <Setter Property="Margin" Value="5" />
@@ -42,11 +45,11 @@
                                                     Margin="{TemplateBinding Padding}"
                                                     VirtualizationMode="{TemplateBinding VirtualizationMode}">
 
-                                        <i:Interaction.Behaviors>
+                                      <!-- <i:Interaction.Behaviors>
                                             <ia:EventTriggerBehavior EventName="PointerPressed">
                                                 <ia:CallMethodAction TargetObject="{Binding}" MethodName="SelectedItem" />
                                             </ia:EventTriggerBehavior>
-                                        </i:Interaction.Behaviors>
+                                        </i:Interaction.Behaviors>-->
                                     </ItemsPresenter>
                                 </ScrollViewer>
                             </Border>
@@ -63,17 +66,23 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <m3:Card Classes="Outlined" Width="130">
+                    <m3:Card Classes="Outlined" Width="130"
+                             Command="{Binding DataContext.ClickCommand, 
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                             CommandParameter="{Binding .}">
                         <m3:Card.Image>
                             <Panel>
-                                <Border Height="120"
+                                <!--<Border Height="120"
                                         VerticalAlignment="Center" HorizontalAlignment="Stretch"
                                         IsHitTestVisible="False"
                                         IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"
                                         Background="#e6edf5">
                                     <avalonia:MaterialIcon Kind="PlaylistMusic"
                                                            Foreground="#6e9acb" Width="64" Height="64" />
-                                </Border>
+                                </Border>-->
+                                <ContentControl Classes="PlaylistMusicImage"
+                                                Height="120"
+                                                IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"/>
                                 <Border Height="120"
                                         VerticalAlignment="Center" HorizontalAlignment="Stretch"
                                         IsHitTestVisible="False"
@@ -93,30 +102,32 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
+        <!-- Musics -->
         <Grid RowDefinitions="Auto,*"
-              IsVisible="{Binding DataContext.MusicFromAlbumIsVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
-            <Button Background="Transparent"
+              IsVisible="{Binding DataContext.IsVisibleMusicFromAlbum, 
+                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+            <Button Grid.Row="0"
+                    Background="Transparent"
                     Command="{Binding BackToAlbumListCommand}"
                     Margin="10,0,0,0">
                 <Button.Content>
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <Path UseLayoutRounding="True" VerticalAlignment="Center" Margin="-5,0,0,0" Height="15"
-                              Width="10" Stretch="Fill" Fill="{DynamicResource PrimaryHueMidBrush}"
-                              Data="M172.548,256.005L388.82,39.729c9.089-9.089,9.089-23.824,0-32.912s-23.824-9.089-32.912,0.002
-	L123.18,239.551c-4.366,4.363-6.817,10.282-6.817,16.454c0,6.173,2.453,12.093,6.817,16.457l232.727,232.721
-	c4.543,4.544,10.499,6.816,16.455,6.816s11.913-2.271,16.457-6.817c9.089-9.089,9.089-23.824,0-32.912L172.548,256.005z" />
-                        <TextBlock
-                            Text="{Binding ElementName=MusicsContol, Path=DataContext.Album.Title, FallbackValue=альбом}" />
-                    </StackPanel>
+                    <Grid ColumnDefinitions="Auto, 8, *">
+                        <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding Path=DataContext.Album.Title, ElementName=MusicsContol, 
+                                        FallbackValue={localization:Localize MoveBack}}" />
+                    </Grid>
                 </Button.Content>
             </Button>
 
-            <views:MusicListControl Grid.Row="1" Grid.Column="1"
+            <views:MusicListControlView Grid.Row="1"
                                     x:Name="MusicsContol"
-                                    DataContext="{Binding DataContext.MusicFromAlbumViewModel, 
-                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                                    DataContext="{Binding DataContext.MusicFromAlbumViewModel,
+                                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
         </Grid>
 
-        <resources:LoadingControl VerticalContentAlignment="Center" IsVisible="{Binding IsLoading}" />
+        <resources:LoadingControl
+            VerticalContentAlignment="Center"
+            IsVisible="{Binding IsLoading}" />
     </Grid>
 </UserControl>

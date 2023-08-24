@@ -1,11 +1,11 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace VkPlayer.Module.Views
+namespace Equalizer.Module.Views
 {
-    public sealed class PlayerControlView : UserControl
+    public partial class EqualizerControlView : UserControl
     {
-        public PlayerControlView()
+        public EqualizerControlView()
         {
             InitializeComponent();
         }

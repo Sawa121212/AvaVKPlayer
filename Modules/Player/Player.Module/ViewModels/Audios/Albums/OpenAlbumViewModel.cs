@@ -1,22 +1,25 @@
 ﻿using Authorization.Module.Services;
 using Avalonia.Input;
-using Player.Domain;
-using Player.Domain.ETC;
-using Prism.Regions;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.ETC;
 using VkProvider.Module;
 
-namespace Player.Module.ViewModels.Audios.Albums
+namespace VkPlayer.Module.ViewModels.Audios.Albums
 {
-    public class OpenAlbumViewModel : AlbumsViewModel, INavigationAware
+    /// <summary>
+    /// Музыка из альбома
+    /// </summary>
+    public class OpenAlbumViewModel : AlbumsViewModel
     {
         public OpenAlbumViewModel(IAuthorizationService authorizationService) : base(authorizationService)
         {
             _authorizationService = authorizationService;
         }
 
-        public override void SelectedItem(object sender, PointerPressedEventArgs args)
+        /// <inheritdoc/>
+        public override void OnSelectedItem(object sender, PointerPressedEventArgs args)
         {
             AudioAlbumModel? item = args?.GetContent<AudioAlbumModel>();
             if (item == null)
@@ -24,9 +27,10 @@ namespace Player.Module.ViewModels.Audios.Albums
 
             MusicFromAlbumViewModel = new MusicFromAlbumViewModel(item);
             MusicFromAlbumViewModel.StartLoad();
-            MusicFromAlbumIsVisible = true;
+            IsVisibleMusicFromAlbum = true;
         }
 
+        /// <inheritdoc/>
         protected override void LoadData()
         {
             if (_authorizationService.CurrentAccount?.UserId == null)
@@ -43,21 +47,7 @@ namespace Player.Module.ViewModels.Audios.Albums
             DataCollection.StartLoadImagesAsync();
         }
 
-        /// <inheritdoc />
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-        }
+        protected readonly IAuthorizationService _authorizationService;
 
-        /// <inheritdoc />
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
-        /// <inheritdoc />
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            StartLoad();
-        }
     }
 }

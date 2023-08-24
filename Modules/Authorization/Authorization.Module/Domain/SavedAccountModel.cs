@@ -1,26 +1,85 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Common.Core.ToDo;
+using System.Threading.Tasks;
+using ReactiveUI;
 using VkNet.Enums.Filters;
 using VkNet.Model;
 using VkProvider.Module;
 
 namespace Authorization.Module.Domain
 {
-    public class SavedAccountModel
+    /// <summary>
+    /// Сохраненный аккаунт
+    /// </summary>
+    public class SavedAccountModel : ReactiveObject
     {
-        public string? Name { get; set; }
-        public long? UserId { get; set; }
-        public string? Token { get; set; }
+        private ImageModel _image;
+        private long? _userId;
+        private string? _name;
+        private string? _token;
+        private string _status;
 
-        public ImageModel Image { get; set; }
-
-        public bool Default { get; set; } = false;
-
-
-        public async void LoadAvatar()
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public long? UserId
         {
+            get => _userId;
+            set => this.RaiseAndSetIfChanged(ref _userId, value);
+        }
+
+        /// <summary>
+        /// Имя
+        /// </summary>
+        public string? Name
+        {
+            get => _name;
+            set => this.RaiseAndSetIfChanged(ref _name, value);
+        }
+
+        /// <summary>
+        /// Аватар
+        /// </summary>
+        public ImageModel Image
+        {
+            get => _image;
+            set => this.RaiseAndSetIfChanged(ref _image, value);
+        }
+
+        /// <summary>
+        /// Токен
+        /// </summary>
+        public string? Token
+        {
+            get => _token;
+            set => this.RaiseAndSetIfChanged(ref _token, value);
+        }
+
+        /// <summary>
+        /// Флаг, указывающий что этот аккаунт выбран для входа по умолчанию
+        /// </summary>
+        public bool IsDefault { get; set; } = false;
+
+        /// <summary>
+        /// Статус
+        /// </summary>
+        public string Status
+        {
+            get => _status;
+            set => this.RaiseAndSetIfChanged(ref _status, value);
+        }
+
+        /// <summary>
+        /// Обновить информацию об аккаунте
+        /// </summary>
+        public async Task UpdateInformation()
+        {
+            if (UserId == null)
+            {
+                return;
+            }
+
             try
             {
                 ReadOnlyCollection<User> profileInfoAwaiter =
@@ -32,7 +91,13 @@ namespace Authorization.Module.Domain
 
                 Image ??= new ImageModel();
                 Image.ImageUrl = res.Photo50.AbsoluteUri;
-                Image.LoadBitmapAsync();
+                await Image.LoadBitmapAsync();
+
+                AccountSaveProfileInfoParams profile = await VkApiManager.GetProfileInfoAsync();
+                UserId = VkApiManager.VkApi.UserId;
+                Name = $"{profile.FirstName} {profile.LastName}";
+                Token = VkApiManager.VkApi.Token;
+                Status = profile.Status;
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Player.Module.Views.Pages
+namespace VkPlayer.Module.Views.Pages
 {
     public partial class AboutView : UserControl
     {

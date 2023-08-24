@@ -19,7 +19,7 @@ namespace Common.Core.ToDo
 
         public TcpListener TcpListener { get; set; }
         public TcpClient Client { get; set; }
-        public WebElementServer(int port) => this.Port = port;
+        public WebElementServer(int port) => Port = port;
         public bool ServerStarted { get; set; }
         public void StartServerOnThread()
         {

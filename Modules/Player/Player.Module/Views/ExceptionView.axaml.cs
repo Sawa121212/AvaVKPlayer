@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Player.Module.Views
+namespace VkPlayer.Module.Views
 {
     public class ExceptionView : UserControl
     {

@@ -4,32 +4,28 @@
     <TargetFramework>net5.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
+    <Version>0.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.21" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
-		<PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.21" />
-		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
-		<PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
-		<PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
-		<PackageReference Include="Material.Avalonia" Version="2.5.1" />
+    <PackageReference Include="Avalonia" Version="0.10.22" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
+    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.22" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
+    <PackageReference Include="Material.Avalonia" Version="2.5.1" />
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
-		<PackageReference Include="VkNet" Version="1.75.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
-	  <ProjectReference Include="..\..\Notification\Notification.Module\Notification.Module.csproj" />
-	  <ProjectReference Include="..\..\VkApi\VkApi.Module\VkProvider.Module.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Update="Views\AuthorizationView.axaml.cs">
-	    <DependentUpon>AuthorizationView.axaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="VkNet" Version="1.75.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
+    <ProjectReference Include="..\..\Notification\Notification.Module\Notification.Module.csproj" />
+    <ProjectReference Include="..\..\VkApi\VkApi.Module\VkProvider.Module.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Language.Designer.cs">

@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Equalizer.Module.Views
 {
-    public partial class EqWindow : UserControl
+    public partial class EqualizerPresetsManagerView : UserControl
     {
-        public EqWindow()
+        public EqualizerPresetsManagerView()
         {
             InitializeComponent();
         }

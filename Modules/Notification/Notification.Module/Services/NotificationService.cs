@@ -2,35 +2,40 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
-using Avalonia.Threading;
+using ReactiveUI;
 
 namespace Notification.Module.Services
 {
-    /// <summary>
-    /// Сервис отображения уведомления
-    /// </summary>
-    public class NotificationService : INotificationService
+    /// <inheritdoc cref="INotificationService"/>
+    public class NotificationService : ReactiveObject, INotificationService
     {
         private int _notificationTimeout = 5;
         private WindowNotificationManager? _notificationManager;
 
         /// <inheritdoc/>
-        public void Show(string title, string message,
-            NotificationType notificationType, Action? onClick = null)
+        public void Show(string title, string message, NotificationType notificationType, Action? onClick = null)
         {
-            if (_notificationManager is { } nm)
+            if (_notificationManager is { } window)
             {
-                Dispatcher.UIThread.InvokeAsync(() => nm.Show(
-                    new Avalonia.Controls.Notifications.Notification(
-                        title, message, notificationType, TimeSpan.FromSeconds(_notificationTimeout),
-                        onClick)));
+                Avalonia.Controls.Notifications.Notification notification = new(
+                    title, message, notificationType, TimeSpan.FromSeconds(_notificationTimeout),
+                    onClick);
+                //ToDO: Fix this - window.Show(notification);
+            }
+            else
+            {
+                throw new Exception("Host window not set");
             }
         }
 
         /// <inheritdoc/>
         public void SetHostWindow(IAvaloniaObject hostWindow)
         {
-            if (hostWindow is not Window window) return;
+            if (hostWindow is not Window window)
+            {
+                return;
+            }
+
             WindowNotificationManager? notificationManager = new(window)
             {
                 Position = NotificationPosition.BottomRight,
@@ -38,7 +43,7 @@ namespace Notification.Module.Services
                 Margin = new Thickness(0, 0, 15, 40)
             };
 
-            _notificationManager = notificationManager;
+            NotificationManager = notificationManager;
         }
 
         /// <inheritdoc/>
@@ -46,6 +51,12 @@ namespace Notification.Module.Services
         {
             get => _notificationTimeout;
             set => _notificationTimeout = (value < 0) ? 0 : value;
+        }
+
+        private WindowNotificationManager? NotificationManager
+        {
+            get => _notificationManager;
+            set => this.RaiseAndSetIfChanged(ref _notificationManager, value);
         }
     }
 }

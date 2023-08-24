@@ -1,15 +1,18 @@
 ﻿using Authorization.Module.Domain;
-using Player.Domain.Base;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using VkNet.Model;
+using VkPlayer.Domain.Base;
 
-namespace Player.Domain
+namespace VkPlayer.Domain
 {
+    /// <summary>
+    /// Модель музыки
+    /// </summary>
     public class AudioModel : VkAudioOrAlbumModelBase
     {
         private int _downloadPercent;
         private bool _isDownload;
+        private LyricsViewModel? _lyricsModel;
 
         public AudioModel()
         {
@@ -22,17 +25,14 @@ namespace Player.Domain
             };
         }
 
-        [Reactive] public LyricsViewModel? LyricsViewModel { get; set; }
-
-
-        public bool LyricsButtonIsVisible
-        {
-            get => false;
-        }
-
         public AudioModel(Audio vkModel) : this()
         {
-            IsNotAvailable = vkModel?.ContentRestricted != null;
+            if (vkModel == null)
+            {
+                return;
+            }
+
+            IsNotAvailable = vkModel.ContentRestricted != 0;
 
             AccessKey = vkModel.AccessKey;
             if (vkModel.LyricsId != null)
@@ -47,16 +47,22 @@ namespace Player.Domain
             Title = vkModel.Title;
             Subtitle = vkModel.Subtitle;
 
-            if (vkModel.Album != null && vkModel.Album.Thumb != null)
+            if (vkModel.Album is {Thumb: { }})
                 Image.ImageUrl = GetThumbUrl(vkModel.Album.Thumb);
         }
 
+        /// <summary>
+        /// Процент загрузки
+        /// </summary>
         public int DownloadPercent
         {
             get => _downloadPercent;
             set => this.RaiseAndSetIfChanged(ref _downloadPercent, value);
         }
 
+        /// <summary>
+        /// Флаг об загрузке
+        /// </summary>
         public bool IsDownload
         {
             get => _isDownload;
@@ -69,19 +75,27 @@ namespace Player.Domain
             }
         }
 
-
-        public int Duration { get; set; }
-
-
+        /// <inheritdoc/>
         public override string GetThumbUrl(AudioCover audioCover)
         {
             if (audioCover.Photo68 != null)
                 return audioCover.Photo68;
 
-            if (audioCover.Photo135 != null)
-                return audioCover.Photo135;
-
-            return string.Empty;
+            return audioCover.Photo135 ?? string.Empty;
         }
+
+        /// <summary>
+        /// Значение
+        /// </summary>
+        public int Duration { get; set; }
+
+
+        public LyricsViewModel? LyricsViewModel
+        {
+            get => _lyricsModel;
+            set => this.RaiseAndSetIfChanged(ref _lyricsModel, value);
+        }
+
+        public bool LyricsButtonIsVisible => false;
     }
 }

@@ -4,17 +4,18 @@
         <TargetFramework>net5.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Version>0.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia" Version="0.10.21" />
+      <PackageReference Include="Avalonia" Version="0.10.22" />
+      <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
       <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.19" />
       <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
       <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
       <PackageReference Include="ManagedBass" Version="3.1.1" />
       <PackageReference Include="Material.Avalonia" Version="2.5.1" />
       <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
-      <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,25 +27,25 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AvaloniaXaml Update="Views\EqualizerPresetsManager.axaml">
+      <AvaloniaXaml Update="Views\EqualizerPresetsManagerView.axaml">
         <SubType>Designer</SubType>
       </AvaloniaXaml>
-      <AvaloniaXaml Update="Views\EQWindow.axaml">
+      <AvaloniaXaml Update="Views\EqualizerControlView.axaml">
         <SubType>Designer</SubType>
       </AvaloniaXaml>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\EqualizerPresetsManager.axaml.cs">
-        <DependentUpon>%(Filename)</DependentUpon>
+      <Compile Update="Views\EqualizerPresetsManagerView.axaml.cs">
+        <DependentUpon>EqualizerPresetsManagerView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\EQWindow.axaml.cs">
-        <DependentUpon>%(Filename)</DependentUpon>
+      <Compile Update="Views\EqualizerControlView.axaml.cs">
+        <DependentUpon>EqualizerControlView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\InputViewDialog.axaml.cs">
-        <DependentUpon>%(Filename)</DependentUpon>
+      <Compile Update="Views\InputDialogView.axaml.cs">
+        <DependentUpon>InputDialogView.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
 

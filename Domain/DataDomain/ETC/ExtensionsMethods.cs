@@ -6,40 +6,44 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Input;
-using Player.Domain.Interfaces;
 using VkNet.Model;
+using VkPlayer.Domain.Interfaces;
 
-namespace Player.Domain.ETC
+namespace VkPlayer.Domain.ETC
 {
     public static class ExtensionsMethods
     {
         public static T? GetContent<T>(this PointerPressedEventArgs eventArgs) where T : class
         {
-            T? res = (eventArgs?.Source as ContentPresenter)?.Content as T;
-            if (res is null)
-                res = (eventArgs?.Source as TextBlock)?.DataContext as T;
+            T? res = (eventArgs?.Source as ContentPresenter)?.Content as T ??
+                     (eventArgs?.Source as TextBlock)?.DataContext as T;
 
             return res;
         }
 
-
         public static void AddRange(this ObservableCollection<AudioModel>? dataCollection,
             IEnumerable<Audio>? audios)
         {
-            if (audios != null)
+            if (audios == null)
             {
-                foreach (Audio? item in audios)
-                    dataCollection?.Add(new AudioModel(item));
+                return;
             }
+
+            foreach (Audio? item in audios)
+                dataCollection?.Add(new AudioModel(item));
         }
 
         public static void AddRange(this ObservableCollection<AudioAlbumModel>? dataCollection,
             IEnumerable<AudioPlaylist> audioPlayList)
         {
-            if (audioPlayList != null)
+            if (audioPlayList == null)
             {
-                foreach (AudioPlaylist? item in audioPlayList)
-                    dataCollection?.Add(new AudioAlbumModel(item));
+                return;
+            }
+
+            foreach (AudioPlaylist? item in audioPlayList)
+            {
+                dataCollection?.Add(new AudioAlbumModel(item));
             }
         }
 
@@ -61,15 +65,23 @@ namespace Player.Domain.ETC
             return isSearched ? index : -1;
         }
 
+        /// <summary>
+        /// Начать загрузку обложек
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataCollection"></param>
         public static void StartLoadImages<T>(this ObservableCollection<T>? dataCollection) where T : IVkModelBase
         {
             try
             {
-                int? itemCount = dataCollection?.Count;
-                for (int i = 0; i < itemCount; i++)
+                if (dataCollection == null)
                 {
-                    if (dataCollection[i] != null)
-                        dataCollection[i].Image.LoadBitmapAsync();
+                    return;
+                }
+
+                foreach (T model in dataCollection)
+                {
+                    model.Image.LoadBitmapAsync();
                 }
             }
             catch (Exception ex)
@@ -77,29 +89,40 @@ namespace Player.Domain.ETC
             }
         }
 
+        /// <summary>
+        /// Начать загрузку обложек
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataCollection"></param>
         public static void StartLoadImagesAsync<T>(this ObservableCollection<T>? dataCollection) where T : IVkModelBase
         {
             Task.Run(() => StartLoadImages(dataCollection));
         }
 
-
+        /// <summary>
+        /// Перемешать коллекцию
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         public static ObservableCollection<T> Shuffle<T>(this IEnumerable<T> collection)
         {
             if (collection is null)
                 return new ObservableCollection<T>();
 
-            ObservableCollection<T> obscollection = new(collection);
+            ObservableCollection<T> thisCollection = new(collection);
             Random rand = new();
+
             int itercount = collection.Count();
 
             for (int i = 0; i < itercount; i++)
             {
-                T? element = obscollection[rand.Next(itercount)];
-                obscollection.Remove(element);
-                obscollection.Insert(rand.Next(itercount), element);
+                T? element = thisCollection[rand.Next(itercount)];
+                thisCollection.Remove(element);
+                thisCollection.Insert(rand.Next(itercount), element);
             }
 
-            return obscollection;
+            return thisCollection;
         }
 
         public static string GetAudioIdFormatWithAccessKey(this Audio audioModel)

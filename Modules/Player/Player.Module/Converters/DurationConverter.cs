@@ -2,7 +2,7 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace Player.Module.Converters
+namespace VkPlayer.Module.Converters
 {
     public class DurationConverter : IValueConverter
     {

@@ -15,46 +15,19 @@ using Common.Core.ToDo;
 using Common.Core.Views;
 using Prism.Regions;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using VkProvider.Module;
 
 namespace Authorization.Module.Views
 {
     public class AuthorizationViewModel : ViewModelBase, INavigationAware
     {
-        const int Port = 2654;
-        bool _waitStartServer = false;
-        string winName = "WindowsWebBrowser.exe";
-        string linuxName = "Linux";
-
-        private const string AuthUrl =
-            @"https://oauth.vk.com/oauth/authorize?client_id=6463690" +
-            "&scope=1073737727" +
-            "&redirect_uri=https://oauth.vk.com/blank.html" +
-            "&display=mobile" +
-            "&response_type=token" +
-            "&revoke=1";
-
-        private Process? _browserProcess;
-
-        CancellationToken _authCancelletionSource = new();
-
-        private WebElementServer? _webElementServer;
-        private readonly IAuthorizationService _authorizationService;
-        private IRegionNavigationJournal _journal;
-
         public AuthorizationViewModel(IAuthorizationService authorizationService)
         {
             _authorizationService = authorizationService;
-            SavedAccounts = _authorizationService.LoadSavedAccounts();
-
+            SavedAccounts = new ObservableCollection<SavedAccountModel>(_authorizationService.LoadSavedAccounts());
             SkipMenuIfOnlyOneAccount();
-            ToggleAccountsSidebarVisible();
 
-            SavedAccounts.CollectionChanged += (sender, args) =>
-            {
-                _authorizationService.SaveAccounts();
-                ToggleAccountsSidebarVisible();
-            };
+            SavedAccounts.CollectionChanged += (_, _) => { _authorizationService.SaveAccounts(); };
 
             AuthCommand = ReactiveCommand.Create(() =>
             {
@@ -130,17 +103,11 @@ namespace Authorization.Module.Views
                 }, _authCancelletionSource);
             });
 
-
             RemoveAccountCommand = ReactiveCommand.Create<SavedAccountModel>(account =>
             {
                 if (account != null)
                     SavedAccounts.Remove(account);
             });
-        }
-
-        private void ToggleAccountsSidebarVisible()
-        {
-            SavedAccountsIsVisible = SavedAccounts?.Count > 0;
         }
 
         private void OffServerAndUnsubscribe()
@@ -153,58 +120,62 @@ namespace Authorization.Module.Views
             _webElementServer.MessageRecived -= WebServer_MessageEvent;
         }
 
-        private void WebServer_ErrorEvent(Exception ex)
+        /// <summary>
+        /// Сообщение об ошибке
+        /// </summary>
+        /// <param name="exp"></param>
+        private void WebServer_ErrorEvent(Exception exp)
         {
-            InfoText = $"Произошла ошибка {ex.Message}";
+            InfoText = $"Произошла ошибка {exp.Message}";
             OffServerAndUnsubscribe();
         }
 
-        private void WebServer_MessageEvent(String message)
+        private void WebServer_MessageEvent(string message)
         {
-            if (message.Contains("#access_token"))
+            if (!message.Contains("#access_token"))
             {
-                string token = message.Split("=")[1].Split("&")[0];
-                string id = message.Split("=")[3].Split("&")[0];
-
-                _browserProcess?.Kill();
-
-                OffServerAndUnsubscribe();
-                InfoText = "Авторизация успешна";
-                VkNet.VkApi? api = _authorizationService.Auth(token, long.Parse(id));
-                _authorizationService.SaveAccount(api);
-                // ToDo_vkApiManager.VkApi = api;
+                return;
             }
+
+            string token = message.Split("=")[1].Split("&")[0];
+            string id = message.Split("=")[3].Split("&")[0];
+
+            _browserProcess?.Kill();
+
+            OffServerAndUnsubscribe();
+
+            InfoText = "Авторизация успешна";
+            _authorizationService.AuthByTokenAndId(token, long.Parse(id));
         }
 
+        /// <summary>
+        /// Если в списке только 1 сохраненный аккаунт, то сразу выбираем его
+        /// </summary>
         private void SkipMenuIfOnlyOneAccount()
         {
             if (SavedAccounts?.Count == 1)
             {
-                _authorizationService.AuthFromActiveAccount(SavedAccounts.First());
+                Authorization(SavedAccounts.First());
             }
         }
 
-
-        public virtual void SelectedItem(object sender, PointerPressedEventArgs args)
+        private void OnSelectedItem()
         {
-            /*SavedAccountModel? selectedAccount = args.GetContent<SavedAccountModel>();
-            if (selectedAccount != null)
-                _authorizationService.AuthFromActiveAccount(sel
-            ectedAccount);*/
+            Authorization(SelectedAccount);
         }
 
-        public virtual void Scrolled(object sender, ScrollChangedEventArgs args)
+        private void Authorization(SavedAccountModel accountModel)
         {
-        }
+            if (accountModel == null)
+            {
+                return;
+            }
 
-        private void OnGoBack()
-        {
-            _journal.GoBack();
+            _authorizationService.AuthorizationFromActiveAccount(accountModel);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            _journal = navigationContext.NavigationService.Journal;
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -216,19 +187,62 @@ namespace Authorization.Module.Views
         {
         }
 
-        public ObservableCollection<SavedAccountModel>? SavedAccounts { get; set; } = new();
+        /// <summary>
+        /// Сохраненные аккаунты
+        /// </summary>
+        public ObservableCollection<SavedAccountModel> SavedAccounts
+        {
+            get => _savedAccounts;
+            set => this.RaiseAndSetIfChanged(ref _savedAccounts, value);
+        }
 
-        [Reactive] public bool AuthButtonIsActive { get; set; }
+        /// <summary>
+        /// Сохраненные аккаунты
+        /// </summary>
+        public SavedAccountModel SelectedAccount
+        {
+            get => _selectedAccount;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _selectedAccount, value);
+                OnSelectedItem();
+            }
+        }
+
+        /// <summary>
+        /// Информационный текст
+        /// </summary>
+        public string? InfoText
+        {
+            get => _infoText;
+            set => this.RaiseAndSetIfChanged(ref _infoText, value);
+        }
+
+        private readonly IAuthorizationService _authorizationService;
+        private IRegionNavigationJournal _journal;
+        private WebElementServer? _webElementServer;
+
+        public ICommand AuthCommand { get; }
+        public ICommand RemoveAccountCommand { get; }
 
 
-        [Reactive] public string? InfoText { get; set; }
+        private const string AuthUrl =
+            @"https://oauth.vk.com/oauth/authorize?client_id=6463690" +
+            "&scope=1073737727" +
+            "&redirect_uri=https://oauth.vk.com/blank.html" +
+            "&display=mobile" +
+            "&response_type=token" +
+            "&revoke=1";
 
+        const int Port = 2654;
+        bool _waitStartServer = false;
+        string winName = "WindowsWebBrowser.exe";
+        string linuxName = "Linux";
 
-        [Reactive] public bool SavedAccountsIsVisible { get; set; }
-        [Reactive] public int ActiveAccountSelectIndex { get; set; }
-
-
-        public ICommand AuthCommand { get; set; }
-        public ICommand RemoveAccountCommand { get; set; }
+        private Process? _browserProcess;
+        CancellationToken _authCancelletionSource = new();
+        private ObservableCollection<SavedAccountModel> _savedAccounts;
+        private SavedAccountModel _selectedAccount;
+        private string? _infoText;
     }
 }

@@ -8,7 +8,7 @@
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Player.Module.Views.Pages.AboutView">
+             x:Class="VkPlayer.Module.Views.Pages.AboutView">
 
     <Grid RowDefinitions="Auto,Auto"
           HorizontalAlignment="Center" VerticalAlignment="Center">

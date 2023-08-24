@@ -10,8 +10,10 @@
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:resources="clr-namespace:Common.Resources;assembly=Common.Resources"
-             xmlns:converters="clr-namespace:Player.Module.Converters"
-             x:Class="Player.Module.Views.MusicListControl">
+             xmlns:converters="clr-namespace:VkPlayer.Module.Converters"
+             xmlns:audios="clr-namespace:VkPlayer.Module.ViewModels.Audios"
+             xmlns:domain="clr-namespace:VkPlayer.Domain;assembly=VkPlayer.Domain"
+             x:Class="VkPlayer.Module.Views.MusicListControlView">
 
     <UserControl.Resources>
         <converters:DurationConverter x:Key="durationConverter" />
@@ -23,6 +25,10 @@
             <Setter Property="Margin" Value="0, 0, -1, 0" />
         </Style>
     </UserControl.Styles>
+
+    <Design.DataContext>
+        <audios:AllMusicViewModel />
+    </Design.DataContext>
 
     <Grid RowDefinitions="Auto,*">
 
@@ -46,57 +52,73 @@
         </TextBox>
 
         <!-- Musics -->
-        <ListBox Grid.Row="1" x:Name="box"
+        <ListBox Grid.Row="1" x:Name="MusicsBox"
+                 Items="{Binding DataCollection}"
+                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-                 Items="{Binding  DataCollection}"
                  AutoScrollToSelectedItem="{Binding ScrollToItem}"
+                 SelectionMode="Single"
                  UseLayoutRounding="True"
                  VirtualizationMode="Simple">
 
             <ListBox.DataTemplates>
-                <DataTemplate>
+                <DataTemplate DataType="domain:AudioModel">
 
                     <Grid x:Name="GridData"
                           ColumnDefinitions="1*,Auto,Auto">
                         <i:Interaction.Behaviors>
-                            <ia:DataTriggerBehavior Binding="{Binding  IsNotAvailable}" ComparisonCondition="Equal"
-                                                    Value="True">
+                            <ia:DataTriggerBehavior Binding="{Binding IsNotAvailable}"
+                                                    ComparisonCondition="Equal" Value="True">
                                 <ia:ChangePropertyAction TargetObject="GridData" PropertyName="Opacity" Value="0.6" />
                             </ia:DataTriggerBehavior>
-                            <ia:DataTriggerBehavior Binding="{Binding  IsNotAvailable}" ComparisonCondition="Equal"
-                                                    Value="False">
+                            <ia:DataTriggerBehavior Binding="{Binding IsNotAvailable}"
+                                                    ComparisonCondition="Equal" Value="False">
                                 <ia:ChangePropertyAction TargetObject="GridData" PropertyName="Opacity" Value="1" />
                             </ia:DataTriggerBehavior>
                         </i:Interaction.Behaviors>
 
                         <DockPanel>
-                            <Border IsHitTestVisible="False" VerticalAlignment="Top" CornerRadius="10" Width="50"
-                                    Height="50"
-                                    Margin="0,0,5,0" DockPanel.Dock="Left">
+
+                            <!-- Image -->
+                            <Border IsHitTestVisible="False"
+                                    VerticalAlignment="Top"
+                                    CornerRadius="10"
+                                    Width="50" Height="50"
+                                    Margin="0,0,5,0"
+                                    DockPanel.Dock="Left"
+                                    IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                <!-- ToDo: add default image -->
                                 <Border.Background>
                                     <ImageBrush Source="{Binding Image.Bitmap}" Stretch="Uniform" />
                                 </Border.Background>
                             </Border>
+                            <ContentControl Classes="PlaylistMusicImage"
+                                            VerticalAlignment="Top"
+                                            CornerRadius="10"
+                                            DockPanel.Dock="Left"
+                                            Width="50" Height="50"
+                                            Margin="0,0,5,0"
+                                            IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"/>
 
+                            <!-- Title & Subtitle -->
                             <DockPanel Margin="5" MaxWidth="{Binding $parent.ActualWidth}">
                                 <DockPanel DockPanel.Dock="Top"
                                            MaxWidth="{Binding $parent.ActualWidth}">
                                     <TextBlock IsHitTestVisible="False"
                                                TextTrimming="WordEllipsis" FontSize="14"
-                                               Text="{Binding Title}" DockPanel.Dock="Left" />
+                                               Text="{Binding Title}"
+                                               DockPanel.Dock="Left" />
                                     <TextBlock IsHitTestVisible="false"
                                                TextTrimming="WordEllipsis" FontSize="14"
-                                               Text="{Binding Subtitle}" Margin="5,0,0,0" DockPanel.Dock="Right">
-                                        <TextBlock.Styles>
-                                            <Style Selector="TextBlock">
-                                                <Setter Property="Foreground" Value="#464646" />
-                                            </Style>
-                                        </TextBlock.Styles>
-                                    </TextBlock>
+                                               Text="{Binding Subtitle}" Margin="5,0,0,0"
+                                               DockPanel.Dock="Right" />
                                 </DockPanel>
 
+                                <!-- Artist -->
                                 <StackPanel Margin="0,5" DockPanel.Dock="Bottom">
-                                    <TextBlock x:Name="artist" IsHitTestVisible="True" TextTrimming="WordEllipsis"
+                                    <TextBlock x:Name="artist"
+                                               IsHitTestVisible="True"
+                                               TextTrimming="WordEllipsis"
                                                FontSize="14"
                                                Text="{Binding Artist}">
 
@@ -107,16 +129,12 @@
                                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                                                     MethodName="ArtistClicked" />
                                             </ia:EventTriggerBehavior>
-
                                         </i:Interaction.Behaviors>
 
                                         <TextBlock.Styles>
-                                            <Style Selector="TextBlock">
-                                                <Setter Property="Foreground" Value="#737272" />
-                                            </Style>
                                             <Style Selector="TextBlock:pointerover">
-                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-
+                                                <Setter Property="Foreground"
+                                                        Value="{DynamicResource PrimaryHueMidBrush}" />
                                                 <Setter Property="Cursor" Value="Hand" />
                                             </Style>
                                         </TextBlock.Styles>
@@ -126,12 +144,14 @@
                             </DockPanel>
                         </DockPanel>
 
+                        <!-- Buttons -->
                         <StackPanel Grid.Column="1" Margin="10,0"
                                     Spacing="5" Orientation="Horizontal">
 
                             <!-- Download -->
                             <Button Classes="Flat"
-                                    IsVisible="{Binding DataContext.AudioListButtons.AudioDownloadIsVisible, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
+                                    IsVisible="{Binding DataContext.AudioListButtons.AudioDownloadIsVisible, 
+                                        RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
                                 <StackPanel Orientation="Horizontal">
                                     <avalonia:MaterialIcon Kind="Download" Width="24" Height="24" />
 
@@ -143,12 +163,10 @@
                                         </TextBlock.Text>
 
                                         <i:Interaction.Behaviors>
-
                                             <ia:DataTriggerBehavior Binding="{Binding DownloadPercent}"
                                                                     ComparisonCondition="Equal" Value="0">
                                                 <ia:ChangePropertyAction PropertyName="IsVisible" Value="False" />
                                             </ia:DataTriggerBehavior>
-
                                             <ia:DataTriggerBehavior Binding="{Binding DownloadPercent}"
                                                                     ComparisonCondition="NotEqual" Value="0">
                                                 <ia:ChangePropertyAction PropertyName="IsVisible" Value="True" />
@@ -160,8 +178,9 @@
                                 <i:Interaction.Behaviors>
                                     <ia:EventTriggerBehavior EventName="Click">
                                         <ia:InvokeCommandAction
-                                            CommandParameter="{Binding }"
-                                            Command="{Binding DataContext.AudioListButtons.AudioDownloadCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" />
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding DataContext.AudioListButtons.AudioDownloadCommand,
+                                                RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" />
                                     </ia:EventTriggerBehavior>
                                 </i:Interaction.Behaviors>
                             </Button>
@@ -196,7 +215,7 @@
                                 <i:Interaction.Behaviors>
                                     <ia:EventTriggerBehavior EventName="Click">
                                         <ia:InvokeCommandAction
-                                            CommandParameter="{Binding }"
+                                            CommandParameter="{Binding .}"
                                             Command="{Binding DataContext.AudioListButtons.AudioOpenLyricsCommand,
                                               RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" />
                                     </ia:EventTriggerBehavior>
@@ -217,7 +236,6 @@
                                            PlacementGravity="Bottom"
                                            PlacementMode="AnchorAndGravity">
                                         <Border x:Name="LyricsScrollBorder"
-                                                PointerLeave="LyricsScrollBorder_OnPointerLeave"
                                                 CornerRadius="16"
                                                 BorderThickness="1"
                                                 BorderBrush="{DynamicResource MaterialDesignSelection}">
@@ -240,17 +258,25 @@
                                     Content="{avalonia:MaterialIconExt Kind=Delete, Size=24}"
                                     CommandParameter="{Binding .}"
                                     Command="{Binding DataContext.AudioListButtons.AudioRemoveCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" />
-
-
                         </StackPanel>
 
-                        <TextBlock Width="60" VerticalAlignment="Center" Grid.Column="2"
-                                   Text="{Binding Duration, Converter={StaticResource durationConverter}}" />
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding Duration, Converter={StaticResource durationConverter}}"
+                                   Width="60" VerticalAlignment="Center" />
 
 
                     </Grid>
                 </DataTemplate>
             </ListBox.DataTemplates>
+
+            <i:Interaction.Behaviors>
+                <ia:EventTriggerBehavior EventName="SelectionChanged">
+                    <ia:InvokeCommandAction
+                        Command="{Binding DataContext.ClickCommand,
+                                              RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        CommandParameter="{Binding SelectedItem, ElementName=MusicsBox}" />
+                </ia:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
         </ListBox>
 
         <resources:LoadingControl Grid.Row="1"

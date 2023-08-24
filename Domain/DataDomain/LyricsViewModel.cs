@@ -1,24 +1,23 @@
 ﻿using System.Threading.Tasks;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using VkNet.Model;
 using VkProvider.Module;
 
-namespace Player.Domain
+namespace VkPlayer.Domain
 {
+    /// <summary>
+    /// Текст композиции
+    /// </summary>
     public class LyricsViewModel : ReactiveObject
     {
-        [Reactive] public string Text { get; set; }
-
-        [Reactive] public bool IsVisible { get; set; } = false;
-
-        private long? _id = 0;
-
         public LyricsViewModel(long? lyricsId)
         {
-            this._id = lyricsId;
+            _id = lyricsId;
         }
 
+        /// <summary>
+        /// Начать загрузку
+        /// </summary>
         public void StartLoad()
         {
             Task.Run(() =>
@@ -27,5 +26,29 @@ namespace Player.Domain
                 Text = res.Text;
             });
         }
+
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        private long? _id = 0;
+
+        /// <summary>
+        /// Текст
+        /// </summary>
+        public string Text {
+            get => _text;
+            set => this.RaiseAndSetIfChanged(ref _text, value);
+        }
+
+        /// <summary>
+        /// Видимость
+        /// </summary>
+        public bool IsVisible {
+            get => _isVisible;
+            set => this.RaiseAndSetIfChanged(ref _isVisible, value);
+        }
+
+        private string _text;
+        private bool _isVisible;
     }
 }

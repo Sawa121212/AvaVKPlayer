@@ -8,6 +8,7 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:views="clr-namespace:Authorization.Module.Views"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
              x:Class="Authorization.Module.Views.AuthorizationView">
 
@@ -15,6 +16,10 @@
         <SolidColorBrush x:Key="VkLogoColor" Color="#2a6fbd" />
         <SolidColorBrush x:Key="AvaloniaUiLogoColor" Color="#8b44ac" />
     </UserControl.Resources>
+
+    <Design.DataContext>
+        <views:AuthorizationViewModel />
+    </Design.DataContext>
 
     <Grid RowDefinitions="Auto, 1*" ColumnDefinitions="*, Auto">
 
@@ -58,13 +63,17 @@
 
                     <TextBlock Text="Вход ВКонтакте" HorizontalAlignment="Center" FontSize="20" />
                     <TextBlock Text="{Binding InfoText, Mode=OneWay}"
+                               TextWrapping="Wrap"
                                HorizontalAlignment="Center" FontWeight="UltraBold" />
 
-                    <Button Margin="0,0" Width="100" Content="Войти" HorizontalAlignment="Center"
+                    <Button Content="Войти"
+                            Margin="0,0"
+                            Width="100"
+                            HorizontalAlignment="Center"
                             HorizontalContentAlignment="Center"
                             Command="{Binding AuthCommand}" />
                     <TextBlock Text="Мы не храним Ваш логин и пароль. Вход происходит в браузере."
-                               Foreground="{DynamicResource MaterialDesignSelection}"
+                               Foreground="{DynamicResource MaterialDesignBody}"
                                Margin="5" TextWrapping="Wrap"
                                TextAlignment="Center" />
                 </StackPanel>
@@ -73,7 +82,7 @@
 
         <!-- Активные аккаунты -->
         <Grid Grid.Row="1" Grid.Column="1"
-              IsVisible="{Binding SavedAccountsIsVisible}"
+              IsVisible="{Binding SavedAccounts.Count}"
               RowDefinitions="Auto,Auto,*">
 
             <TextBlock Grid.Row="0"
@@ -82,27 +91,29 @@
                        FontSize="20"
                        Margin="10" />
 
-            <TextBlock Grid.Row="1" Margin="20" FontSize="16" FontWeight="ExtraBold"
+            <TextBlock Grid.Row="1" Margin="20" FontSize="16"
                        Text="Выберите аккаунт из списка для входа" />
 
-            <ListBox SelectedIndex="{Binding ActiveAccountSelectIndex,Mode=TwoWay}"
-                     Items="{Binding SavedAccounts}" Grid.Row="2" VirtualizationMode="None" VerticalAlignment="Top"
-                     Margin="30,0" Background="Transparent">
+            <ListBox Grid.Row="2"
+                     Items="{Binding SavedAccounts}"
+                     SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+                     VirtualizationMode="None"
+                     VerticalAlignment="Top"
+                     Margin="30,0">
 
                 <ListBox.DataTemplates>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <Grid ColumnDefinitions="60,*,Auto">
 
-                            <Ellipse IsHitTestVisible="False" Grid.Column="0" Fill="White" Width="50" Height="50">
+                            <Ellipse IsHitTestVisible="False"
+                                     Grid.Column="0"
+                                     Fill="{DynamicResource MaterialDesignCardBackground}"
+                                     Width="50" Height="50">
                                 <i:Interaction.Behaviors>
 
                                     <ia:DataTriggerBehavior Binding="{Binding  Image.Bitmap.Size.Height}"
-                                                            ComparisonCondition="GreaterThan" Value="0">
+                                                            ComparisonCondition="GreaterThan"
+                                                            Value="0">
 
                                         <ia:ChangePropertyAction PropertyName="Fill">
                                             <ia:ChangePropertyAction.Value>
@@ -114,9 +125,18 @@
                                 </i:Interaction.Behaviors>
                             </Ellipse>
 
-                            <TextBlock IsHitTestVisible="False" Grid.Column="1" Text="{Binding Name}" FontWeight="Bold"
-                                       VerticalAlignment="Center" Margin="10" />
-                            <Button Grid.Column="2" IsHitTestVisible="True">
+                            <TextBlock IsHitTestVisible="False" Grid.Column="1"
+                                       Text="{Binding Name}"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"
+                                       Margin="10" />
+
+                            <Button Grid.Column="2"
+                                    Classes="Flat"
+                                    Foreground="{DynamicResource ValidationErrorBrushColor}"
+                                    IsHitTestVisible="True"
+                                    Content="{avalonia:MaterialIconExt Kind=Remove, Size=24}"
+                                    ToolTip.Tip="Remove">
 
                                 <i:Interaction.Behaviors>
                                     <ia:EventTriggerBehavior EventName="Click">
@@ -125,10 +145,6 @@
                                             Command="{Binding DataContext.RemoveAccountCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     </ia:EventTriggerBehavior>
                                 </i:Interaction.Behaviors>
-
-                                <Button.Content>
-                                    <TextBlock Text="Удалить" />
-                                </Button.Content>
                             </Button>
                         </Grid>
                     </DataTemplate>

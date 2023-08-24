@@ -13,15 +13,73 @@
                 Value="{DynamicResource PrimaryHueMidBrush}" />
     </Style>
 
+    <Style Selector="ContentControl.PlaylistMusicImage">
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Height" Value="120" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Height="{TemplateBinding Height}"
+                        VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        IsHitTestVisible="False"
+                        IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"
+                        Background="#e6edf5">
+                    <Grid ColumnDefinitions="*,3*,*">
+                        <avalonia:MaterialIcon Grid.Column="1"
+                                               Kind="PlaylistMusic"
+                                               Foreground="#6e9acb"
+                                               Width="NaN" Height="NaN"
+                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="ContentControl.MusicNoteImage">
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Width" Value="60" />
+        <Setter Property="Height" Value="60" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Height="{TemplateBinding Height}"
+                        VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        IsHitTestVisible="False"
+                        IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"
+                        Background="#e6edf5">
+                    <Grid ColumnDefinitions="*,3*,*">
+                        <avalonia:MaterialIcon Grid.Column="1"
+                                               Kind="MusicNote"
+                                               Foreground="#6e9acb"
+                                               Width="NaN" Height="NaN"
+                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
     <!--  -->
     <Design.PreviewWith>
         <Border Padding="20">
-            <StackPanel>
-                <Border IsHitTestVisible="False" CornerRadius="12" Width="120" Height="120"
-                        VerticalAlignment="Center" HorizontalAlignment="Center"
-                        Background="#e6edf5">
+            <StackPanel Spacing="3">
+                <Border>
                     <avalonia:MaterialIcon Kind="PlaylistMusic" Foreground="#6e9acb" Width="42" Height="42" />
                 </Border>
+
+                <ContentControl Classes="PlaylistMusicImage" />
             </StackPanel>
         </Border>
     </Design.PreviewWith>

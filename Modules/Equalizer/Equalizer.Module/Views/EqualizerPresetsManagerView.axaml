@@ -8,7 +8,7 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:views="clr-namespace:Equalizer.Module.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Equalizer.Module.Views.EqualizerPresetsManager">
+             x:Class="Equalizer.Module.Views.EqualizerPresetsManagerView">
 
     <Grid RowDefinitions="Auto,*">
         <Grid Margin="10" ColumnDefinitions="Auto,*,Auto">
@@ -70,10 +70,10 @@
 
         </ListBox>
 
-        <views:InputViewDialog
+        <views:InputDialogView
             Grid.RowSpan="3"
             IsVisible="{Binding  DataContext.TitleInputIsVisible,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
             DataContext="{Binding TitleInputViewModel}">
-        </views:InputViewDialog>
+        </views:InputDialogView>
     </Grid>
 </UserControl>

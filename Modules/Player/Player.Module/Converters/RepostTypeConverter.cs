@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using Player.Domain;
+using VkPlayer.Domain;
 
-namespace Player.Module.Converters
+namespace VkPlayer.Module.Converters
 {
     public class RepostTypeConverter : IValueConverter
     {

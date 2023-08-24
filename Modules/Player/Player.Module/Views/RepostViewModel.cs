@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Common.Core.ToDo;
 using Common.Core.Views.Interfaces;
-using Player.Domain;
-using Player.Domain.Base;
-using Player.Domain.ETC;
+using Notification.Module.Services;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using VkNet.Enums.Filters;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
+using VkPlayer.Domain;
+using VkPlayer.Domain.Base;
+using VkPlayer.Domain.ETC;
 using VkProvider.Module;
 
-namespace Player.Module.Views
+namespace VkPlayer.Module.Views
 {
     public class RepostViewModel : DataViewModelBase<RepostModel>, ICloseView
     {
         public RepostViewModel()
         {
             CloseCommand = ReactiveCommand.Create(() => CloseViewEvent?.Invoke());
+
             this.WhenAnyValue(vm => vm.RepostToType)
                 .WhereNotNull()
                 .Subscribe(x =>
@@ -34,7 +37,7 @@ namespace Player.Module.Views
 
         public RepostViewModel(RepostToType repostToType) : this()
         {
-            this.RepostToType = repostToType;
+            RepostToType = repostToType;
         }
 
         public RepostViewModel(RepostToType repostToType, AudioModel audioModel) : this(repostToType)
@@ -45,8 +48,13 @@ namespace Player.Module.Views
             }
         }
 
-        public event ICloseView.CloseViewDelegate CloseViewEvent;
 
+        /// <inheritdoc />
+        public override void OnSelected(RepostModel item)
+        {
+        }
+
+        /// <inheritdoc />
         protected override void LoadData()
         {
             if (RepostToType == RepostToType.Friend)
@@ -62,6 +70,9 @@ namespace Player.Module.Views
             DataCollection.StartLoadImagesAsync();
         }
 
+        /// <summary>
+        /// Загрузить беседу
+        /// </summary>
         private void LoadConversation()
         {
             GetConversationsResult? data = VkApiManager.GetMessagesConversations(new GetConversationsParams()
@@ -77,36 +88,54 @@ namespace Player.Module.Views
                 RepostModel repostModel = null;
                 Conversation? conversation = item.Conversation;
 
-                if (conversation.Peer.Type == ConversationPeerType.Chat)
-                    repostModel = new RepostModel(conversation);
-
-                else if (conversation.Peer.Type == ConversationPeerType.User)
+                switch (conversation.Peer.Type)
                 {
-                    foreach (User? profile in data.Profiles)
+                    case ConversationPeerType.Chat:
+                        repostModel = new RepostModel(conversation);
+                        break;
+                    case ConversationPeerType.User:
                     {
-                        if (profile.Id == conversation.Peer.Id)
+                        foreach (User? profile in data.Profiles)
                         {
+                            if (profile.Id != conversation.Peer.Id)
+                            {
+                                continue;
+                            }
+
                             repostModel = new RepostModel(conversation, profile);
                             break;
                         }
+
+                        break;
                     }
-                }
-                else if (conversation.Peer.Type == ConversationPeerType.Group)
-                {
-                    foreach (Group? group in data.Groups)
+                    case ConversationPeerType.Group:
                     {
-                        if (group.Id == -conversation.Peer.Id)
+                        foreach (Group? group in data.Groups)
                         {
-                            repostModel = new RepostModel(conversation, group);
+                            if (@group.Id != -conversation.Peer.Id)
+                            {
+                                continue;
+                            }
+
+                            repostModel = new RepostModel(conversation, @group);
                             break;
                         }
+
+                        break;
                     }
+                    case ConversationPeerType.Email:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 DataCollection?.Add(repostModel);
             }
         }
 
+        /// <summary>
+        /// Загрузить всех друзей
+        /// </summary>
         private void LoadAllFriends()
         {
             VkCollection<User>? friends = VkApiManager.GetFriends(new FriendsGetParams()
@@ -124,7 +153,8 @@ namespace Player.Module.Views
             DataCollection.StartLoadImages();
         }
 
-        public override void SelectedItem(object sender, PointerPressedEventArgs args)
+        /// <inheritdoc />
+        public override void OnSelectedItem(object sender, PointerPressedEventArgs args)
         {
             RepostModel? item = args?.GetContent<RepostModel>();
 
@@ -141,15 +171,14 @@ namespace Player.Module.Views
                             Attachments = VkApiManager.GetAudioById(new string[]
                                 {AudioModel.GetAudioIdFormatWithAccessKey()}),
                         });
-                        /*Notify.NotifyManager.Instance.PopMessage(
-                            new Notify.NotifyData("Успешно отправлено", "Аудиозапись отправлена: " + item.Title
-                            , TimeSpan.FromSeconds(2)));*/
+
+                        _notificationService.Show("Успешно отправлено",
+                            $"Аудиозапись отправлена: {item.Title}", NotificationType.Information);
                     }
-                    catch (Exception)
+                    catch (Exception exp)
                     {
-                        /*Notify.NotifyManager.Instance.PopMessage(
-                            new Notify.NotifyData("Ошибка отправки", "Возникла проблема при отправке сообщения",
-                            TimeSpan.FromSeconds(2)));*/
+                        _notificationService.Show("Ошибка отправки",
+                            $"Возникла проблема при отправке сообщения. \n{exp.Message}", NotificationType.Information);
                     }
                     finally
                     {
@@ -161,14 +190,30 @@ namespace Player.Module.Views
 
         private AudioModel? AudioModel { get; set; }
 
-        private RepostToType[] RepostTypeItems { get; set; } = new[]
+        private RepostToType[] RepostTypeItems { get; set; } =
         {
             RepostToType.Friend,
             RepostToType.Dialog,
         };
 
-        [Reactive] public RepostToType RepostToType { get; set; }
-        [Reactive] public string Info { get; set; }
-        public IReactiveCommand CloseCommand { get; set; }
+        public RepostToType RepostToType
+        {
+            get => _repostToType;
+            set => this.RaiseAndSetIfChanged(ref _repostToType, value);
+        }
+
+        public string Info
+        {
+            get => _info;
+            set => this.RaiseAndSetIfChanged(ref _info, value);
+        }
+
+        public ICommand CloseCommand { get; }
+
+        protected readonly INotificationService _notificationService;
+        public event ICloseView.CloseViewDelegate CloseViewEvent;
+
+        private RepostToType _repostToType;
+        private string _info;
     }
 }
