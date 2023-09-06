@@ -8,9 +8,33 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Avalonia" Version="0.10.22" />
       <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
       <PackageReference Include="Prism.Avalonia" Version="8.1.97.1021" />
       <PackageReference Include="Material.Avalonia" Version="2.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\Language.Designer.cs">
+        <DependentUpon>Language.resx</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Language.resx">
+        <LastGenOutput>Language.Designer.cs</LastGenOutput>
+        <Generator>PublicResXFileCodeGenerator</Generator>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Properties\Language.ru.resx">
+        <SubType>Designer</SubType>
+        <Generator>PublicResXFileCodeGenerator</Generator>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>

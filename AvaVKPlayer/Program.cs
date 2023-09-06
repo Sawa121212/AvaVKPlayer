@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Avalonia;
 using Avalonia.Logging;
@@ -6,14 +7,15 @@ using Avalonia.ReactiveUI;
 
 namespace AvaVKPlayer
 {
-    class Program
+    public class Program
     {
         private const int TimeoutSeconds = 3;
 
         // Initialization code. Don't use any Avalonia, third-party APIs or any
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
-        [STAThread]
+        // [STAThread]
+        [ExcludeFromCodeCoverage]
         public static void Main(string[] args)
         {
             // добавим Mutex для блокировки запуска повторного ПО
@@ -39,18 +41,13 @@ namespace AvaVKPlayer
             AppBuilder? builder = AppBuilder
                 .Configure<App>()
                 .UsePlatformDetect()
-                .With(new SkiaOptions()
-                {
-                    // 1 GB = 1,073,741,824 Byte
-                    MaxGpuResourceSizeBytes = new long?(1073741824L)
-                })
                 .With(new Win32PlatformOptions
                 {
                     EnableMultitouch = true,
                     AllowEglInitialization = true,
-                    UseWindowsUIComposition = false,
+                    // UseWindowsUIComposition = false,
                     OverlayPopups = true,
-                    UseDeferredRendering = true
+                    // UseDeferredRendering = true
                 })
                 .With(new X11PlatformOptions
                 {
@@ -65,6 +62,11 @@ namespace AvaVKPlayer
                     UseGpu = true,
                     OverlayPopups = true,
                     UseDeferredRendering = true
+                })
+                .With(new SkiaOptions()
+                {
+                    // 1 GB = 1,073,741,824 Byte
+                    MaxGpuResourceSizeBytes = new long?(1073741824L)
                 })
                 .UseSkia()
                 .UseReactiveUI()

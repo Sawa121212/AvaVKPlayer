@@ -2,29 +2,36 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
-using ReactiveUI;
 
 namespace Notification.Module.Services
 {
     /// <inheritdoc cref="INotificationService"/>
-    public class NotificationService : ReactiveObject, INotificationService
+    public class NotificationService : INotificationService
     {
-        private int _notificationTimeout = 5;
-        private WindowNotificationManager? _notificationManager;
+        private int _notificationTimeout = 7;
+
+        private WindowNotificationManager NotificationManager
+        {
+            get; 
+            set;
+        }
 
         /// <inheritdoc/>
         public void Show(string title, string message, NotificationType notificationType, Action? onClick = null)
         {
-            if (_notificationManager is { } window)
+            if (NotificationManager is { } window)
             {
-                Avalonia.Controls.Notifications.Notification notification = new(
-                    title, message, notificationType, TimeSpan.FromSeconds(_notificationTimeout),
-                    onClick);
-                //ToDO: Fix this - window.Show(notification);
+                window.Show(
+                    new Avalonia.Controls.Notifications.Notification(
+                        title,
+                        message,
+                        notificationType,
+                        TimeSpan.FromSeconds(_notificationTimeout),
+                        onClick));
             }
             else
             {
-                throw new Exception("Host window not set");
+                //throw new Exception("Host window not set");
             }
         }
 
@@ -36,7 +43,7 @@ namespace Notification.Module.Services
                 return;
             }
 
-            WindowNotificationManager? notificationManager = new(window)
+            WindowNotificationManager notificationManager = new(window)
             {
                 Position = NotificationPosition.BottomRight,
                 MaxItems = 4,
@@ -51,12 +58,6 @@ namespace Notification.Module.Services
         {
             get => _notificationTimeout;
             set => _notificationTimeout = (value < 0) ? 0 : value;
-        }
-
-        private WindowNotificationManager? NotificationManager
-        {
-            get => _notificationManager;
-            set => this.RaiseAndSetIfChanged(ref _notificationManager, value);
         }
     }
 }

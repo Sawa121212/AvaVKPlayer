@@ -2,6 +2,7 @@
 using Authorization.Module.Properties;
 using Authorization.Module.Services;
 using Authorization.Module.Views;
+using Common.Core.Extensions;
 using Common.Core.Localization;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -15,10 +16,10 @@ namespace Authorization.Module
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton<IAuthorizationService, AuthorizationService>();
+            containerRegistry.TryRegisterSingleton<IAuthorizationService, AuthorizationService>();
 
             // Регистрируем View для навигации по Регионам
-            containerRegistry.RegisterForNavigation<AuthorizationView, AuthorizationViewModel>();
+            containerRegistry.TryRegisterForNavigation<AuthorizationView, AuthorizationViewModel>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

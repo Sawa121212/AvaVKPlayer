@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Resources;
 using Authorization.Module;
 using Authorization.Module.Services;
+using Authorization.Module.Views;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -31,16 +32,20 @@ namespace AvaVKPlayer
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-            base.Initialize(); // Initializes Prism.Avalonia - DO NOT REMOVE
+            base.Initialize(); // Initializes Prism.Avalonia
         }
 
+        /// <summary>
+        /// User interface entry point, called after Register and ConfigureModules.
+        /// </summary>
+        /// <returns>Startup View.</returns>
         protected override Window CreateShell()
         {
             return Container.Resolve<ShellView>();
         }
 
         /// <summary>
-        /// Регистрация служб и отображений приложения
+        /// Register Services and Views.
         /// </summary>
         /// <param name="containerRegistry"></param>
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -58,15 +63,16 @@ namespace AvaVKPlayer
                 ;
 
             // Views - Generic
-            containerRegistry.Register<ShellView>();
+            // containerRegistry.Register<ShellView>();
 
+            containerRegistry.RegisterForNavigation<AuthorizationView, AuthorizationViewModel>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
         }
 
         /// <summary>
-        /// Регистрация модулей приложения
+        /// Register optional modules in the catalog.
         /// </summary>
-        /// <param name="moduleCatalog"></param>
+        /// <param name="moduleCatalog">Module Catalog.</param>
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog
@@ -77,38 +83,28 @@ namespace AvaVKPlayer
                 .AddModule<VkPlayerModule>()
                 ;
 
-            base.ConfigureModuleCatalog(moduleCatalog);
+           // base.ConfigureModuleCatalog(moduleCatalog);
         }
 
-        public override void OnFrameworkInitializationCompleted()
+        /// <summary>Called after Initialize.</summary>
+        protected override void OnInitialized()
         {
-            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-                return;
-
             // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
             ILocalizer? localizer = Container.Resolve<ILocalizer>();
             localizer.AddResourceManager(new ResourceManager(typeof(Language)));
 
-            desktop.MainWindow = CreateShell();
-            if (desktop.MainWindow != null)
-            {
-                INotificationService? notifyService = Container.Resolve<INotificationService>();
-                notifyService.SetHostWindow(desktop.MainWindow);
-            }
-
             Dispatcher.UIThread.InvokeAsync(() => { localizer.ChangeLanguage("ru"); },
                 DispatcherPriority.SystemIdle);
 
-            
+            // Register Views to the Region it will appear in. Don't register them in the ViewModel.
             IRegionManager regionManager = Container.Resolve<IRegionManager>();
+            //Container.Resolve<MainView>();
             regionManager.RegisterViewWithRegion(RegionNameService.ShellRegionName, typeof(MainView));
 
             // установим регион, на котором будем показывать окно Авторизации
             IAuthorizationService? authorizationService = Container.Resolve<IAuthorizationService>();
             authorizationService.SetRegionName(RegionNameService.ShellRegionName);
-            //authorizationService.SetAuthorizationMode();
-
-            base.OnFrameworkInitializationCompleted();
+            authorizationService.SetAuthorizationMode();
         }
 
         /// <summary>

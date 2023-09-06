@@ -130,7 +130,8 @@ namespace VkPlayer.Module.ViewModels.Audios
 
             if (SelectedItem.IsNotAvailable)
             {
-                _notificationService.Show("Ошибка", "Введите все данные", NotificationType.Warning);
+                _notificationService.Show("Ошибка",
+                    $"Музыка \" {SelectedItem.Artist} - {SelectedItem.Title}\" не доступна", NotificationType.Warning);
                 return;
             }
 

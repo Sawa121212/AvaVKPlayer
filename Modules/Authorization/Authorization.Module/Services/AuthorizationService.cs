@@ -107,8 +107,12 @@ namespace Authorization.Module.Services
             }
             else
             {
-                _notificationService?.Show("Ошибка", $"Не найден регион: {_regionName}", NotificationType.Error);
+                _regionManager.RegisterViewWithRegion(_regionName, nameof(AuthorizationView));
             }
+            /*else
+            {
+                _notificationService?.Show("Ошибка", $"Не найден регион: {_regionName}", NotificationType.Error);
+            }*/
         }
 
         /// <inheritdoc />

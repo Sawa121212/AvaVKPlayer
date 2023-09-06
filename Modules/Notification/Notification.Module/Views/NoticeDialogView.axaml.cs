@@ -3,16 +3,16 @@ using Avalonia.Markup.Xaml;
 
 namespace Notification.Module.Views
 {
-  public partial class NoticeDialogView : UserControl
-  {
-    public NoticeDialogView()
+    public partial class NoticeDialogView : UserControl
     {
-      InitializeComponent();
-    }
+        public NoticeDialogView()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-      AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
-  }
 }

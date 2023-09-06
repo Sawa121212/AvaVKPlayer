@@ -1,6 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections">
 
     <!-- ToggleButton.Gray -->
     <Style Selector="ToggleButton.Gray:not(:checked)">
@@ -41,7 +42,7 @@
             </ControlTemplate>
         </Setter>
     </Style>
-    
+
     <Style Selector="ContentControl.MusicNoteImage">
         <Setter Property="IsHitTestVisible" Value="False" />
         <Setter Property="CornerRadius" Value="12" />

@@ -9,13 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Authorization.Module.Domain;
 using Authorization.Module.Services;
-using Avalonia.Controls;
-using Avalonia.Input;
 using Common.Core.ToDo;
 using Common.Core.Views;
 using Prism.Regions;
 using ReactiveUI;
-using VkProvider.Module;
 
 namespace Authorization.Module.Views
 {

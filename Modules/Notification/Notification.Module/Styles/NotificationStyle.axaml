@@ -11,35 +11,43 @@
     <Style Selector="NotificationCard">
         <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth2" />
         <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}" />
-        <Setter Property="Width" Value="350" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignSelection}" />
-        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
         <Setter Property="RenderTransformOrigin" Value="50%,75%" />
-        <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Padding" Value="3" />
+        <Setter Property="CornerRadius" Value="16" />
         <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="Width" Value="350" />
         <Setter Property="Template">
             <ControlTemplate>
-                <LayoutTransformControl Name="PART_LayoutTransformControl" UseRenderTransform="True">
-                    <Border CornerRadius="{TemplateBinding CornerRadius}" BoxShadow="5 4 8 0 #4F000000"
+                <LayoutTransformControl Name="PART_LayoutTransformControl"
+                                        UseRenderTransform="True">
+                    <Border CornerRadius="{TemplateBinding CornerRadius}"
+                            BoxShadow="5 4 8 0 #4F000000"
                             Margin="5 5 5 10">
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 ClipToBounds="True">
-                            <DockPanel>
+
+                            <DockPanel LastChildFill="True">
+                                <!-- Colored bar -->
                                 <Border x:Name="PART_HeaderBar" Height="5"
                                         CornerRadius="4 4 0 0"
                                         DockPanel.Dock="Top" />
 
-                                <StackPanel Orientation="Horizontal">
-                                    <ContentControl x:Name="PART_ContentIcon" />
-                                    <ContentControl Name="PART_Content" MinHeight="64"
+                                <Grid ColumnDefinitions="Auto, *">
+                                    <!-- Icon -->
+                                    <ContentControl Grid.Column="0" x:Name="PART_ContentIcon" />
+
+                                    <!-- Content -->
+                                    <ContentControl Grid.Column="1"
+                                                    Name="PART_Content"
+                                                    MinHeight="64"
                                                     Content="{TemplateBinding Content}" />
-                                </StackPanel>
+                                </Grid>
                             </DockPanel>
                         </Border>
                     </Border>
@@ -48,7 +56,9 @@
         </Setter>
 
         <Style.Animations>
-            <Animation Duration="0:0:0.45" Easing="QuadraticEaseIn" FillMode="Forward">
+            <Animation Easing="QuadraticEaseIn"
+                       FillMode="Forward"
+                       Duration="0:0:0.45">
                 <KeyFrame Cue="0%">
                     <Setter Property="Opacity" Value="0" />
                     <Setter Property="TranslateTransform.Y" Value="20" />
@@ -71,7 +81,9 @@
     <Style Selector="NotificationCard[IsClosing=true] /template/ LayoutTransformControl#PART_LayoutTransformControl">
         <Setter Property="RenderTransformOrigin" Value="50%,0%" />
         <Style.Animations>
-            <Animation Duration="0:0:0.75" Easing="QuadraticEaseOut" FillMode="Forward">
+            <Animation Easing="QuadraticEaseOut"
+                       FillMode="Forward"
+                       Duration="0:0:0.75">
                 <KeyFrame Cue="0%">
                     <Setter Property="TranslateTransform.X" Value="0" />
                     <Setter Property="ScaleTransform.ScaleY" Value="1" />
@@ -90,7 +102,9 @@
 
     <Style Selector="NotificationCard[IsClosing=true]">
         <Style.Animations>
-            <Animation Duration="0:0:1.25" Easing="QuadraticEaseOut" FillMode="Forward">
+            <Animation Easing="QuadraticEaseOut"
+                       FillMode="Forward"
+                       Duration="0:0:1.25">
                 <KeyFrame Cue="100%">
                     <Setter Property="IsClosed" Value="True" />
                 </KeyFrame>
@@ -106,7 +120,7 @@
                     Kind="Information"
                     Foreground="{DynamicResource PrimaryHueMidBrush}"
                     Width="32" Height="32"
-                    Margin="5 5 0 5 " />
+                    Margin="3 3 0 3 " />
             </ControlTemplate>
         </Setter>
     </Style>
@@ -125,7 +139,7 @@
                     Kind="CheckboxMarkedCircle"
                     Foreground="{DynamicResource SuccessColorBrush}"
                     Width="32" Height="32"
-                    Margin="5" />
+                    Margin="5 3 0 3 " />
             </ControlTemplate>
         </Setter>
     </Style>
@@ -141,7 +155,7 @@
                     Kind="Alert"
                     Foreground="{DynamicResource WarningColorBrush}"
                     Width="32" Height="32"
-                    Margin="5" />
+                    Margin="5 3 0 3 " />
             </ControlTemplate>
         </Setter>
     </Style>
@@ -157,7 +171,7 @@
                     Kind="CloseCircle"
                     Foreground="{DynamicResource ValidationErrorBrush}"
                     Width="32" Height="32"
-                    Margin="5" />
+                    Margin="5 3 0 3 " />
             </ControlTemplate>
         </Setter>
     </Style>
@@ -165,7 +179,8 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <StackPanel>
-                <NotificationCard Content="Testing" />
+                <NotificationCard
+                    Content="Testing1 testing2 testing3 testing4 testing5 testing6 testing7 testing8 testing9 testing10" />
             </StackPanel>
         </Border>
     </Design.PreviewWith>

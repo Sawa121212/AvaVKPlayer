@@ -2,10 +2,11 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using ReactiveUI;
 
 namespace Notification.Module.Views
 {
-    public class NoticeDialogViewModel : BindableBase, IDialogAware
+    public class NoticeDialogViewModel : ReactiveObject, IDialogAware
     {
         private string _title = "";
         private string _message = "This feature is not implemented";
@@ -25,13 +26,13 @@ namespace Notification.Module.Views
         public string Message
         {
             get => _message;
-            set => SetProperty(ref _message, value);
+            set => this.RaiseAndSetIfChanged(ref _message, value);
         }
 
         public string Title
         {
             get => _title;
-            set => SetProperty(ref _title, value);
+            set => this.RaiseAndSetIfChanged(ref _title, value);
         }
 
         public bool CanCloseDialog()

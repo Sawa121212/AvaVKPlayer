@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Notification.Module.Services;
+using Prism.Ioc;
 
 namespace AvaVKPlayer.Views
 {
@@ -13,8 +15,9 @@ namespace AvaVKPlayer.Views
             this.AttachDevTools();
 #endif
 
-            //var notifyService = ContainerLocator.Current.Resolve<INotificationService>();
-            //notifyService.SetHostWindow(this);
+            // Initialize the WindowNotificationManager with the MainWindow
+            INotificationService? notifyService = ContainerLocator.Current.Resolve<INotificationService>();
+            notifyService.SetHostWindow(this);
         }
 
         private void InitializeComponent()

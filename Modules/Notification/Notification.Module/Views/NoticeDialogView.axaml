@@ -8,8 +8,11 @@
              x:Class="Notification.Module.Views.NoticeDialogView">
 
     <StackPanel HorizontalAlignment="Center">
-        <Label Content="Notice" FontWeight="Bold" />
-        <Label Content="{Binding Message}" />
+        <TextBlock Text="Notice" FontWeight="Bold"
+                   TextWrapping="Wrap" />
+        <TextBlock Text="{Binding Message}"
+                   TextWrapping="Wrap" 
+                   TextTrimming="WordEllipsis"/>
 
         <Button Content="OK" Command="{Binding CmdResult}" />
     </StackPanel>
