@@ -15,7 +15,7 @@ namespace Authorization.Module.Services
         /// Выход пользователя из системы
         /// </summary>
         /// <returns></returns>
-        void Logout();
+        void LogOut();
 
         /// <summary>
         /// Установить регион для отображения

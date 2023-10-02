@@ -21,6 +21,9 @@ namespace VkPlayer.Domain.Base
             DataCollection = new ObservableCollection<T>();
 
             ClickCommand = new DelegateCommand<T>(OnSelected);
+
+            this.WhenAnyValue(vm => vm.SelectedItem)
+                .Subscribe((e) => OnSelectedItem());
         }
 
         /// <summary>

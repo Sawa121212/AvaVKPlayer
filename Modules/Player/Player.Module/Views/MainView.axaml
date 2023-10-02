@@ -112,7 +112,8 @@
                     Content="{avalonia:MaterialIconExt Kind=LogoutVariant, Size=32}"
                     Width="32" Height="32"
                     IsVisible="{Binding MenuTextIsVisible}"
-                    ToolTip.Tip="Выйти" />
+                    ToolTip.Tip="Выйти" 
+                    Command="{Binding LogOutCommand}" />
             </StackPanel>
         </Grid>
 
@@ -138,6 +139,7 @@
                     <!--<ContentControl
                         prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ContentRegionName}"/>-->
                     <ContentControl
+                        prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ContentRegionName}"
                         Content="{Binding DataContext.NavigationMenuSelection.Content, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         DataContext="{Binding DataContext.NavigationMenuSelection.DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
 

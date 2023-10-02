@@ -16,7 +16,7 @@ namespace VkPlayer.Module.Views
         /// </summary>
         private void OnShowSettings()
         {
-            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(SettingsView));
+            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(SettingsView));
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace VkPlayer.Module.Views
         /// </summary>
         private void OnShowAbout()
         {
-            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(AboutView));
+            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AboutView));
         }
 
         /// <summary>

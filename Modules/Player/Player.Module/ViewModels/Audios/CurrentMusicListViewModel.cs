@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Avalonia.Input;
 using VkPlayer.Domain;
 using VkPlayer.Module.ViewModels.Base;
@@ -32,12 +33,16 @@ namespace VkPlayer.Module.ViewModels.Audios
         }
 
 
-        private void PlayerControlViewModelOnSetPlaylistEvent(IEnumerable<AudioModel> audiocollection,
-            int selectedindex)
+        private void PlayerControlViewModelOnSetPlaylistEvent(
+            IEnumerable<AudioModel> audiocollection, int selectedindex)
         {
-            DataCollection = new ObservableCollection<AudioModel>();
-            DataCollection.AddRange(audiocollection);
-            AllDataCollection = DataCollection;
+            if (DataCollection?.AsEnumerable() != audiocollection)
+            {
+                DataCollection = new ObservableCollection<AudioModel>();
+                DataCollection.AddRange(audiocollection);
+                AllDataCollection = DataCollection;
+            }
+
             SelectedIndex = selectedindex;
         }
     }

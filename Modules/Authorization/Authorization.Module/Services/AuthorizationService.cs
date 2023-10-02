@@ -75,7 +75,7 @@ namespace Authorization.Module.Services
 
 
         /// <inheritdoc />
-        public void Logout()
+        public void LogOut()
         {
             //_authorizedUserProvider.Logout();
             ShowAuthorizationView();

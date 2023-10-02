@@ -98,7 +98,7 @@
                                             DockPanel.Dock="Left"
                                             Width="50" Height="50"
                                             Margin="0,0,5,0"
-                                            IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}"/>
+                                            IsVisible="{Binding Image.Bitmap, Converter={x:Static ObjectConverters.IsNull}}" />
 
                             <!-- Title & Subtitle -->
                             <DockPanel Margin="5" MaxWidth="{Binding $parent.ActualWidth}">
@@ -124,10 +124,15 @@
 
                                         <i:Interaction.Behaviors>
                                             <ia:EventTriggerBehavior EventName="PointerPressed">
-                                                <ia:CallMethodAction
+                                                <!--<ia:CallMethodAction
                                                     TargetObject="{Binding DataContext , 
                                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                                    MethodName="ArtistClicked" />
+                                                    MethodName="ArtistClicked" />-->
+                                                <ia:InvokeCommandAction
+                                                    Command="{Binding DataContext.GoToArtistCommand, 
+                                                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding .}"/>
+
                                             </ia:EventTriggerBehavior>
                                         </i:Interaction.Behaviors>
 
@@ -269,14 +274,14 @@
                 </DataTemplate>
             </ListBox.DataTemplates>
 
-            <i:Interaction.Behaviors>
+            <!--<i:Interaction.Behaviors>
                 <ia:EventTriggerBehavior EventName="SelectionChanged">
                     <ia:InvokeCommandAction
                         Command="{Binding DataContext.ClickCommand,
                                               RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
                         CommandParameter="{Binding SelectedItem, ElementName=MusicsBox}" />
                 </ia:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
+            </i:Interaction.Behaviors>-->
         </ListBox>
 
         <resources:LoadingControl Grid.Row="1"

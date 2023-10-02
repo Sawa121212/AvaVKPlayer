@@ -48,6 +48,7 @@ namespace VkPlayer.Module.Views
 
             ShowSettingsCommand = new DelegateCommand(OnShowSettings);
             ShowAboutCommand = new DelegateCommand(OnShowAbout);
+            LogOutCommand = new DelegateCommand(OnLogOut);
 
             MenuColumnWidth = new GridLength(50);
             IsMaximized = true;
@@ -260,28 +261,6 @@ namespace VkPlayer.Module.Views
             RepostViewModel = null;
         }
 
-        public void ArtistClicked(object sender, PointerPressedEventArgs e)
-        {
-            AudioModel? tb = e.GetContent<AudioModel>();
-            if (tb?.Artist == null)
-            {
-                return;
-            }
-
-            MenuSelectionIndex = 3;
-            if (PlayerContext?.CurrentAudio != null)
-            {
-                CurrentAudioViewModel.SelectToModel(PlayerContext?.CurrentAudio, false);
-                CurrentAudioViewModel.SelectedIndex = -1;
-            }
-
-            if (_searchViewModel == null)
-                return;
-
-            _searchViewModel.IsLoading = true;
-            _searchViewModel.SearchText = tb.Artist;
-        }
-
         public void OpenViewFromMenu(int menuIndex)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -349,7 +328,7 @@ namespace VkPlayer.Module.Views
                     }
                     case 5:
                     {
-                        AccountExit();
+                        OnLogOut();
                         break;
                     }
                 }
@@ -383,7 +362,7 @@ namespace VkPlayer.Module.Views
         /// <summary>
         /// Выйти из аккаунта
         /// </summary>
-        private void AccountExit()
+        private void OnLogOut()
         {
             try
             {
@@ -419,6 +398,8 @@ namespace VkPlayer.Module.Views
             GC.Collect(3, GCCollectionMode.Optimized);
 
             OnUpdateCurrentAccountInfo();
+
+            _authorizationService.LogOut();
         }
 
         private void ExceptionViewModel_ViewExitEvent()
@@ -526,6 +507,7 @@ namespace VkPlayer.Module.Views
         public ICommand AvatarPressedCommand { get; }
 
         public ICommand OpenHideMiniPlayerCommand { get; }
+        public ICommand LogOutCommand { get; }
 
 
         private readonly IContainerProvider _containerProvider;

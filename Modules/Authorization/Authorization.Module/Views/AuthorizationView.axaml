@@ -141,8 +141,8 @@
                                 <i:Interaction.Behaviors>
                                     <ia:EventTriggerBehavior EventName="Click">
                                         <ia:InvokeCommandAction
-                                            CommandParameter="{Binding .}"
-                                            Command="{Binding DataContext.RemoveAccountCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                            Command="{Binding DataContext.RemoveAccountCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" 
+                                            CommandParameter="{Binding }"/>
                                     </ia:EventTriggerBehavior>
                                 </i:Interaction.Behaviors>
                             </Button>
